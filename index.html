@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vista Previa — Clínica Veterinaria San José</title>
+    <meta name="robots" content="noindex, nofollow">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:#0f1a14;color:#fff;min-height:100vh;display:flex;align-items:center;justify-content:center}
+        .lock-container{text-align:center;padding:40px;max-width:420px;width:90%}
+        .lock-icon{width:80px;height:80px;background:linear-gradient(135deg,#1A3C2A,#2D6B45);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:36px;box-shadow:0 8px 32px rgba(45,107,69,.3)}
+        h1{font-size:20px;margin-bottom:8px;font-weight:600}
+        .subtitle{color:rgba(255,255,255,.6);font-size:14px;margin-bottom:32px}
+        .input-group{display:flex;gap:8px;margin-bottom:16px}
+        .input-group input{flex:1;padding:14px 16px;border:2px solid rgba(255,255,255,.15);border-radius:10px;background:rgba(255,255,255,.08);color:#fff;font-size:15px;outline:none;transition:border-color .3s}
+        .input-group input:focus{border-color:#2D6B45}
+        .input-group input::placeholder{color:rgba(255,255,255,.3)}
+        .btn-unlock{padding:14px 24px;background:linear-gradient(135deg,#2D6B45,#1A3C2A);border:none;border-radius:10px;color:#fff;font-size:15px;font-weight:600;cursor:pointer;transition:all .3s;white-space:nowrap}
+        .btn-unlock:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(45,107,69,.4)}
+        .error{color:#D4764E;font-size:13px;margin-top:12px;display:none}
+        .footer-lock{margin-top:40px;color:rgba(255,255,255,.3);font-size:11px}
+        .brand{color:#D4764E;font-weight:600}
+    </style>
+</head>
+<body>
+    <div class="lock-container">
+        <div class="lock-icon">🔒</div>
+        <h1>Vista Previa Protegida</h1>
+        <p class="subtitle">Introduce la contraseña para acceder a la web</p>
+        <div class="input-group">
+            <input type="password" id="pwdInput" placeholder="Contraseña..." autofocus>
+            <button class="btn-unlock" onclick="unlock()">Acceder</button>
+        </div>
+        <p class="error" id="errorMsg">Contraseña incorrecta. Inténtalo de nuevo.</p>
+        <div class="footer-lock">Desarrollado por <span class="brand">Patrimonio360.pro</span></div>
+    </div>
+
+    <script>
+        // Contraseña: sanjose2025 (cámbiala si quieres)
+        var _hash = 'c2Fuam9zZTIwMjU='; // base64 de "sanjose2025"
+        
+        document.getElementById('pwdInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') unlock();
+        });
+
+        function unlock() {
+            var input = document.getElementById('pwdInput').value;
+            var encoded = btoa(input);
+            
+            if (encoded === _hash) {
+                document.cookie = 'site_auth=' + _hash + ';path=/;max-age=3600';
+                window.location.href = 'site/index.html';
+            } else {
+                document.getElementById('errorMsg').style.display = 'block';
+                document.getElementById('pwdInput').value = '';
+                document.getElementById('pwdInput').focus();
+            }
+        }
+
+        // Si ya tiene la cookie, redirigir
+        if (document.cookie.indexOf('site_auth=' + _hash) !== -1) {
+            window.location.href = 'site/index.html';
+        }
+    </script>
+</body>
+</html>

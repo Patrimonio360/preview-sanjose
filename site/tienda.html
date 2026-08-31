@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tienda Online | Clínica Veterinaria San José</title>
+    <meta name="description" content="Productos de calidad para mascotas. Alimentación, juguetes, accesorios y más. Envío gratuito en pedidos superiores a 40€.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .store-hero{background:var(--cream);padding:140px 0 80px;text-align:center}
+        .store-hero h1{font-size:clamp(2rem,4vw,3rem);margin-bottom:12px}
+        .store-hero p{font-size:1.05rem;color:var(--gray500);max-width:560px;margin:0 auto;line-height:1.7}
+        .store-section{padding:80px 0}
+        .store-grid-full{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+        .store-item{background:var(--cream);border-radius:var(--r-lg);overflow:hidden;transition:all .4s;position:relative}
+        .store-item:hover{transform:translateY(-5px);box-shadow:var(--sh-lg)}
+        .store-img{width:100%;aspect-ratio:1;overflow:hidden;position:relative}
+        .store-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
+        .store-item:hover .store-img img{transform:scale(1.08)}
+        .store-tag{position:absolute;top:12px;left:12px;background:var(--coral);color:var(--white);font-size:.65rem;font-weight:700;padding:4px 10px;border-radius:50px}
+        .store-info{padding:18px}
+        .store-brand{font-size:.72rem;color:var(--gray500);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+        .store-name{font-size:.92rem;font-weight:600;color:var(--charcoal);margin-bottom:8px;line-height:1.3}
+        .store-price{display:flex;align-items:center;gap:8px;margin-bottom:14px}
+        .store-price .current{font-family:'Fraunces',serif;font-size:1.3rem;color:var(--forest)}
+        .store-price .original{font-size:.82rem;color:var(--gray400);text-decoration:line-through}
+        .store-btn{display:block;width:100%;text-align:center;padding:12px;border-radius:50px;background:var(--forest);color:var(--white);text-decoration:none;font-size:.82rem;font-weight:600;transition:all .3s;border:none;cursor:pointer;font-family:'Inter',sans-serif}
+        .store-btn:hover{background:var(--forest-light);transform:translateY(-1px)}
+        .store-tabs{display:flex;justify-content:center;gap:8px;margin-top:24px;flex-wrap:wrap}
+        .store-tab{background:var(--white);border:none;padding:10px 22px;border-radius:50px;font-family:'Inter',sans-serif;font-size:.82rem;font-weight:600;color:var(--gray500);cursor:pointer;transition:all .3s}
+        .store-tab.active,.store-tab:hover{background:var(--forest);color:var(--white)}
+        .store-info-bar{background:var(--forest);color:var(--white);padding:14px 0;text-align:center}
+        .store-info-bar p{font-size:.88rem;color:rgba(255,255,255,.9)}
+        .store-info-bar strong{color:var(--white)}
+        .store-empty{text-align:center;padding:80px 20px;color:var(--gray400);display:none}
+        .store-empty-icon{font-size:48px;margin-bottom:12px;opacity:.5}
+        @media(max-width:1024px){.store-grid-full{grid-template-columns:repeat(2,1fr)}}
+        @media(max-width:768px){.store-grid-full{grid-template-columns:1fr}}
+    </style>
+</head>
+<body>
+
+<div class="store-info-bar">
+    <p>Envío gratuito en pedidos superiores a <strong>40€</strong> · Atención telefónica: <strong>955 321 470</strong></p>
+</div>
+
+<nav class="nav" id="mainNav" style="top:44px">
+    <div class="container">
+        <a href="index.html" class="nav-logo"><img src="img/clinica-02.jpeg" alt="San José Logo" style="height:40px;width:40px;border-radius:50%;object-fit:cover"><div class="nav-logo-text">San José</div></a>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="index.html">Inicio</a></li>
+            <li><a href="nosotros.html">Nosotros</a></li>
+            <li><a href="servicios.html">Servicios</a></li>
+            <li><a href="planes.html">Planes</a></li>
+            <li><a href="tienda.html" class="active">Tienda</a></li>
+            <li><a href="resenas.html">Reseñas</a></li>
+            <li><a href="contacto.html">Contacto</a></li>
+            <li><a href="tel:955321470" class="nav-cta">☎ 955 321 470</a></li>
+        </ul>
+        <div class="nav-right">
+            <button class="cart-btn" id="cartBtn" aria-label="Carrito"><span class="cart-btn-icon">🛒</span><span class="cart-btn-text">Carrito</span><span class="cart-badge" id="cartBadge">0</span></button>
+            <button class="nav-toggle" id="navToggle" aria-label="Menú"><span></span><span></span><span></span></button>
+        </div>
+    </div>
+</nav>
+
+<div class="store-hero">
+    <div class="container">
+        <div class="section-label">Tienda Online</div>
+        <h1>Productos de calidad para<br>tu mejor amigo</h1>
+        <p>Solo vendemos marcas que nosotros mismos recomendamos. Envío gratuito en pedidos superiores a 40€.</p>
+        <div class="store-tabs">
+            <button class="store-tab active" data-cat="todos">Todos</button>
+            <button class="store-tab" data-cat="alimento">Alimentación</button>
+            <button class="store-tab" data-cat="juguetes">Juguetes</button>
+            <button class="store-tab" data-cat="accesorios">Accesorios</button>
+            <button class="store-tab" data-cat="higiene">Higiene</button>
+        </div>
+    </div>
+</div>
+
+<section class="store-section">
+    <div class="container">
+        <div class="store-grid-full" id="storeGrid">
+            <article class="store-item reveal" data-cat="alimento" data-id="1" data-brand="Royal Canin" data-name="Medium Adult 15kg" data-price="52.90" data-img="https://images.unsplash.com/photo-1589924691995-400dc9ecc119?w=400&h=400&fit=crop">
+                <div class="store-img"><img src="https://images.unsplash.com/photo-1589924691995-400dc9ecc119?w=400&h=400&fit=crop" alt="Royal Canin Medium" loading="lazy"><div class="store-tag">-15%</div></div>
+                <div class="store-info"><div class="store-brand">Royal Canin</div><div class="store-name">Medium Adult 15kg</div><div class="store-price"><span class="current">52.90€</span><span class="original">62.24€</span></div><button class="store-btn">Añadir al carrito</button></div>
+            </article>
+            <article class="store-item reveal" data-cat="juguetes" data-id="2" data-brand="KONG" data-name="Classic Toy Medium" data-price="12.50" data-img="https://images.unsplash.com/photo-1576201836106-db1758fd1c97?w=400&h=400&fit=crop">
+                <div class="store-img"><img src="https://images.unsplash.com/photo-1576201836106-db1758fd1c97?w=400&h=400&fit=crop" alt="Juguete interactivo" loading="lazy"></div>
+                <div class="store-info"><div class="store-brand">KONG</div><div class="store-name">Classic Toy Medium</div><div class="store-price"><span class="current">12.50€</span></div><button class="store-btn">Añadir al carrito</button></div>
+            </article>
+            <article class="store-item reveal" data-cat="alimento" data-id="3" data-brand="Hill's" data-name="Science Plan Sensitive 12kg" data-price="58.90" data-img="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=400&h=400&fit=crop">
+                <div class="store-img"><img src="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=400&h=400&fit=crop" alt="Hill's Sensitive" loading="lazy"><div class="store-tag">Novedad</div></div>
+                <div class="store-info"><div class="store-brand">Hill's</div><div class="store-name">Science Plan Sensitive 12kg</div><div class="store-price"><span class="current">58.90€</span></div><button class="store-btn">Añadir al carrito</button></div>
+            </article>
+            <article class="store-item reveal" data-cat="accesorios" data-id="4" data-brand="Trixie" data-name="Correa retráctil 5m" data-price="18.90" data-img="https://images.unsplash.com/photo-1601758282760-b6cc3d07523d?w=400&h=400&fit=crop">
+                <div class="store-img"><img src="https://images.unsplash.com/photo-1601758282760-b6cc3d07523d?w=400&h=400&fit=crop" alt="Correa retráctil" loading="lazy"></div>
+                <div class="store-info"><div class="store-brand">Trixie</div><div class="store-name">Correa retráctil 5m</div><div class="store-price"><span class="current">18.90€</span></div><button class="store-btn">Añadir al carrito</button></div>
+            </article>
+            <article class="store-item reveal" data-cat="higiene" data-id="5" data-brand="Dermoscent" data-name="Shampoo Essential 6" data-price="14.50" data-img="https://images.unsplash.com/photo-1516756952154-6f7e0e4d3e05?w=400&h=400&fit=crop">
+                <div class="store-img"><img src="https://images.unsplash.com/photo-1516756952154-6f7e0e4d3e05?w=400&h=400&fit=crop" alt="Shampoo medicado" loading="lazy"></div>
+                <div class="store-info"><div class="store-brand">Dermoscent</div><div class="store-name">Shampoo Essential 6</div><div class="store-price"><span class="current">14.50€</span></div><button class="store-btn">Añadir al carrito</button></div>
+            </article>
+            <article class="store-item reveal" data-cat="juguetes" data-id="6" data-brand="Nylabone" data-name="Pelota Dental Large" data-price="9.90" data-img="https://images.unsplash.com/photo-1535294435445-d7249b8f7b8f?w=400&h=400&fit=crop">
+                <div class="store-img"><img src="https://images.unsplash.com/photo-1535294435445-d7249b8f7b8f?w=400&h=400&fit=crop" alt="Pelota resistente" loading="lazy"></div>
+                <div class="store-info"><div class="store-brand">Nylabone</div><div class="store-name">Pelota Dental Large</div><div class="store-price"><span class="current">9.90€</span></div><button class="store-btn">Añadir al carrito</button></div>
+            </article>
+            <article class="store-item reveal" data-cat="alimento" data-id="7" data-brand="Applaws" data-name="Paté Pollo & Atún 6x70g" data-price="8.90" data-img="https://images.unsplash.com/photo-1596854407944-bf87f6fdd49e?w=400&h=400&fit=crop">
+                <div class="store-img"><img src="https://images.unsplash.com/photo-1596854407944-bf87f6fdd49e?w=400&h=400&fit=crop" alt="Comida húmeda gato" loading="lazy"><div class="store-tag">-20%</div></div>
+                <div class="store-info"><div class="store-brand">Applaws</div><div class="store-name">Paté Pollo & Atún 6x70g</div><div class="store-price"><span class="current">8.90€</span><span class="original">11.13€</span></div><button class="store-btn">Añadir al carrito</button></div>
+            </article>
+            <article class="store-item reveal" data-cat="accesorios" data-id="8" data-brand="Trixie" data-name="Cama Orthopédica XL" data-price="45.90" data-img="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=400&h=400&fit=crop">
+                <div class="store-img"><img src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=400&h=400&fit=crop" alt="Cama orthopédica" loading="lazy"></div>
+                <div class="store-info"><div class="store-brand">Trixie</div><div class="store-name">Cama Orthopédica XL</div><div class="store-price"><span class="current">45.90€</span></div><button class="store-btn">Añadir al carrito</button></div>
+            </article>
+            <article class="store-item reveal" data-cat="alimento" data-id="9" data-brand="Advance" data-name="Adult Medium Chicken 15kg" data-price="39.90" data-img="https://images.unsplash.com/photo-1615497001839-b0a0eac3274c?w=400&h=400&fit=crop">
+                <div class="store-img"><img src="https://images.unsplash.com/photo-1615497001839-b0a0eac3274c?w=400&h=400&fit=crop" alt="Advance" loading="lazy"></div>
+                <div class="store-info"><div class="store-brand">Advance</div><div class="store-name">Adult Medium Chicken 15kg</div><div class="store-price"><span class="current">39.90€</span></div><button class="store-btn">Añadir al carrito</button></div>
+            </article>
+            <article class="store-item reveal" data-cat="higiene" data-id="10" data-brand="Beaphar" data-name="Spray Antipulgas" data-price="11.90" data-img="https://images.unsplash.com/photo-1583337130417-13104dec14a3?w=400&h=400&fit=crop">
+                <div class="store-img"><img src="https://images.unsplash.com/photo-1583337130417-13104dec14a3?w=400&h=400&fit=crop" alt="Antipulgas" loading="lazy"></div>
+                <div class="store-info"><div class="store-brand">Beaphar</div><div class="store-name">Spray Antipulgas 250ml</div><div class="store-price"><span class="current">11.90€</span></div><button class="store-btn">Añadir al carrito</button></div>
+            </article>
+            <article class="store-item reveal" data-cat="juguetes" data-id="11" data-brand="Flamingo" data-name="Cuerda con nudos" data-price="7.50" data-img="https://images.unsplash.com/photo-1575425186775-e2e038070394?w=400&h=400&fit=crop">
+                <div class="store-img"><img src="https://images.unsplash.com/photo-1575425186775-e2e038070394?w=400&h=400&fit=crop" alt="Cuerda juguete" loading="lazy"></div>
+                <div class="store-info"><div class="store-brand">Flamingo</div><div class="store-name">Cuerda con nudos 40cm</div><div class="store-price"><span class="current">7.50€</span></div><button class="store-btn">Añadir al carrito</button></div>
+            </article>
+            <article class="store-item reveal" data-cat="accesorios" data-id="12" data-brand="Trixie" data-name="Comedero doble inox" data-price="22.90" data-img="https://images.unsplash.com/photo-1601758124510-52d02ddb7cbd?w=400&h=400&fit=crop">
+                <div class="store-img"><img src="https://images.unsplash.com/photo-1601758124510-52d02ddb7cbd?w=400&h=400&fit=crop" alt="Comedero" loading="lazy"></div>
+                <div class="store-info"><div class="store-brand">Trixie</div><div class="store-name">Comedero doble inox 2x350ml</div><div class="store-price"><span class="current">22.90€</span></div><button class="store-btn">Añadir al carrito</button></div>
+            </article>
+        </div>
+        <div class="store-empty" id="storeEmpty">
+            <div class="store-empty-icon">🔍</div>
+            <p>No se encontraron productos en esta categoría.</p>
+        </div>
+    </div>
+</section>
+
+<div class="cart-overlay" id="cartOverlay"></div>
+<div class="cart-sidebar" id="cartSidebar">
+    <div class="cart-header"><h3>🛒 Tu Carrito</h3><button class="cart-close" id="cartClose">✕</button></div>
+    <div class="cart-items" id="cartItems"><div class="cart-empty" id="cartEmpty"><div class="cart-empty-icon">🛒</div><p>Tu carrito está vacío</p></div></div>
+    <div class="cart-footer" id="cartFooter" style="display:none">
+        <div class="cart-subtotal"><span>Subtotal</span><strong id="cartTotal">0.00€</strong></div>
+        <div class="cart-shipping">Envío gratuito en pedidos superiores a 40€</div>
+        <button class="cart-checkout" id="checkoutBtn">Finalizar Compra →</button>
+        <button class="cart-continue" id="continueBtn">← Seguir comprando</button>
+    </div>
+</div>
+
+<div class="vetbot-overlay" id="vetbotOverlay">
+    <div class="vetbot-modal" id="vetbotModal">
+        <div class="vetbot-header">
+            <div><h3>💬 Asistente Virtual</h3><p>Clínica Veterinaria San José</p></div>
+            <button class="vetbot-close" id="vetbotClose">✕</button>
+        </div>
+        <div class="vetbot-body">
+            <div class="vetbot-status"><div class="vetbot-status-dot"></div><span><strong>VetBot en línea</strong> · Responde al instante</span></div>
+            <div class="vetbot-chat" id="vetbotChat">
+                <div class="vetbot-msg vetbot-msg--bot">¡Hola! Soy el asistente virtual de la Clínica Veterinaria San José. ¿En qué puedo ayudarte hoy?</div>
+            </div>
+            <div class="vetbot-input-group">
+                <input type="text" class="vetbot-input" id="vetbotInput" placeholder="Escribe tu mensaje...">
+                <button class="vetbot-send" id="vetbotSend">→</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="footer">
+    <div class="container">
+        <div class="footer-grid">
+            <div><div class="footer-brand">🐾 Clínica Veterinaria San José</div><p class="footer-desc">Más de 15 años cuidando las mascotas de San José de La Rinconada.</p></div>
+            <div class="footer-col"><h4>Servicios</h4><ul><li><a href="servicios.html">Consulta General</a></li><li><a href="servicios.html">Vacunación</a></li><li><a href="servicios.html">Cirugía</a></li><li><a href="servicios.html">Terapias Alternativas</a></li></ul></div>
+            <div class="footer-col"><h4>Clínica</h4><ul><li><a href="nosotros.html">Sobre nosotros</a></li><li><a href="resenas.html">Reseñas Google</a></li><li><a href="contacto.html">Contacto</a></li></ul></div>
+            <div class="footer-col"><h4>Contacto</h4><ul><li><a href="tel:955321470">955 321 470</a></li></ul></div>
+        </div>
+        <div class="footer-bottom"><span>&copy; 2026 Clínica Veterinaria San José.</span><span><a href="#">Política de Privacidad</a> · <a href="#">Aviso Legal</a></span></div>
+    </div>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>

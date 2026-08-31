@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Servicios | Clínica Veterinaria San José</title>
+    <meta name="description" content="Consulta, vacunación, cirugía, laboratorio, terapias alternativas y más. Todo lo que tu mascota necesita bajo un mismo techo.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .svc-detail{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;padding:48px 0;border-bottom:1px solid var(--gray200)}
+        .svc-detail:last-child{border:none}
+        .svc-detail.reverse{direction:rtl}.svc-detail.reverse>*{direction:ltr}
+        .svc-detail-img{border-radius:var(--r-xl);overflow:hidden;box-shadow:var(--sh-md)}
+        .svc-detail-img img{width:100%;aspect-ratio:16/10;object-fit:cover;display:block}
+        .svc-detail h3{font-size:1.5rem;margin-bottom:12px;color:var(--charcoal)}
+        .svc-detail p{color:var(--gray700);line-height:1.8;margin-bottom:20px}
+        .svc-detail-list{list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:24px}
+        .svc-detail-list li{display:flex;align-items:center;gap:10px;font-size:.88rem;color:var(--gray700)}
+        .svc-detail-list li::before{content:'✓';color:var(--forest);font-weight:700}
+        @media(max-width:768px){.svc-detail{grid-template-columns:1fr}.svc-detail.reverse{direction:ltr}}
+    </style>
+</head>
+<body>
+
+<nav class="nav" id="mainNav">
+    <div class="container">
+        <a href="index.html" class="nav-logo"><img src="img/clinica-02.jpeg" alt="San José Logo" style="height:40px;width:40px;border-radius:50%;object-fit:cover"><div class="nav-logo-text">San José</div></a>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="index.html">Inicio</a></li>
+            <li><a href="nosotros.html">Nosotros</a></li>
+            <li><a href="servicios.html" class="active">Servicios</a></li>
+            <li><a href="planes.html">Planes</a></li>
+            <li><a href="tienda.html">Tienda</a></li>
+            <li><a href="resenas.html">Reseñas</a></li>
+            <li><a href="contacto.html">Contacto</a></li>
+            <li><a href="tel:955321470" class="nav-cta">☎ 955 321 470</a></li>
+        </ul>
+        <div class="nav-right">
+            <button class="cart-btn" id="cartBtn" aria-label="Carrito"><span class="cart-btn-icon">🛒</span><span class="cart-btn-text">Carrito</span><span class="cart-badge" id="cartBadge">0</span></button>
+            <button class="nav-toggle" id="navToggle" aria-label="Menú"><span></span><span></span><span></span></button>
+        </div>
+    </div>
+</nav>
+
+<div class="page-header">
+    <div class="container">
+        <div class="section-label">Servicios</div>
+        <h1>Todo lo que tu mascota necesita,<br>bajo un mismo techo</h1>
+        <p>Desde una simple vacuna hasta cirugías complejas. Contamos con los mejores equipos y un equipo humano que se preocupa de verdad.</p>
+    </div>
+</div>
+
+<section class="section" style="background:var(--white)">
+    <div class="container">
+        <div class="svc-detail">
+            <div class="svc-detail-img"><img src="img/clinica-07.jpeg" alt="Consulta veterinaria" loading="lazy"></div>
+            <div>
+                <h3>🩺 Consulta General</h3>
+                <p>Revisiones completas, diagnóstico y tratamiento personalizado para cada etapa de la vida de tu mascota. Desde cachorros hasta pacientes geriátricos.</p>
+                <ul class="svc-detail-list">
+                    <li>Revisiones generales y periódicas</li>
+                    <li>Diagnóstico clínico completo</li>
+                    <li>Planes de tratamiento personalizados</li>
+                    <li>Asesoramiento nutricional</li>
+                    <li>Control de peso y desarrollo</li>
+                </ul>
+                <a href="#vetbot" class="btn btn-forest vetbot-trigger">Solicitar cita →</a>
+            </div>
+        </div>
+        <div class="svc-detail reverse">
+            <div class="svc-detail-img"><img src="img/clinica-05.jpeg" alt="Vacunación" loading="lazy"></div>
+            <div>
+                <h3>💉 Vacunación y Prevención</h3>
+                <p>Planes de vacunación adaptados a especie, estilo de zona y estilo de vida. Prevención de parásitos internos y externos todo el año.</p>
+                <ul class="svc-detail-list">
+                    <li>Vacunas obligatorias y opcionales</li>
+                    <li>Desparasitación interna y externa</li>
+                    <li>Tratamiento antiparasitario preventivo</li>
+                    <li>Microchip de identificación</li>
+                    <li>Pasaporte europeo para mascotas</li>
+                </ul>
+                <a href="#vetbot" class="btn btn-forest vetbot-trigger">Solicitar cita →</a>
+            </div>
+        </div>
+        <div class="svc-detail">
+            <div class="svc-detail-img"><img src="img/clinica-11.jpeg" alt="Cirugía veterinaria" loading="lazy"></div>
+            <div>
+                <h3>⚕️ Cirugía</h3>
+                <p>Cirugía de tejido blando, traumatología, laparoscopia y más. Anestesia inhalatoria con monitorización continua para máxima seguridad.</p>
+                <ul class="svc-detail-list">
+                    <li>Cirugía ortopédica y de tejido blando</li>
+                    <li>Esterilizaciones (macho y hembra)</li>
+                    <li>Laparoscopia minimamente invasiva</li>
+                    <li>Anestesia inhalatoria con monitorización</li>
+                    <li>Cirugía de emergencia 24 horas</li>
+                </ul>
+                <a href="#vetbot" class="btn btn-forest vetbot-trigger">Solicitar cita →</a>
+            </div>
+        </div>
+        <div class="svc-detail reverse">
+            <div class="svc-detail-img"><img src="img/clinica-12.jpeg" alt="Laboratorio" loading="lazy"></div>
+            <div>
+                <h3>🔬 Laboratorio y Diagnóstico</h3>
+                <p>Laboratorio propio con capacidad de análisis completos. Resultados rápidos y fiables para un diagnóstico preciso.</p>
+                <ul class="svc-detail-list">
+                    <li>Hematología completa</li>
+                    <li>Bioquímica sanguínea</li>
+                    <li>Análisis de orina y heces</li>
+                    <li>Ecocardiograma</li>
+                    <li>Radiografías digitales</li>
+                </ul>
+                <a href="#vetbot" class="btn btn-forest vetbot-trigger">Solicitar cita →</a>
+            </div>
+        </div>
+        <div class="svc-detail">
+            <div class="svc-detail-img"><img src="img/clinica-09.jpeg" alt="Terapias alternativas" loading="lazy"></div>
+            <div>
+                <h3>🌿 Terapias Alternativas</h3>
+                <p>Ozonoterapia, acupuntura y otras terapias complementarias para mejorar la salud y bienestar de tu mascota con tratamientos no invasivos y naturales.</p>
+                <ul class="svc-detail-list">
+                    <li>Ozonoterapia (OXI3) — antiinflamatorio y regenerativo</li>
+                    <li>Acupuntura veterinaria para dolor crónico</li>
+                    <li>Fisioterapia y rehabilitación</li>
+                    <li>Medicina ortomolecular</li>
+                    <li>Tratamientos complementarios oncológicos</li>
+                </ul>
+                <a href="#vetbot" class="btn btn-forest vetbot-trigger">Solicitar cita →</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="cart-overlay" id="cartOverlay"></div>
+<div class="cart-sidebar" id="cartSidebar">
+    <div class="cart-header"><h3>🛒 Tu Carrito</h3><button class="cart-close" id="cartClose">✕</button></div>
+    <div class="cart-items" id="cartItems"><div class="cart-empty" id="cartEmpty"><div class="cart-empty-icon">🛒</div><p>Tu carrito está vacío</p></div></div>
+    <div class="cart-footer" id="cartFooter" style="display:none">
+        <div class="cart-subtotal"><span>Subtotal</span><strong id="cartTotal">0.00€</strong></div>
+        <div class="cart-shipping">Envío gratuito en pedidos superiores a 40€</div>
+        <button class="cart-checkout" id="checkoutBtn">Finalizar Compra →</button>
+        <button class="cart-continue" id="continueBtn">← Seguir comprando</button>
+    </div>
+</div>
+
+<div class="vetbot-overlay" id="vetbotOverlay">
+    <div class="vetbot-modal" id="vetbotModal">
+        <div class="vetbot-header">
+            <div><h3>💬 Asistente Virtual</h3><p>Clínica Veterinaria San José</p></div>
+            <button class="vetbot-close" id="vetbotClose">✕</button>
+        </div>
+        <div class="vetbot-body">
+            <div class="vetbot-status"><div class="vetbot-status-dot"></div><span><strong>VetBot en línea</strong> · Responde al instante</span></div>
+            <div class="vetbot-chat" id="vetbotChat">
+                <div class="vetbot-msg vetbot-msg--bot">¡Hola! Soy el asistente virtual de la Clínica Veterinaria San José. ¿En qué puedo ayudarte hoy?</div>
+            </div>
+            <div class="vetbot-input-group">
+                <input type="text" class="vetbot-input" id="vetbotInput" placeholder="Escribe tu mensaje...">
+                <button class="vetbot-send" id="vetbotSend">→</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="footer">
+    <div class="container">
+        <div class="footer-grid">
+            <div><div class="footer-brand">🐾 Clínica Veterinaria San José</div><p class="footer-desc">Más de 15 años cuidando las mascotas de San José de La Rinconada.</p></div>
+            <div class="footer-col"><h4>Servicios</h4><ul><li><a href="servicios.html">Consulta General</a></li><li><a href="servicios.html">Vacunación</a></li><li><a href="servicios.html">Cirugía</a></li><li><a href="servicios.html">Terapias Alternativas</a></li></ul></div>
+            <div class="footer-col"><h4>Clínica</h4><ul><li><a href="nosotros.html">Sobre nosotros</a></li><li><a href="resenas.html">Reseñas Google</a></li><li><a href="contacto.html">Contacto</a></li></ul></div>
+            <div class="footer-col"><h4>Contacto</h4><ul><li><a href="tel:955321470">955 321 470</a></li></ul></div>
+        </div>
+        <div class="footer-bottom"><span>&copy; 2026 Clínica Veterinaria San José.</span><span><a href="#">Política de Privacidad</a> · <a href="#">Aviso Legal</a></span></div>
+    </div>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>

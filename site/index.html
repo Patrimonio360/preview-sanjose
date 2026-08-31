@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clínica Veterinaria San José | La Rinconada, Sevilla</title>
+    <meta name="description" content="Clínica Veterinaria San José en La Rinconada, Sevilla. Cirugía, vacunas, terapias alternativas. Dra. Paula Canalias. ☎ 955 321 470">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .hero{min-height:100vh;display:flex;align-items:center;position:relative;overflow:hidden;background:var(--forest)}
+        .hero-bg{position:absolute;inset:0;background:url('img/clinica-08.jpeg') center/cover no-repeat}
+        .hero-bg::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(26,60,42,.90) 0%,rgba(45,107,69,.80) 50%,rgba(107,155,122,.70) 100%)}
+        .hero .container{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;padding:140px 0 100px}
+        .hero-content{max-width:560px}
+        .hero-pill{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.1);backdrop-filter:blur(10px);padding:8px 18px;border-radius:50px;border:1px solid rgba(255,255,255,.12);margin-bottom:28px}
+        .hero-pill-dot{width:8px;height:8px;background:#4ADE80;border-radius:50%;animation:pulse-dot 2s infinite;box-shadow:0 0 6px rgba(74,222,128,.5)}
+        @keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:.4}}
+        .hero-pill span{font-size:.78rem;font-weight:600;color:rgba(255,255,255,.9)}
+        .hero h1{font-size:clamp(2.5rem,5vw,4rem);color:var(--white);margin-bottom:20px}
+        .hero h1 em{font-style:normal;color:var(--coral-light);text-decoration:underline;text-decoration-color:rgba(212,118,78,.4);text-underline-offset:6px}
+        .hero-desc{font-size:1.1rem;color:rgba(255,255,255,.7);line-height:1.75;margin-bottom:36px}
+        .hero-actions{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:48px}
+        .hero-stats{display:flex;gap:36px;padding-top:32px;border-top:1px solid rgba(255,255,255,.1)}
+        .hero-stat strong{display:block;font-size:1.8rem;color:var(--white);font-family:'Fraunces',serif}
+        .hero-stat span{font-size:.8rem;color:rgba(255,255,255,.6)}
+        .hero-visual{position:relative;display:flex;justify-content:center}
+        .hero-img{width:100%;max-width:420px;aspect-ratio:3/4;border-radius:var(--r-xl);overflow:hidden;box-shadow:var(--sh-xl)}
+        .hero-img img{width:100%;height:100%;object-fit:cover;display:block}
+        .hero-card{position:absolute;background:var(--white);border-radius:var(--r);padding:14px 18px;box-shadow:var(--sh-lg);display:flex;align-items:center;gap:12px;animation:float 5s ease-in-out infinite}
+        .hero-card--1{bottom:50px;left:-20px}
+        .hero-card--2{top:60px;right:-15px;animation-delay:2.5s}
+        @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+        .hero-card-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+        .hero-card-text strong{display:block;font-size:.82rem;color:var(--charcoal)}
+        .hero-card-text span{font-size:.72rem;color:var(--gray500)}
+        .trust{background:var(--white);border-bottom:1px solid var(--gray200);padding:36px 0}
+        .trust .container{display:flex;align-items:center;justify-content:space-between;gap:32px;flex-wrap:wrap}
+        .trust-item{display:flex;align-items:center;gap:10px}
+        .trust-icon{width:42px;height:42px;background:var(--sage-pale);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+        .trust-item strong{display:block;font-size:.85rem;color:var(--charcoal)}
+        .trust-item span{font-size:.75rem;color:var(--gray500)}
+        .home-section{padding:100px 0}
+        @media(max-width:1024px){.hero .container{grid-template-columns:1fr;gap:48px}.hero-visual{order:-1}.hero-img{max-width:360px;margin:0 auto}}
+        @media(max-width:768px){.hero{min-height:auto;padding:100px 0 60px}.hero-actions{flex-direction:column}.btn{width:100%;justify-content:center}.hero-stats{flex-direction:column;gap:20px}.hero-card{display:none}}
+    </style>
+</head>
+<body>
+
+<nav class="nav" id="mainNav">
+    <div class="container">
+        <a href="index.html" class="nav-logo">
+            <img src="img/clinica-02.jpeg" alt="San José Logo" style="height:40px;width:40px;border-radius:50%;object-fit:cover">
+            <div class="nav-logo-text">San José</div>
+        </a>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="index.html" class="active">Inicio</a></li>
+            <li><a href="nosotros.html">Nosotros</a></li>
+            <li><a href="servicios.html">Servicios</a></li>
+            <li><a href="planes.html">Planes</a></li>
+            <li><a href="tienda.html">Tienda</a></li>
+            <li><a href="resenas.html">Reseñas</a></li>
+            <li><a href="contacto.html">Contacto</a></li>
+            <li><a href="tel:955321470" class="nav-cta">☎ 955 321 470</a></li>
+        </ul>
+        <div class="nav-right">
+            <button class="cart-btn" id="cartBtn" aria-label="Carrito">
+                <span class="cart-btn-icon">🛒</span>
+                <span class="cart-btn-text">Carrito</span>
+                <span class="cart-badge" id="cartBadge">0</span>
+            </button>
+            <button class="nav-toggle" id="navToggle" aria-label="Menú"><span></span><span></span><span></span></button>
+        </div>
+    </div>
+</nav>
+
+<section class="hero">
+    <div class="hero-bg"></div>
+    <div class="container">
+        <div class="hero-content">
+            <div class="hero-pill"><div class="hero-pill-dot"></div><span>L-V 10:00-21:00 · Sáb 10:00-13:30</span></div>
+            <h1>Tu mascota merece <em>el mejor cuidado</em></h1>
+            <p class="hero-desc">Más de 15 años cuidando las mascotas de La Rinconada y alrededores. Instalaciones modernas, equipo cualificado y un trato que se nota.</p>
+            <div class="hero-actions">
+                <a href="#vetbot" class="btn btn-coral vetbot-trigger">💬 Solicitar Cita</a>
+                <a href="servicios.html" class="btn btn-ghost" style="background:rgba(255,255,255,.08);color:var(--white);border:1.5px solid rgba(255,255,255,.2)">Ver servicios →</a>
+            </div>
+            <div class="hero-stats">
+                <div class="hero-stat"><strong>4.7 ★</strong><span>186 reseñas Google</span></div>
+                <div class="hero-stat"><strong>15+</strong><span>Años de experiencia</span></div>
+                <div class="hero-stat"><strong>100%</strong><span>Compromiso</span></div>
+            </div>
+        </div>
+        <div class="hero-visual">
+            <div class="hero-img"><img src="img/clinica-04.jpeg" alt="Dra. Paula Canalias - Clínica Veterinaria San José" width="420" height="560" loading="eager"></div>
+            <div class="hero-card hero-card--1"><div class="hero-card-icon" style="background:#E8F5E9">✅</div><div class="hero-card-text"><strong>4.7 en Google</strong><span>186 reseñas verificadas</span></div></div>
+            <div class="hero-card hero-card--2"><div class="hero-card-icon" style="background:#FFF3E0">👩‍⚕️</div><div class="hero-card-text"><strong>Dra. Paula Canalias</strong><span>Directora · Veterinaria</span></div></div>
+        </div>
+    </div>
+</section>
+
+<div class="trust">
+    <div class="container">
+        <div class="trust-item"><div class="trust-icon">🏆</div><div><strong>15+ años</strong><span>de experiencia</span></div></div>
+        <div class="trust-item"><div class="trust-icon">👩‍⚕️</div><div><strong>Dra. Paula Canalias</strong><span>Directora · MVTC · CCRP</span></div></div>
+        <div class="trust-item"><div class="trust-icon">🔬</div><div><strong>Laboratorio propio</strong><span>Resultados rápidos</span></div></div>
+        <div class="trust-item"><div class="trust-icon">♿</div><div><strong>Accesible</strong><span>Silla de ruedas</span></div></div>
+    </div>
+</div>
+
+<section class="home-section" style="background:var(--cream)">
+    <div class="container">
+        <div style="text-align:center;margin-bottom:60px">
+            <div class="section-label">Servicios</div>
+            <h2 class="section-title">Todo lo que tu mascota necesita</h2>
+            <p class="section-desc mx-auto">Desde una simple vacuna hasta cirugías complejas. Contamos con los mejores equipos.</p>
+        </div>
+        <div class="svc-grid">
+            <a href="servicios.html" class="svc reveal" style="text-decoration:none"><div class="svc-icon">🩺</div><h3>Consulta General</h3><p>Revisiones completas y diagnóstico personalizado.</p></a>
+            <a href="servicios.html" class="svc reveal" style="text-decoration:none"><div class="svc-icon">💉</div><h3>Vacunación</h3><p>Planes de vacunación adaptados a cada mascota.</p></a>
+            <a href="servicios.html" class="svc reveal" style="text-decoration:none"><div class="svc-icon">⚕️</div><h3>Cirugía</h3><p>Anestesia inhalatoria con monitorización continua.</p></a>
+            <a href="servicios.html" class="svc reveal" style="text-decoration:none"><div class="svc-icon">🦷</div><h3>Dental</h3><p>Limpieza de sarro y tratamientos dentales.</p></a>
+            <a href="servicios.html" class="svc reveal" style="text-decoration:none"><div class="svc-icon">🔬</div><h3>Laboratorio</h3><p>Análisis de sangre, orina y heces.</p></a>
+            <a href="servicios.html" class="svc reveal" style="text-decoration:none"><div class="svc-icon">📸</div><h3>Imagen</h3><p>Radiografías y ecografías.</p></a>
+            <a href="servicios.html" class="svc reveal" style="text-decoration:none"><div class="svc-icon">🌿</div><h3>Terapias Alternativas</h3><p>Ozonoterapia, acupuntura y más.</p></a>
+        </div>
+        <div style="text-align:center;margin-top:40px">
+            <a href="servicios.html" class="btn btn-forest">Ver todos los servicios →</a>
+        </div>
+    </div>
+</section>
+
+<section class="home-section">
+    <div class="container">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center">
+            <div>
+                <div class="section-label">Sobre Nosotros</div>
+                <h2 class="section-title">Un equipo que de verdad ama lo que hace</h2>
+                <p class="about-text">La Dra. Paula Canalias, directora y especialista en pequeños animales con más de 18 años de experiencia, lidera un equipo con una obsesión: que tu mascota reciba exactamente lo que necesita.</p>
+                <a href="nosotros.html" class="btn btn-forest">Conoce al equipo →</a>
+            </div>
+            <div class="about-img" style="box-shadow:var(--sh-lg);border-radius:var(--r-xl);overflow:hidden">
+                <img src="img/clinica-01.jpeg" alt="Clínica Veterinaria San José" width="500" height="625" loading="lazy">
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="home-section" style="background:var(--cream)">
+    <div class="container text-center">
+        <div class="section-label">Planes de Salud</div>
+        <h2 class="section-title">Cuidado preventivo a tu medida</h2>
+        <p class="section-desc mx-auto">Elige el plan que mejor se adapte a tu mascota. Ahorra hasta un 30% respecto a pagar por separado.</p>
+        <div style="margin-top:32px">
+            <a href="planes.html" class="btn btn-coral">Ver planes →</a>
+        </div>
+    </div>
+</section>
+
+<div class="cart-overlay" id="cartOverlay"></div>
+<div class="cart-sidebar" id="cartSidebar">
+    <div class="cart-header"><h3>🛒 Tu Carrito</h3><button class="cart-close" id="cartClose">✕</button></div>
+    <div class="cart-items" id="cartItems"><div class="cart-empty" id="cartEmpty"><div class="cart-empty-icon">🛒</div><p>Tu carrito está vacío</p></div></div>
+    <div class="cart-footer" id="cartFooter" style="display:none">
+        <div class="cart-subtotal"><span>Subtotal</span><strong id="cartTotal">0.00€</strong></div>
+        <div class="cart-shipping">Envío gratuito en pedidos superiores a 40€</div>
+        <button class="cart-checkout" id="checkoutBtn">Finalizar Compra →</button>
+        <button class="cart-continue" id="continueBtn">← Seguir comprando</button>
+    </div>
+</div>
+
+<div class="vetbot-overlay" id="vetbotOverlay">
+    <div class="vetbot-modal" id="vetbotModal">
+        <div class="vetbot-header">
+            <div><h3>💬 Asistente Virtual</h3><p>Clínica Veterinaria San José</p></div>
+            <button class="vetbot-close" id="vetbotClose">✕</button>
+        </div>
+        <div class="vetbot-body">
+            <div class="vetbot-status"><div class="vetbot-status-dot"></div><span><strong>VetBot en línea</strong> · Responde al instante</span></div>
+            <div class="vetbot-chat" id="vetbotChat">
+                <div class="vetbot-msg vetbot-msg--bot">¡Hola! Soy el asistente virtual de la Clínica Veterinaria San José. ¿En qué puedo ayudarte hoy?</div>
+            </div>
+            <div class="vetbot-input-group">
+                <input type="text" class="vetbot-input" id="vetbotInput" placeholder="Escribe tu mensaje...">
+                <button class="vetbot-send" id="vetbotSend">→</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="footer">
+    <div class="container">
+        <div class="footer-grid">
+            <div>
+                <div class="footer-brand">🐾 Clínica Veterinaria San José</div>
+                <p class="footer-desc">Más de 15 años cuidando las mascotas de San José de La Rinconada y alrededores.</p>
+                <div class="footer-social">
+                    <a href="https://www.facebook.com/CVetSanJose" target="_blank" rel="noopener">📘</a>
+                    <a href="https://www.instagram.com/explore/locations/1748035125485259/clinica-san-jose-pagina-oficial/" target="_blank" rel="noopener">📷</a>
+                </div>
+            </div>
+            <div class="footer-col"><h4>Servicios</h4><ul><li><a href="servicios.html">Consulta General</a></li><li><a href="servicios.html">Vacunación</a></li><li><a href="servicios.html">Cirugía</a></li><li><a href="servicios.html">Terapias Alternativas</a></li></ul></div>
+            <div class="footer-col"><h4>Clínica</h4><ul><li><a href="nosotros.html">Sobre nosotros</a></li><li><a href="resenas.html">Reseñas Google</a></li><li><a href="contacto.html">Contacto</a></li></ul></div>
+            <div class="footer-col"><h4>Contacto</h4><ul><li><a href="tel:955321470">955 321 470</a></li><li><a href="mailto:sanjose.clinicaveterinaria@gmail.com">Email</a></li></ul></div>
+        </div>
+        <div class="footer-bottom">
+            <span>&copy; 2026 Clínica Veterinaria San José. Todos los derechos reservados.</span>
+            <span><a href="#">Política de Privacidad</a> · <a href="#">Aviso Legal</a></span>
+        </div>
+    </div>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>
