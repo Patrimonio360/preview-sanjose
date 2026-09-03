@@ -14,7 +14,7 @@ collections:
     label: "Productos"
     folder: "_data/products"
     create: true
-    slug: "{{id}}-{{slug}}"
+    slug: "{{id}}"
     fields:
       - { label: "ID", name: "id", widget: "number" }
       - { label: "Marca", name: "brand", widget: "string" }
@@ -28,7 +28,17 @@ collections:
           - { label: "Juguetes", value: "juguetes" }
           - { label: "Accesorios", value: "accesorios" }
           - { label: "Higiene", value: "higiene" }
-      - { label: "Imagen URL", name: "image", widget: "string", required: false }
+      - label: "Imágenes"
+        name: "images"
+        widget: "list"
+        required: false
+        field:
+          label: "Imagen"
+          name: "image"
+          widget: "object"
+          fields:
+            - { label: "URL", name: "url", widget: "string" }
+            - { label: "Texto alternativo", name: "alt", widget: "string", required: false }
       - { label: "Etiqueta", name: "tag", widget: "string", required: false }
       - { label: "Descripción", name: "description", widget: "text" }
 
@@ -36,7 +46,7 @@ collections:
     label: "Servicios"
     folder: "_data/services"
     create: true
-    slug: "{{id}}-{{slug}}"
+    slug: "{{id}}"
     fields:
       - { label: "ID", name: "id", widget: "number" }
       - { label: "Nombre", name: "name", widget: "string" }
@@ -52,6 +62,30 @@ collections:
           name: "feature"
           widget: "string"
 
+  - name: "plans"
+    label: "Planes de Salud"
+    folder: "_data/plans"
+    create: true
+    slug: "{{id}}"
+    fields:
+      - { label: "ID", name: "id", widget: "number" }
+      - { label: "Nombre", name: "name", widget: "string" }
+      - { label: "Icono", name: "icon", widget: "string" }
+      - { label: "Descripción", name: "description", widget: "string" }
+      - { label: "Precio (€/mes)", name: "price", widget: "number", value_type: "float" }
+      - { label: "Periodo", name: "period", widget: "string" }
+      - { label: "Ahorro", name: "savings", widget: "string", required: false }
+      - { label: "Badge", name: "badge", widget: "string", required: false }
+      - label: "Características"
+        name: "features"
+        widget: "list"
+        field:
+          label: "Característica"
+          name: "feature"
+          widget: "string"
+      - { label: "Color icono", name: "iconBg", widget: "string", required: false }
+      - { label: "Destacado", name: "featured", widget: "boolean", default: false }
+
   - name: "settings"
     label: "Ajustes"
     files:
@@ -65,15 +99,15 @@ collections:
           - { label: "Email", name: "email", widget: "string" }
           - { label: "Horario", name: "hours", widget: "string" }
 
-      - label: "Colores"
+      - label: "Colores del Sitio"
         name: "colors"
         file: "_data/colors.json"
         fields:
-          - { label: "Color Primario", name: "primary", widget: "color" }
-          - { label: "Primario Claro", name: "primaryLight", widget: "color" }
-          - { label: "Sage (verde suave)", name: "sage", widget: "color" }
-          - { label: "Coral (acento)", name: "coral", widget: "color" }
-          - { label: "Coral Oscuro", name: "coralDark", widget: "color" }
-          - { label: "Fondo (crema)", name: "cream", widget: "color" }
-          - { label: "Texto (carbón)", name: "charcoal", widget: "color" }
-          - { label: "Blanco", name: "white", widget: "color" }
+          - { label: "Color Primario (botones, nav)", name: "primary", widget: "color" }
+          - { label: "Primario Claro (hover)", name: "primaryLight", widget: "color" }
+          - { label: "Sage (bordes, iconos)", name: "sage", widget: "color" }
+          - { label: "Coral (acentos, CTAs)", name: "coral", widget: "color" }
+          - { label: "Coral Oscuro (hover CTA)", name: "coralDark", widget: "color" }
+          - { label: "Fondo General", name: "cream", widget: "color" }
+          - { label: "Texto Principal", name: "charcoal", widget: "color" }
+          - { label: "Blanco (tarjetas)", name: "white", widget: "color" }

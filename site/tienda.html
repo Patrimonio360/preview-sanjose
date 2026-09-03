@@ -98,12 +98,15 @@
 CMS.fetchFolder('_data/products')
     .then(products => {
         const grid = document.getElementById('storeGrid');
-        grid.innerHTML = products.map(p => `
-            <article class="store-item reveal" data-cat="${p.category}" data-id="${p.id}" data-brand="${p.brand}" data-name="${p.name}" data-price="${p.price}" data-img="${p.image}">
-                <div class="store-img"><img src="${p.image}" alt="${p.name}" loading="lazy">${p.tag ? `<div class="store-tag">${p.tag}</div>` : ''}</div>
+        grid.innerHTML = products.map(p => {
+            const img = (p.images && p.images[0]) ? p.images[0].url : (p.image || '');
+            const alt = (p.images && p.images[0]) ? (p.images[0].alt || p.name) : p.name;
+            return `
+            <article class="store-item reveal" data-cat="${p.category}" data-id="${p.id}" data-brand="${p.brand}" data-name="${p.name}" data-price="${p.price}" data-img="${img}">
+                <div class="store-img"><img src="${img}" alt="${alt}" loading="lazy">${p.tag ? `<div class="store-tag">${p.tag}</div>` : ''}</div>
                 <div class="store-info"><div class="store-brand">${p.brand}</div><div class="store-name">${p.name}</div><div class="store-price"><span class="current">${p.price.toFixed(2)}€</span></div><button class="store-btn">Añadir al carrito</button></div>
-            </article>
-        `).join('');
+            </article>`;
+        }).join('');
         document.querySelectorAll('.store-btn').forEach(btn => {
             btn.addEventListener('click', function() {
                 const i = this.closest('.store-item');
