@@ -77,6 +77,45 @@
         @keyframes scroll-hint{0%,100%{opacity:.4;transform:translateX(-50%) translateY(0)}50%{opacity:.8;transform:translateX(-50%) translateY(5px)}}
         @media(max-width:1024px){.hero .container{grid-template-columns:1fr;gap:48px;text-align:center}.hero-content{max-width:100%}.hero-sub{margin:0 auto 40px}.hero-btns{justify-content:center}.hero-proof{justify-content:center}.hero-visual{order:-1}.hero-img-wrapper{max-width:360px;margin:0 auto}.hero-float--rating{left:10px;bottom:20px}.hero-float--hours{right:10px;top:30px}}
         @media(max-width:768px){.hero{min-height:auto;padding:120px 0 80px}.hero h1{font-size:2.4rem}.hero-btns{flex-direction:column;align-items:stretch}.hero-btn-primary,.hero-btn-secondary{justify-content:center}.hero-float{display:none}.hero-scroll{display:none}}
+        .plans-home-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+        .plan-home-card{background:var(--white);border-radius:20px;padding:32px 24px;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,.06);transition:all .4s var(--transition-smooth);position:relative;border:2px solid transparent}
+        .plan-home-card:hover{transform:translateY(-6px);box-shadow:0 12px 40px rgba(0,0,0,.1)}
+        .plan-home-card--popular{border-color:var(--coral);transform:scale(1.03)}
+        .plan-home-card--popular:hover{transform:scale(1.03) translateY(-6px)}
+        .plan-home-popular{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--coral);color:var(--white);font-size:.65rem;font-weight:700;padding:4px 14px;border-radius:50px;text-transform:uppercase;letter-spacing:.5px}
+        .plan-home-tag{font-size:.8rem;font-weight:600;color:var(--gray500);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+        .plan-home-price{font-family:'Fraunces',serif;font-size:2.4rem;color:var(--forest);margin-bottom:20px;line-height:1}
+        .plan-home-price small{font-size:.8rem;color:var(--gray500);font-family:'Inter',sans-serif}
+        .plan-home-list{list-style:none;text-align:left;margin-bottom:24px}
+        .plan-home-list li{font-size:.82rem;color:var(--gray700);padding:8px 0;border-bottom:1px solid var(--gray200);display:flex;align-items:center;gap:8px}
+        .plan-home-list li::before{content:'✓';color:var(--forest);font-weight:700;font-size:.75rem}
+        .plan-home-list li:last-child{border:none}
+        .plan-home-btn{display:block;width:100%;padding:12px;border-radius:50px;text-align:center;font-size:.85rem;font-weight:600;text-decoration:none;background:var(--cream);color:var(--forest);border:1.5px solid var(--sage-pale);transition:all .3s var(--transition-smooth)}
+        .plan-home-btn:hover{background:var(--sage-pale);transform:translateY(-2px)}
+        .plan-home-btn--primary{background:var(--coral);color:var(--white);border-color:var(--coral)}
+        .plan-home-btn--primary:hover{background:var(--coral-dark);border-color:var(--coral-dark)}
+        @media(max-width:1024px){.plans-home-grid{grid-template-columns:1fr;max-width:400px;margin:0 auto}}
+        .products-home{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:40px}
+        .product-home{background:var(--white);border-radius:16px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,.06);transition:all .3s var(--transition-smooth)}
+        .product-home:hover{transform:translateY(-4px);box-shadow:0 8px 30px rgba(0,0,0,.1)}
+        .product-home-img{width:100%;aspect-ratio:1;overflow:hidden}
+        .product-home-img img{width:100%;height:100%;object-fit:cover;transition:transform .4s}
+        .product-home:hover .product-home-img img{transform:scale(1.06)}
+        .product-home-info{padding:16px}
+        .product-home-brand{font-size:.65rem;color:var(--gray500);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+        .product-home-name{font-size:.85rem;font-weight:600;color:var(--charcoal);margin-bottom:8px}
+        .product-home-price{font-family:'Fraunces',serif;font-size:1.2rem;color:var(--forest)}
+        @media(max-width:1024px){.products-home{grid-template-columns:repeat(2,1fr)}}
+        @media(max-width:768px){.products-home{grid-template-columns:1fr 1fr}}
+        .reviews-home{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:40px}
+        .review-home{background:var(--white);border-radius:16px;padding:24px;box-shadow:0 4px 16px rgba(0,0,0,.06);position:relative}
+        .review-home-stars{color:#F4B400;font-size:.8rem;letter-spacing:1px;margin-bottom:10px}
+        .review-home blockquote{font-size:.88rem;line-height:1.6;color:var(--gray700);font-style:italic;margin-bottom:14px}
+        .review-home-author{display:flex;align-items:center;gap:10px}
+        .review-home-avatar{width:32px;height:32px;border-radius:50%;background:var(--forest);display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;color:var(--white);flex-shrink:0}
+        .review-home-name{font-size:.78rem;font-weight:600;color:var(--charcoal)}
+        .review-home-pet{font-size:.68rem;color:var(--gray500)}
+        @media(max-width:1024px){.reviews-home{grid-template-columns:1fr}}
     </style>
 </head>
 <body>
@@ -112,7 +151,7 @@
 </nav>
 
 <section class="hero">
-    <video class="hero-video" autoplay muted loop playsinline poster="img/clinica-08.jpeg">
+    <video class="hero-video" autoplay muted loop playsinline preload="none" poster="img/clinica-08.jpeg" id="heroVideo">
         <source src="https://cdn.coverr.co/videos/coverr-a-veterinarian-checking-a-dog-4710/1080p.mp4" type="video/mp4">
     </video>
     <div class="hero-mesh"></div>
@@ -135,7 +174,7 @@
                     <div class="hero-proof-avatar"><img src="img/clinica-03.jpeg" alt="Cliente"></div>
                     <div class="hero-proof-avatar"><img src="img/clinica-10.jpeg" alt="Cliente"></div>
                 </div>
-                <div class="hero-proof-text"><strong>186 familias</strong> confían en nosotros</div>
+                <div class="hero-proof-text"><strong>4.7 ★ en Google</strong> · 186 opiniones verificadas</div>
             </div>
         </div>
         <div class="hero-visual">
@@ -240,12 +279,48 @@
 </section>
 
 <section class="home-section" style="background:var(--cream)">
-    <div class="container text-center">
-        <div class="section-label">Planes de Salud</div>
-        <h2 class="section-title">Cuidado preventivo a tu medida</h2>
-        <p class="section-desc mx-auto">Elige el plan que mejor se adapte a tu mascota. Ahorra hasta un 30% respecto a pagar por separado.</p>
-        <div style="margin-top:32px">
-            <a href="planes.html" class="btn btn-coral">Ver planes →</a>
+    <div class="container">
+        <div class="text-center" style="margin-bottom:48px">
+            <div class="section-label">Planes de Salud</div>
+            <h2 class="section-title">Cuidado preventivo a tu medida</h2>
+            <p class="section-desc mx-auto">Elige el plan que mejor se adapte a tu mascota. Ahorra hasta un 30% respecto a pagar por separado.</p>
+        </div>
+        <div class="plans-home-grid">
+            <div class="plan-home-card reveal">
+                <div class="plan-home-tag">Básico</div>
+                <div class="plan-home-price"><span>9,90</span>€/mes</div>
+                <ul class="plan-home-list">
+                    <li>2 revisiones al año</li>
+                    <li>Vacunas obligatorias</li>
+                    <li>Desparasitación trimestral</li>
+                    <li>10% dto. en productos</li>
+                </ul>
+                <a href="planes.html" class="plan-home-btn">Ver detalles →</a>
+            </div>
+            <div class="plan-home-card plan-home-card--popular reveal" style="transition-delay:.1s">
+                <div class="plan-home-popular">Más Popular</div>
+                <div class="plan-home-tag">Premium</div>
+                <div class="plan-home-price"><span>19,90</span>€/mes</div>
+                <ul class="plan-home-list">
+                    <li>4 revisiones al año</li>
+                    <li>Todas las vacunas</li>
+                    <li>Desparasitación mensual</li>
+                    <li>15% dto. en productos</li>
+                    <li>Cirugías con 20% dto.</li>
+                </ul>
+                <a href="planes.html" class="plan-home-btn plan-home-btn--primary">Ver detalles →</a>
+            </div>
+            <div class="plan-home-card reveal" style="transition-delay:.2s">
+                <div class="plan-home-tag">Familiar</div>
+                <div class="plan-home-price"><span>29,90</span>€/mes <small>(2 mascotas)</small></div>
+                <ul class="plan-home-list">
+                    <li>Todo lo del Premium</li>
+                    <li>Cobertura 2 mascotas</li>
+                    <li>25% dto. en cirugías</li>
+                    <li>Análisis incluido</li>
+                </ul>
+                <a href="planes.html" class="plan-home-btn">Ver detalles →</a>
+            </div>
         </div>
     </div>
 </section>
@@ -262,7 +337,66 @@
     </div>
 </div>
 
-<div class="vetbot-overlay" id="vetbotOverlay">
+<section class="home-section">
+    <div class="container">
+        <div class="text-center" style="margin-bottom:48px">
+            <div class="section-label">Tienda</div>
+            <h2 class="section-title">Productos destacados</h2>
+            <p class="section-desc mx-auto">Alimentación, accesorios y cuidado de las mejores marcas. Envío gratuito desde 40€.</p>
+        </div>
+        <div class="products-home">
+            <a href="tienda.html" class="product-home reveal" style="text-decoration:none">
+                <div class="product-home-img"><img src="https://images.unsplash.com/photo-1589924691995-400dc9ecc119?w=400&h=400&fit=crop" alt="Royal Canin" loading="lazy"></div>
+                <div class="product-home-info"><div class="product-home-brand">Royal Canin</div><div class="product-home-name">Medium Adult 15kg</div><div class="product-home-price">52,90€</div></div>
+            </a>
+            <a href="tienda.html" class="product-home reveal" style="text-decoration:none;transition-delay:.1s">
+                <div class="product-home-img"><img src="https://images.unsplash.com/photo-1576201836106-db1758fd1c97?w=400&h=400&fit=crop" alt="KONG" loading="lazy"></div>
+                <div class="product-home-info"><div class="product-home-brand">KONG</div><div class="product-home-name">Classic Toy Medium</div><div class="product-home-price">12,50€</div></div>
+            </a>
+            <a href="tienda.html" class="product-home reveal" style="text-decoration:none;transition-delay:.2s">
+                <div class="product-home-img"><img src="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=400&h=400&fit=crop" alt="Hill's" loading="lazy"></div>
+                <div class="product-home-info"><div class="product-home-brand">Hill's</div><div class="product-home-name">Science Plan Sensitive 12kg</div><div class="product-home-price">58,90€</div></div>
+            </a>
+            <a href="tienda.html" class="product-home reveal" style="text-decoration:none;transition-delay:.3s">
+                <div class="product-home-img"><img src="https://images.unsplash.com/photo-1596854407944-bf87f6fdd49e?w=400&h=400&fit=crop" alt="Applaws" loading="lazy"></div>
+                <div class="product-home-info"><div class="product-home-brand">Applaws</div><div class="product-home-name">Paté Pollo & Atún 6x70g</div><div class="product-home-price">8,90€</div></div>
+            </a>
+        </div>
+        <div class="text-center" style="margin-top:36px">
+            <a href="tienda.html" class="btn btn-forest">Ver tienda →</a>
+        </div>
+    </div>
+</section>
+
+<section class="home-section" style="background:var(--cream)">
+    <div class="container">
+        <div class="text-center" style="margin-bottom:48px">
+            <div class="section-label">Reseñas</div>
+            <h2 class="section-title">Lo que dicen nuestros clientes</h2>
+            <p class="section-desc mx-auto">Más de 186 familias confían en nosotros. Estas son algunas de sus opiniones.</p>
+        </div>
+        <div class="reviews-home">
+            <div class="review-home reveal">
+                <div class="review-home-stars">★★★★★</div>
+                <blockquote>"Llevamos años con ellos. Siempre nos tratan con una paciencia infinita, tanto a nosotros como a our perrito Max. El trato es cercano y profesional."</blockquote>
+                <div class="review-home-author"><div class="review-home-avatar">MG</div><div><div class="review-home-name">María García</div><div class="review-home-pet">Max · Golden Retriever</div></div></div>
+            </div>
+            <div class="review-home reveal" style="transition-delay:.1s">
+                <div class="review-home-stars">★★★★★</div>
+                <blockquote>"La Dra. Paula es increíble. Detectó un problema de salud en mi gato que en otra clínica no vieron. Profesionales de verdad, 100% recomendable."</blockquote>
+                <div class="review-home-author"><div class="review-home-avatar">JR</div><div><div class="review-home-name">Javier Rodríguez</div><div class="review-home-pet">Simba · Gato Siamés</div></div></div>
+            </div>
+            <div class="review-home reveal" style="transition-delay:.2s">
+                <div class="review-home-stars">★★★★★</div>
+                <blockquote>"El mejor trato que hemos encontrado. Te explican todo con detalle, sin prisas y sin recomendarte cosas innecesarias. Muy honestos."</blockquote>
+                <div class="review-home-author"><div class="review-home-avatar">AL</div><div><div class="review-home-name">Ana López</div><div class="review-home-pet">Luna y Coco · Mestizos</div></div></div>
+            </div>
+        </div>
+        <div class="text-center" style="margin-top:36px">
+            <a href="resenas.html" class="btn btn-ghost">Ver todas las reseñas →</a>
+        </div>
+    </div>
+</section>
     <div class="vetbot-modal" id="vetbotModal">
         <div class="vetbot-header">
             <div><h3>💬 Asistente Virtual</h3><p>Clínica Veterinaria San José</p></div>
@@ -297,8 +431,8 @@
             <div class="footer-col"><h4>Contacto</h4><ul><li><a href="tel:955321470">955 321 470</a></li><li><a href="mailto:sanjose.clinicaveterinaria@gmail.com">Email</a></li></ul></div>
         </div>
         <div class="footer-bottom">
-            <span>&copy; 2026 Clínica Veterinaria San José. Todos los derechos reservados.</span>
-            <span><a href="#">Política de Privacidad</a> · <a href="#">Aviso Legal</a></span>
+            <span>&copy; <script>document.write(new Date().getFullYear())</script> Clínica Veterinaria San José. Todos los derechos reservados.</span>
+            <span><a href="politica-privacidad.html">Política de Privacidad</a> · <a href="aviso-legal.html">Aviso Legal</a></span>
         </div>
     </div>
 </footer>

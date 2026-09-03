@@ -104,6 +104,13 @@ if(window.matchMedia('(prefers-color-scheme:dark)').matches){
     document.documentElement.classList.add('dark');
 }
 
+// LAZY LOAD VIDEO ON MOBILE
+const heroVideo=document.getElementById('heroVideo');
+if(heroVideo&&window.innerWidth<768){
+    heroVideo.removeAttribute('autoplay');
+    heroVideo.preload='none';
+}
+
 // SCROLL TO TOP
 const scrollTopBtn=document.createElement('button');
 scrollTopBtn.className='scroll-top';
