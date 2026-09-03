@@ -11,55 +11,45 @@ public_folder: "/img/uploads"
 collections:
   - name: "products"
     label: "Productos"
-    files:
-      - name: "products"
-        label: "Productos"
-        file: "_data/products.json"
-        fields:
-          - label: "Productos"
-            name: "products"
-            widget: "list"
-            fields:
-              - { label: "ID", name: "id", widget: "number" }
-              - { label: "Marca", name: "brand", widget: "string" }
-              - { label: "Nombre", name: "name", widget: "string" }
-              - { label: "Precio (€)", name: "price", widget: "number", value_type: "float" }
-              - label: "Categoría"
-                name: "category"
-                widget: "select"
-                options:
-                  - { label: "Alimento", value: "alimento" }
-                  - { label: "Juguetes", value: "juguetes" }
-                  - { label: "Accesorios", value: "accesorios" }
-                  - { label: "Higiene", value: "higiene" }
-              - { label: "Imagen URL", name: "image", widget: "string", required: false }
-              - { label: "Etiqueta", name: "tag", widget: "string", required: false }
-              - { label: "Descripción", name: "description", widget: "text" }
+    folder: "_data/products"
+    create: true
+    slug: "{{id}}-{{slug}}"
+    fields:
+      - { label: "ID", name: "id", widget: "number" }
+      - { label: "Marca", name: "brand", widget: "string" }
+      - { label: "Nombre", name: "name", widget: "string" }
+      - { label: "Precio (€)", name: "price", widget: "number", value_type: "float" }
+      - label: "Categoría"
+        name: "category"
+        widget: "select"
+        options:
+          - { label: "Alimento", value: "alimento" }
+          - { label: "Juguetes", value: "juguetes" }
+          - { label: "Accesorios", value: "accesorios" }
+          - { label: "Higiene", value: "higiene" }
+      - { label: "Imagen URL", name: "image", widget: "string", required: false }
+      - { label: "Etiqueta", name: "tag", widget: "string", required: false }
+      - { label: "Descripción", name: "description", widget: "text" }
 
   - name: "services"
     label: "Servicios"
-    files:
-      - name: "services"
-        label: "Servicios"
-        file: "_data/services.json"
-        fields:
-          - label: "Servicios"
-            name: "services"
-            widget: "list"
-            fields:
-              - { label: "ID", name: "id", widget: "number" }
-              - { label: "Nombre", name: "name", widget: "string" }
-              - { label: "Icono", name: "icon", widget: "string" }
-              - { label: "Descripción corta", name: "shortDesc", widget: "string" }
-              - { label: "Imagen", name: "image", widget: "string", required: false }
-              - { label: "Descripción completa", name: "description", widget: "text" }
-              - label: "Características"
-                name: "features"
-                widget: "list"
-                field:
-                  label: "Característica"
-                  name: "feature"
-                  widget: "string"
+    folder: "_data/services"
+    create: true
+    slug: "{{id}}-{{slug}}"
+    fields:
+      - { label: "ID", name: "id", widget: "number" }
+      - { label: "Nombre", name: "name", widget: "string" }
+      - { label: "Icono", name: "icon", widget: "string" }
+      - { label: "Descripción corta", name: "shortDesc", widget: "string" }
+      - { label: "Imagen", name: "image", widget: "string", required: false }
+      - { label: "Descripción completa", name: "description", widget: "text" }
+      - label: "Características"
+        name: "features"
+        widget: "list"
+        field:
+          label: "Característica"
+          name: "feature"
+          widget: "string"
 
   - name: "settings"
     label: "Ajustes"
@@ -73,3 +63,16 @@ collections:
           - { label: "Teléfono", name: "phone", widget: "string" }
           - { label: "Email", name: "email", widget: "string" }
           - { label: "Horario", name: "hours", widget: "string" }
+
+      - label: "Colores"
+        name: "colors"
+        file: "_data/colors.json"
+        fields:
+          - { label: "Color Primario", name: "primary", widget: "color" }
+          - { label: "Primario Claro", name: "primaryLight", widget: "color" }
+          - { label: "Sage (verde suave)", name: "sage", widget: "color" }
+          - { label: "Coral (acento)", name: "coral", widget: "color" }
+          - { label: "Coral Oscuro", name: "coralDark", widget: "color" }
+          - { label: "Fondo (crema)", name: "cream", widget: "color" }
+          - { label: "Texto (carbón)", name: "charcoal", widget: "color" }
+          - { label: "Blanco", name: "white", widget: "color" }

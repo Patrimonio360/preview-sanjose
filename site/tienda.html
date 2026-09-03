@@ -92,9 +92,10 @@
     </div>
 </section>
 
+<script src="js/cms.js"></script>
+<script>CMS.applyColors();</script>
 <script>
-fetch('_data/products.json')
-    .then(r => r.json())
+CMS.fetchFolder('_data/products')
     .then(products => {
         const grid = document.getElementById('storeGrid');
         grid.innerHTML = products.map(p => `
