@@ -1,0 +1,122 @@
+[
+  {
+    "id": 1,
+    "brand": "Royal Canin",
+    "name": "Medium Adult 15kg",
+    "price": 52.90,
+    "category": "alimento",
+    "image": "https://images.unsplash.com/photo-1589924691995-400dc9ecc119?w=400&h=400&fit=crop",
+    "tag": "-15%",
+    "description": "Alimento completo para perros de tamaño medio de 12 a 24 meses."
+  },
+  {
+    "id": 2,
+    "brand": "KONG",
+    "name": "Classic Toy Medium",
+    "price": 12.50,
+    "category": "juguetes",
+    "image": "https://images.unsplash.com/photo-1576201836106-db1758fd1c97?w=400&h=400&fit=crop",
+    "tag": "",
+    "description": "Juguete interactivo resistente para perros medianos."
+  },
+  {
+    "id": 3,
+    "brand": "Hill's",
+    "name": "Science Plan Sensitive 12kg",
+    "price": 58.90,
+    "category": "alimento",
+    "image": "https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=400&h=400&fit=crop",
+    "tag": "Novedad",
+    "description": "Alimento para perros con estómago sensible."
+  },
+  {
+    "id": 4,
+    "brand": "Trixie",
+    "name": "Correa retráctil 5m",
+    "price": 18.90,
+    "category": "accesorios",
+    "image": "https://images.unsplash.com/photo-1601758282760-b6cc3d07523d?w=400&h=400&fit=crop",
+    "tag": "",
+    "description": "Correa retráctil hasta 5 metros, hasta 20kg."
+  },
+  {
+    "id": 5,
+    "brand": "Dermoscent",
+    "name": "Shampoo Essential 6",
+    "price": 14.50,
+    "category": "higiene",
+    "image": "https://images.unsplash.com/photo-1516756952154-6f7e0e4d3e05?w=400&h=400&fit=crop",
+    "tag": "",
+    "description": "Shampoo medicado para pieles sensibles."
+  },
+  {
+    "id": 6,
+    "brand": "Nylabone",
+    "name": "Pelota Dental Large",
+    "price": 9.90,
+    "category": "juguetes",
+    "image": "https://images.unsplash.com/photo-1535294435445-d7249b8f7b8f?w=400&h=400&fit=crop",
+    "tag": "",
+    "description": "Juguete dental que limpia los dientes mientras juega."
+  },
+  {
+    "id": 7,
+    "brand": "Applaws",
+    "name": "Paté Pollo & Atún 6x70g",
+    "price": 8.90,
+    "category": "alimento",
+    "image": "https://images.unsplash.com/photo-1596854407944-bf87f6fdd49e?w=400&h=400&fit=crop",
+    "tag": "-20%",
+    "description": "Paté natural para gatos con pollo y atún."
+  },
+  {
+    "id": 8,
+    "brand": "Trixie",
+    "name": "Cama Orthopédica XL",
+    "price": 45.90,
+    "category": "accesorios",
+    "image": "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=400&h=400&fit=crop",
+    "tag": "",
+    "description": "Cama orthopédica con espuma de memoria para perros grandes."
+  },
+  {
+    "id": 9,
+    "brand": "Advance",
+    "name": "Adult Medium Chicken 15kg",
+    "price": 39.90,
+    "category": "alimento",
+    "image": "https://images.unsplash.com/photo-1615497001839-b0a0eac3274c?w=400&h=400&fit=crop",
+    "tag": "",
+    "description": "Alimento completo con pollo para perros adultos."
+  },
+  {
+    "id": 10,
+    "brand": "Beaphar",
+    "name": "Spray Antipulgas",
+    "price": 11.90,
+    "category": "higiene",
+    "image": "https://images.unsplash.com/photo-1583337130417-13104dec14a3?w=400&h=400&fit=crop",
+    "tag": "",
+    "description": "Spray antipulgas y garrapatas de acción rápida."
+  },
+  {
+    "id": 11,
+    "brand": "Flamingo",
+    "name": "Cuerda con nudos",
+    "price": 7.50,
+    "category": "juguetes",
+    "image": "https://images.unsplash.com/photo-1575425186775-e2e038070394?w=400&h=400&fit=crop",
+    "tag": "",
+    "description": "Cuerda resistente con nudos para juego y masticación."
+  },
+  {
+    "id": 12,
+    "brand": "Trixie",
+    "name": "Comedero doble inox",
+    "price": 22.90,
+    "category": "accesorios",
+    "image": "https://images.unsplash.com/photo-1601758124510-52d02ddb7cbd?w=400&h=400&fit=crop",
+    "tag": "",
+    "description": "Comedero doble de acero inoxidable, fácil de limpiar."
+  }
+]

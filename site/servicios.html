@@ -57,10 +57,9 @@
     <div class="container" id="svcDetailContainer"></div>
 </section>
 
-<script src="js/cms.js"></script>
-<script>CMS.applyColors();</script>
 <script>
-CMS.fetchFolder('_data/services')
+fetch('_data/services.json')
+    .then(r => r.json())
     .then(services => {
         const container = document.getElementById('svcDetailContainer');
         container.innerHTML = services.map((s, i) => `

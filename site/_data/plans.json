@@ -1,0 +1,35 @@
+[
+  {
+    "id": 1,
+    "name": "Plan Básico",
+    "icon": "🐾",
+    "description": "Lo esencial para mantener a tu mascota sana y protegida todo el año.",
+    "price": 9.90,
+    "period": "/mes",
+    "savings": "Ahorra 40€/año",
+    "badge": "",
+    "features": ["2 revisiones generales al año", "Vacunas obligatorias incluidas", "Desparasitación trimestral", "10% descuento en productos", "Cirugías con 20% dto.", "Terapias alternativas gratis"]
+  },
+  {
+    "id": 2,
+    "name": "Plan Premium",
+    "icon": "⭐",
+    "description": "La protección completa para mascotas que necesitan un cuidado integral.",
+    "price": 19.90,
+    "period": "/mes",
+    "savings": "Ahorra 120€/año",
+    "badge": "Más Popular",
+    "features": ["4 revisiones generales al año", "Todas las vacunas incluidas", "Desparasitación mensual", "15% descuento en productos", "Cirugías con 20% dto.", "1 terapia alternativa gratuita al mes"]
+  },
+  {
+    "id": 3,
+    "name": "Plan Familiar",
+    "icon": "💎",
+    "description": "Ideal si tienes varias mascotas. Todo lo que necesitan a un precio imbatible.",
+    "price": 29.90,
+    "period": "/mes (2 mascotas)",
+    "savings": "Ahorra 200€/año",
+    "badge": "",
+    "features": ["Todo lo del Plan Premium", "Cobertura para 2 mascotas", "Terapias alternativas ilimitadas", "25% dto. en cirugías", "Análisis de sangre incluido", "Hotel con 30% dto."]
+  }
+]
