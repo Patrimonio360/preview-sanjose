@@ -4,6 +4,8 @@ backend:
   branch: master
   client_id: Ov23liHDaoF8aM1VI58H
   auth_token: a2a021178e32e23b4e3b036dd12049dd139a8737
+  base_url: https://oauth-sanjose.vercel.app
+  auth_endpoint: /api/auth
 
 media_folder: "img/uploads"
 public_folder: "/img/uploads"
