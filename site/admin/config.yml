@@ -11,7 +11,7 @@ public_folder: "/img/uploads"
 collections:
   - name: "products"
     label: "Productos"
-    folder: "_data/products"
+    folder: "site/_data/products"
     create: true
     delete: true
     slug: "{{id}}"
@@ -44,7 +44,7 @@ collections:
 
   - name: "services"
     label: "Servicios"
-    folder: "_data/services"
+    folder: "site/_data/services"
     create: true
     delete: true
     slug: "{{id}}"
@@ -65,7 +65,7 @@ collections:
 
   - name: "plans"
     label: "Planes de Salud"
-    folder: "_data/plans"
+    folder: "site/_data/plans"
     create: true
     delete: true
     slug: "{{id}}"
@@ -93,7 +93,7 @@ collections:
     files:
       - label: "Info Clínica"
         name: "clinic-info"
-        file: "_data/settings.json"
+        file: "site/_data/settings.json"
         fields:
           - { label: "Nombre", name: "name", widget: "string" }
           - { label: "Dirección", name: "address", widget: "string" }
@@ -103,7 +103,7 @@ collections:
 
       - label: "Colores del Sitio"
         name: "colors"
-        file: "_data/colors.json"
+        file: "site/_data/colors.json"
         fields:
           - { label: "Color Primario (botones, nav)", name: "primary", widget: "color" }
           - { label: "Primario Claro (hover)", name: "primaryLight", widget: "color" }
