@@ -5,6 +5,7 @@ backend:
   base_url: https://oauth-sanjose.vercel.app
   auth_endpoint: api/auth
 
+publish_mode: editorial_workflow
 media_folder: "img/uploads"
 public_folder: "/img/uploads"
 
