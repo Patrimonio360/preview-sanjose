@@ -58,17 +58,16 @@ document.querySelectorAll('.store-tab').forEach(t=>t.addEventListener('click',fu
 // MODERN FEATURES v2.0
 // ========================
 
-// MAGNETIC CURSOR
-const cursorDot=document.querySelector('.cursor-dot');
+// ICON MOUSE FOLLOW
 const cursorRing=document.querySelector('.cursor-ring');
-if(cursorDot&&cursorRing){
+if(cursorRing){
     let mx=0,my=0,rx=0,ry=0;
-    document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursorDot.style.left=mx+'px';cursorDot.style.top=my+'px'});
-    function animateCursor(){rx+=(mx-rx)*.15;ry+=(my-ry)*.15;cursorRing.style.left=rx+'px';cursorRing.style.top=ry+'px';requestAnimationFrame(animateCursor)}
+    document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY});
+    function animateCursor(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;cursorRing.style.left=rx+'px';cursorRing.style.top=ry+'px';requestAnimationFrame(animateCursor)}
     animateCursor();
-    document.querySelectorAll('a,button,.svc,.plan,.store-item,.tilt').forEach(el=>{
-        el.addEventListener('mouseenter',()=>{cursorRing.classList.add('magnetic');cursorDot.style.transform='scale(2)'});
-        el.addEventListener('mouseleave',()=>{cursorRing.classList.remove('magnetic');cursorDot.style.transform='scale(1)'});
+    document.querySelectorAll('.svc-icon,.plan-icon,.store-img').forEach(icon=>{
+        icon.addEventListener('mouseenter',()=>{cursorRing.style.width='56px';cursorRing.style.height='56px';cursorRing.style.borderColor='rgba(212,118,78,.6)'});
+        icon.addEventListener('mouseleave',()=>{cursorRing.style.width='36px';cursorRing.style.height='36px';cursorRing.style.borderColor='rgba(212,118,78,.3)'});
     });
 }
 
@@ -104,6 +103,15 @@ document.querySelectorAll('a[href$=".html"]').forEach(link=>{
 if(window.matchMedia('(prefers-color-scheme:dark)').matches){
     document.documentElement.classList.add('dark');
 }
+
+// SCROLL TO TOP
+const scrollTopBtn=document.createElement('button');
+scrollTopBtn.className='scroll-top';
+scrollTopBtn.innerHTML='↑';
+scrollTopBtn.setAttribute('aria-label','Volver arriba');
+document.body.appendChild(scrollTopBtn);
+window.addEventListener('scroll',()=>{scrollTopBtn.classList.toggle('visible',window.scrollY>400)},{passive:true});
+scrollTopBtn.addEventListener('click',()=>{window.scrollTo({top:0,behavior:'smooth'})});
 
 // SCROLL-BASED NAV BACKGROUND
 let lastScroll=0;
