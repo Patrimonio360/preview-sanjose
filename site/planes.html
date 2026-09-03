@@ -59,63 +59,7 @@
 
 <section class="plans-section" style="background:var(--white)">
     <div class="container">
-        <div class="plans-grid">
-            <article class="plan reveal">
-                <div class="plan-icon">🐾</div>
-                <h3>Plan Básico</h3>
-                <p class="plan-desc">Lo esencial para mantener a tu mascota sana y protegida todo el año.</p>
-                <div class="plan-price">
-                    <span class="amount">9.90€</span><span class="period">/mes</span>
-                    <br><span class="save">Ahorra 40€/año</span>
-                </div>
-                <ul class="plan-features">
-                    <li>2 revisiones generales al año</li>
-                    <li>Vacunas obligatorias incluidas</li>
-                    <li>Desparasitación trimestral</li>
-                    <li>10% descuento en productos</li>
-                    <li class="disabled">Cirugías con 20% dto.</li>
-                    <li class="disabled">Terapias alternativas gratis</li>
-                </ul>
-                <a href="#vetbot" class="plan-btn plan-btn--secondary vetbot-trigger">Solicitar Plan</a>
-            </article>
-            <article class="plan reveal" style="transform:scale(1.03)">
-                <div class="plan-badge">Más Popular</div>
-                <div class="plan-icon" style="background:#FFF3E0">⭐</div>
-                <h3>Plan Premium</h3>
-                <p class="plan-desc">La protección completa para mascotas que necesitan un cuidado integral.</p>
-                <div class="plan-price">
-                    <span class="amount">19.90€</span><span class="period">/mes</span>
-                    <br><span class="save">Ahorra 120€/año</span>
-                </div>
-                <ul class="plan-features">
-                    <li>4 revisiones generales al año</li>
-                    <li>Todas las vacunas incluidas</li>
-                    <li>Desparasitación mensual</li>
-                    <li>15% descuento en productos</li>
-                    <li>Cirugías con 20% dto.</li>
-                    <li>1 terapia alternativa gratuita al mes</li>
-                </ul>
-                <a href="#vetbot" class="plan-btn plan-btn--primary vetbot-trigger">Solicitar Plan</a>
-            </article>
-            <article class="plan reveal">
-                <div class="plan-icon" style="background:#E8F0FE">💎</div>
-                <h3>Plan Familiar</h3>
-                <p class="plan-desc">Ideal si tienes varias mascotas. Todo lo que necesitan a un precio imbatible.</p>
-                <div class="plan-price">
-                    <span class="amount">29.90€</span><span class="period">/mes (2 mascotas)</span>
-                    <br><span class="save">Ahorra 200€/año</span>
-                </div>
-                <ul class="plan-features">
-                    <li>Todo lo del Plan Premium</li>
-                    <li>Cobertura para 2 mascotas</li>
-                    <li>Terapias alternativas ilimitadas</li>
-                    <li>25% dto. en cirugías</li>
-                    <li>Análisis de sangre incluido</li>
-                    <li>Hotel con 30% dto.</li>
-                </ul>
-                <a href="#vetbot" class="plan-btn plan-btn--secondary vetbot-trigger">Solicitar Plan</a>
-            </article>
-        </div>
+        <div class="plans-grid" id="plansGrid"></div>
         <div class="plans-cta">
             <p>Todos los planes incluyen asesoramiento telefónico ilimitado y prioridad en citas.</p>
             <a href="#vetbot" class="btn btn-forest vetbot-trigger">💬 Consultar planes</a>
@@ -195,6 +139,32 @@
 
 <script src="js/cms.js"></script>
 <script>CMS.applyColors();</script>
+<script>
+CMS.fetchFolder('_data/plans')
+    .then(function(plans) {
+        var grid = document.getElementById('plansGrid');
+        grid.innerHTML = plans.map(function(p, i) {
+            var iconStyle = p.iconBg ? 'background:' + p.iconBg : '';
+            var badge = p.badge ? '<div class="plan-badge">' + p.badge + '</div>' : '';
+            var featured = p.featured ? ' style="transform:scale(1.03)"' : '';
+            var btnClass = p.featured ? 'plan-btn--primary' : 'plan-btn--secondary';
+            var savings = p.savings ? '<br><span class="save">' + p.savings + '</span>' : '';
+            return '<article class="plan reveal"' + featured + '>' +
+                badge +
+                '<div class="plan-icon"' + (iconStyle ? ' style="' + iconStyle + '"' : '') + '>' + p.icon + '</div>' +
+                '<h3>' + p.name + '</h3>' +
+                '<p class="plan-desc">' + p.description + '</p>' +
+                '<div class="plan-price"><span class="amount">' + p.price.toFixed(2) + '€</span><span class="period">' + p.period + '</span>' + savings + '</div>' +
+                '<ul class="plan-features">' + p.features.map(function(f) { return '<li>' + f.feature + '</li>'; }).join('') + '</ul>' +
+                '<a href="#vetbot" class="plan-btn ' + btnClass + ' vetbot-trigger">Solicitar Plan</a>' +
+                '</article>';
+        }).join('');
+        document.querySelectorAll('.vetbot-trigger').forEach(function(btn) {
+            btn.addEventListener('click', function(e) { e.preventDefault(); openVetBot(); });
+        });
+        document.querySelectorAll('.reveal').forEach(function(el) { ro.observe(el); });
+    });
+</script>
 <script src="js/main.js"></script>
 </body>
 </html>
