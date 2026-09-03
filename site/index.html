@@ -10,7 +10,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
     <style>
-        .hero{min-height:100vh;display:flex;align-items:center;position:relative;overflow:hidden;background:var(--forest)}
+        .hero{min-height:100vh;display:flex;align-items:center;position:relative;overflow:hidden;background:#0f1a14}
+        .hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.35;z-index:0}
         .hero-bg{position:absolute;inset:0;background:url('img/clinica-08.jpeg') center/cover no-repeat}
         .hero-bg::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(26,60,42,.90) 0%,rgba(45,107,69,.80) 50%,rgba(107,155,122,.70) 100%)}
         .hero .container{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;padding:140px 0 100px}
@@ -49,6 +50,10 @@
 </head>
 <body>
 
+<div class="cursor-dot"></div>
+<div class="cursor-ring"></div>
+<div class="page-transition"></div>
+
 <nav class="nav" id="mainNav">
     <div class="container">
         <a href="index.html" class="nav-logo">
@@ -77,7 +82,10 @@
 </nav>
 
 <section class="hero">
-    <div class="hero-bg"></div>
+    <div class="mesh-bg"></div>
+    <video class="hero-video" autoplay muted loop playsinline poster="img/clinica-08.jpeg">
+        <source src="https://cdn.coverr.co/videos/coverr-a-veterinarian-checking-a-dog-4710/1080p.mp4" type="video/mp4">
+    </video>
     <div class="container">
         <div class="hero-content">
             <div class="hero-pill"><div class="hero-pill-dot"></div><span>L-V 10:00-21:00 · Sáb 10:00-13:30</span></div>
@@ -118,13 +126,13 @@
             <p class="section-desc mx-auto">Desde una simple vacuna hasta cirugías complejas. Contamos con los mejores equipos.</p>
         </div>
         <div class="svc-grid">
-            <a href="servicios.html" class="svc reveal" style="text-decoration:none"><div class="svc-icon">🩺</div><h3>Consulta General</h3><p>Revisiones completas y diagnóstico personalizado.</p></a>
-            <a href="servicios.html" class="svc reveal" style="text-decoration:none"><div class="svc-icon">💉</div><h3>Vacunación</h3><p>Planes de vacunación adaptados a cada mascota.</p></a>
-            <a href="servicios.html" class="svc reveal" style="text-decoration:none"><div class="svc-icon">⚕️</div><h3>Cirugía</h3><p>Anestesia inhalatoria con monitorización continua.</p></a>
-            <a href="servicios.html" class="svc reveal" style="text-decoration:none"><div class="svc-icon">🦷</div><h3>Dental</h3><p>Limpieza de sarro y tratamientos dentales.</p></a>
-            <a href="servicios.html" class="svc reveal" style="text-decoration:none"><div class="svc-icon">🔬</div><h3>Laboratorio</h3><p>Análisis de sangre, orina y heces.</p></a>
-            <a href="servicios.html" class="svc reveal" style="text-decoration:none"><div class="svc-icon">📸</div><h3>Imagen</h3><p>Radiografías y ecografías.</p></a>
-            <a href="servicios.html" class="svc reveal" style="text-decoration:none"><div class="svc-icon">🌿</div><h3>Terapias Alternativas</h3><p>Ozonoterapia, acupuntura y más.</p></a>
+            <a href="servicios.html" class="svc reveal tilt" style="text-decoration:none"><div class="svc-icon">🩺</div><h3>Consulta General</h3><p>Revisiones completas y diagnóstico personalizado.</p></a>
+            <a href="servicios.html" class="svc reveal tilt" style="text-decoration:none"><div class="svc-icon">💉</div><h3>Vacunación</h3><p>Planes de vacunación adaptados a cada mascota.</p></a>
+            <a href="servicios.html" class="svc reveal tilt" style="text-decoration:none"><div class="svc-icon">⚕️</div><h3>Cirugía</h3><p>Anestesia inhalatoria con monitorización continua.</p></a>
+            <a href="servicios.html" class="svc reveal tilt" style="text-decoration:none"><div class="svc-icon">🦷</div><h3>Dental</h3><p>Limpieza de sarro y tratamientos dentales.</p></a>
+            <a href="servicios.html" class="svc reveal tilt" style="text-decoration:none"><div class="svc-icon">🔬</div><h3>Laboratorio</h3><p>Análisis de sangre, orina y heces.</p></a>
+            <a href="servicios.html" class="svc reveal tilt" style="text-decoration:none"><div class="svc-icon">📸</div><h3>Imagen</h3><p>Radiografías y ecografías.</p></a>
+            <a href="servicios.html" class="svc reveal tilt" style="text-decoration:none"><div class="svc-icon">🌿</div><h3>Terapias Alternativas</h3><p>Ozonoterapia, acupuntura y más.</p></a>
         </div>
         <div style="text-align:center;margin-top:40px">
             <a href="servicios.html" class="btn btn-forest">Ver todos los servicios →</a>

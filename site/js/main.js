@@ -54,6 +54,68 @@ if(cf)cf.addEventListener('submit',function(e){e.preventDefault();const b=this.q
 // Store tabs
 document.querySelectorAll('.store-tab').forEach(t=>t.addEventListener('click',function(){document.querySelectorAll('.store-tab').forEach(b=>b.classList.remove('active'));this.classList.add('active');const c=this.dataset.cat;document.querySelectorAll('.store-item').forEach(i=>{i.style.display=(c==='todos'||i.dataset.cat===c)?'':'none'})}));
 
+// ========================
+// MODERN FEATURES v2.0
+// ========================
+
+// MAGNETIC CURSOR
+const cursorDot=document.querySelector('.cursor-dot');
+const cursorRing=document.querySelector('.cursor-ring');
+if(cursorDot&&cursorRing){
+    let mx=0,my=0,rx=0,ry=0;
+    document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursorDot.style.left=mx+'px';cursorDot.style.top=my+'px'});
+    function animateCursor(){rx+=(mx-rx)*.15;ry+=(my-ry)*.15;cursorRing.style.left=rx+'px';cursorRing.style.top=ry+'px';requestAnimationFrame(animateCursor)}
+    animateCursor();
+    document.querySelectorAll('a,button,.svc,.plan,.store-item,.tilt').forEach(el=>{
+        el.addEventListener('mouseenter',()=>{cursorRing.classList.add('magnetic');cursorDot.style.transform='scale(2)'});
+        el.addEventListener('mouseleave',()=>{cursorRing.classList.remove('magnetic');cursorDot.style.transform='scale(1)'});
+    });
+}
+
+// 3D TILT EFFECT
+document.querySelectorAll('.tilt').forEach(card=>{
+    card.addEventListener('mousemove',e=>{
+        const r=card.getBoundingClientRect();
+        const x=e.clientX-r.left;
+        const y=e.clientY-r.top;
+        const cx=r.width/2;
+        const cy=r.height/2;
+        const rx=(y-cy)/cy*-6;
+        const ry=(x-cx)/cx*6;
+        card.style.transform=`perspective(800px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-5px)`;
+    });
+    card.addEventListener('mouseleave',()=>{card.style.transform='perspective(800px) rotateX(0) rotateY(0) translateY(0)'});
+});
+
+// VIEW TRANSITIONS (page navigation)
+document.querySelectorAll('a[href$=".html"]').forEach(link=>{
+    link.addEventListener('click',function(e){
+        const href=this.getAttribute('href');
+        if(!href||href===window.location.pathname.split('/').pop())return;
+        e.preventDefault();
+        const overlay=document.createElement('div');
+        overlay.className='page-transition active';
+        document.body.appendChild(overlay);
+        setTimeout(()=>{window.location.href=href},350);
+    });
+});
+
+// DARK MODE TOGGLE (system preference)
+if(window.matchMedia('(prefers-color-scheme:dark)').matches){
+    document.documentElement.classList.add('dark');
+}
+
+// SCROLL-BASED NAV BACKGROUND
+let lastScroll=0;
+window.addEventListener('scroll',()=>{
+    const nav=document.getElementById('mainNav');
+    const st=window.scrollY;
+    if(st>100){nav.style.background=nav.style.background||'rgba(255,255,255,.97)'}
+    if(st>lastScroll&&st>200){nav.style.transform='translateY(-100%)'}
+    else{nav.style.transform='translateY(0)'}
+    lastScroll=st;
+},{passive:true});
+
 // VetBot Modal
 const vetbotOverlay=document.getElementById('vetbotOverlay');
 const vetbotModal=document.getElementById('vetbotModal');
