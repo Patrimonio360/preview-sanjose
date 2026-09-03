@@ -11,18 +11,13 @@ var CMS = (function() {
   };
 
   function applyColors() {
-    return fetch('_data/colors.json')
+    return fetch('_data/colors.json?t=' + Date.now())
       .then(function(r) { return r.json(); })
       .then(function(c) {
         var root = document.documentElement;
-        if (c.primary) root.style.setProperty('--forest', c.primary);
-        if (c.primaryLight) root.style.setProperty('--forest-light', c.primaryLight);
-        if (c.sage) root.style.setProperty('--sage', c.sage);
-        if (c.coral) root.style.setProperty('--coral', c.coral);
-        if (c.coralDark) root.style.setProperty('--coral-dark', c.coralDark);
-        if (c.cream) root.style.setProperty('--cream', c.cream);
-        if (c.charcoal) root.style.setProperty('--charcoal', c.charcoal);
-        if (c.white) root.style.setProperty('--white', c.white);
+        var map = {primary:'--forest',primaryLight:'--forest-light',sage:'--sage',coral:'--coral',coralDark:'--coral-dark',cream:'--cream',charcoal:'--charcoal',white:'--white'};
+        Object.keys(map).forEach(function(k){if(c[k])root.style.setProperty(map[k],c[k]);});
+        document.body.classList.add('colors-loaded');
       })
       .catch(function() {});
   }
