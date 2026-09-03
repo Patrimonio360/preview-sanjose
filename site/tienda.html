@@ -92,6 +92,8 @@
     </div>
 </section>
 
+<script src="js/cms.js"></script>
+<script>CMS.applyColors();</script>
 <script>
 fetch('_data/products.json')
     .then(r => r.json())
@@ -116,9 +118,6 @@ fetch('_data/products.json')
         document.querySelectorAll('.reveal').forEach(el => ro.observe(el));
     });
 </script>
-        </div>
-    </div>
-</section>
 
 <div class="cart-overlay" id="cartOverlay"></div>
 <div class="cart-sidebar" id="cartSidebar">
