@@ -60,7 +60,7 @@
 <script src="js/cms.js"></script>
 <script>CMS.applyColors();</script>
 <script>
-fetch('_data/services.json')
+fetch('_data/services.json?t='+Date.now())
     .then(r => r.json())
     .then(services => {
         const container = document.getElementById('svcDetailContainer');

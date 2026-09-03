@@ -62,13 +62,13 @@ collections:
                   widget: "string"
 
   - name: "plans"
-    label: "Planes de Salud"
+    label: "Suscripciones"
     files:
-      - label: "Planes"
+      - label: "Planes de Salud"
         name: "plans"
         file: "site/_data/plans.json"
         fields:
-          - label: "Planes"
+          - label: "Lista de Planes"
             name: "plans"
             widget: "list"
             fields:

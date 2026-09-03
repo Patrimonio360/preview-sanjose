@@ -140,7 +140,7 @@
 <script src="js/cms.js"></script>
 <script>CMS.applyColors();</script>
 <script>
-fetch('_data/plans.json')
+fetch('_data/plans.json?t='+Date.now())
     .then(r => r.json())
     .then(function(plans) {
         var grid = document.getElementById('plansGrid');

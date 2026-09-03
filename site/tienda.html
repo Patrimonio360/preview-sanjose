@@ -95,7 +95,7 @@
 <script src="js/cms.js"></script>
 <script>CMS.applyColors();</script>
 <script>
-fetch('_data/products.json')
+fetch('_data/products.json?t='+Date.now())
     .then(r => r.json())
     .then(products => {
         const grid = document.getElementById('storeGrid');
