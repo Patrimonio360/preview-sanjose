@@ -3,7 +3,7 @@ backend:
   repo: Patrimonio360/preview-sanjose
   branch: master
   base_url: https://oauth-sanjose.vercel.app
-  auth_endpoint: /api/auth
+  auth_endpoint: api/auth
 
 media_folder: "img/uploads"
 public_folder: "/img/uploads"
