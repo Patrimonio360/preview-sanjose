@@ -2,8 +2,8 @@ backend:
   name: github
   repo: Patrimonio360/preview-sanjose
   branch: master
-  base_url: https://decap-oauth.netlify.app
-  auth_endpoint: /auth
+  client_id: Ov23liHDaoF8aM1VI58H
+  auth_token: a2a021178e32e23b4e3b036dd12049dd139a8737
 
 media_folder: "img/uploads"
 public_folder: "/img/uploads"
