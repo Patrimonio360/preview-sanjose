@@ -1,0 +1,111 @@
+backend:
+  name: github
+  repo: Patrimonio360/preview-sanjose
+  branch: master
+  base_url: https://decap-oauth.netlify.app
+  auth_endpoint: /auth
+
+media_folder: "img/uploads"
+public_folder: "/img/uploads"
+
+collections:
+  - name: "products"
+    label: "Productos"
+    folder: "_data"
+    create: false
+    slug: "products"
+    fields:
+      - label: "ID"
+        name: "id"
+        widget: "number"
+      - label: "Marca"
+        name: "brand"
+        widget: "string"
+      - label: "Nombre"
+        name: "name"
+        widget: "string"
+      - label: "Precio (€)"
+        name: "price"
+        widget: "number"
+        value_type: "float"
+      - label: "Categoría"
+        name: "category"
+        widget: "select"
+        options:
+          - { label: "Alimento", value: "alimento" }
+          - { label: "Juguetes", value: "juguetes" }
+          - { label: "Accesorios", value: "accesorios" }
+          - { label: "Higiene", value: "higiene" }
+      - label: "Imagen URL"
+        name: "image"
+        widget: "string"
+        required: false
+      - label: "Etiqueta"
+        name: "tag"
+        widget: "string"
+        required: false
+      - label: "Descripción"
+        name: "description"
+        widget: "text"
+    identifier_field: "name"
+    summary: "{{brand}} {{name}} - {{price}}€"
+
+  - name: "services"
+    label: "Servicios"
+    folder: "_data"
+    create: false
+    slug: "services"
+    fields:
+      - label: "ID"
+        name: "id"
+        widget: "number"
+      - label: "Nombre"
+        name: "name"
+        widget: "string"
+      - label: "Icono"
+        name: "icon"
+        widget: "string"
+      - label: "Descripción corta"
+        name: "shortDesc"
+        widget: "string"
+      - label: "Imagen"
+        name: "image"
+        widget: "image"
+        media_folder: "/img/uploads"
+        public_folder: "/img/uploads"
+        required: false
+      - label: "Descripción completa"
+        name: "description"
+        widget: "text"
+      - label: "Características"
+        name: "features"
+        widget: "list"
+        field:
+          label: "Característica"
+          name: "feature"
+          widget: "string"
+    identifier_field: "name"
+    summary: "{{icon}} {{name}}"
+
+  - name: "settings"
+    label: "Ajustes"
+    files:
+      - label: "Info Clínica"
+        name: "clinic-info"
+        file: "_data/settings.json"
+        fields:
+          - label: "Nombre"
+            name: "name"
+            widget: "string"
+          - label: "Dirección"
+            name: "address"
+            widget: "string"
+          - label: "Teléfono"
+            name: "phone"
+            widget: "string"
+          - label: "Email"
+            name: "email"
+            widget: "string"
+          - label: "Horario"
+            name: "hours"
+            widget: "string"
