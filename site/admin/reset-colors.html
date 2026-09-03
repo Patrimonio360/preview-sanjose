@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurar Colores — Admin</title>
+    <style>
+        body { font-family: system-ui, sans-serif; max-width: 500px; margin: 60px auto; padding: 20px; background: #f5f5f5; }
+        h1 { font-size: 1.4rem; margin-bottom: 8px; }
+        p { color: #666; margin-bottom: 24px; }
+        .card { background: white; border-radius: 12px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,.08); margin-bottom: 16px; }
+        .colors { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
+        .color { text-align: center; }
+        .color-swatch { width: 100%; aspect-ratio: 1; border-radius: 8px; border: 2px solid #eee; }
+        .color-label { font-size: .7rem; color: #999; margin-top: 4px; }
+        button { width: 100%; padding: 14px; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; }
+        .btn-reset { background: #D4764E; color: white; }
+        .btn-reset:hover { background: #B85E3A; }
+        .btn-back { background: #eee; color: #333; margin-top: 8px; }
+        .msg { padding: 12px; border-radius: 8px; margin-bottom: 16px; display: none; }
+        .msg.ok { display: block; background: #E8F5E9; color: #2D6B45; }
+    </style>
+</head>
+<body>
+    <h1>Restaurar Colores Originales</h1>
+    <p>Pulsa el botón para volver a los colores por defecto de la clínica.</p>
+
+    <div class="card">
+        <div class="colors">
+            <div class="color"><div class="color-swatch" style="background:#1A3C2A"></div><div class="color-label">Primario</div></div>
+            <div class="color"><div class="color-swatch" style="background:#2D6B45"></div><div class="color-label">Primario claro</div></div>
+            <div class="color"><div class="color-swatch" style="background:#6B9B7A"></div><div class="color-label">Sage</div></div>
+            <div class="color"><div class="color-swatch" style="background:#D4764E"></div><div class="color-label">Coral</div></div>
+            <div class="color"><div class="color-swatch" style="background:#B85E3A"></div><div class="color-label">Coral oscuro</div></div>
+            <div class="color"><div class="color-swatch" style="background:#FBF9F5"></div><div class="color-label">Fondo</div></div>
+            <div class="color"><div class="color-swatch" style="background:#1C1C1C"></div><div class="color-label">Texto</div></div>
+            <div class="color"><div class="color-swatch" style="background:#FFF;border-color:#ddd"></div><div class="color-label">Blanco</div></div>
+        </div>
+        <div id="msg" class="msg">Colores restaurados. Ahora pulsa "Guardar" en el panel de admin para aplicar.</div>
+        <button class="btn-reset" onclick="resetColors()">Restaurar colores originales</button>
+        <button class="btn-back" onclick="history.back()">← Volver</button>
+    </div>
+
+    <script>
+    var DEFAULT = {primary:'#1A3C2A',primaryLight:'#2D6B45',sage:'#6B9B7A',coral:'#D4764E',coralDark:'#B85E3A',cream:'#FBF9F5',charcoal:'#1C1C1C',white:'#FFF'};
+    function resetColors() {
+        fetch('_data/colors.json').then(function(r){return r.json()}).then(function(c){
+            c.primary = DEFAULT.primary; c.primaryLight = DEFAULT.primaryLight; c.sage = DEFAULT.sage;
+            c.coral = DEFAULT.coral; c.coralDark = DEFAULT.coralDark; c.cream = DEFAULT.cream;
+            c.charcoal = DEFAULT.charcoal; c.white = DEFAULT.white;
+            document.getElementById('msg').className = 'msg ok';
+        });
+    }
+    </script>
+</body>
+</html>
