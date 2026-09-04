@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tienda Online | ClÃ­nica Veterinaria San JosÃ©</title>
-    <meta name="description" content="Productos de calidad para mascotas. AlimentaciÃ³n, juguetes, accesorios y mÃ¡s. EnvÃ­o gratuito en pedidos superiores a 40â‚¬.">
+    <title>Tienda Online | Clínica Veterinaria San José</title>
+    <meta name="description" content="Productos de calidad para mascotas. Alimentación, juguetes, accesorios y más. Envío gratuito en pedidos superiores a 40�,�.">
     <link rel="stylesheet" href="css/fonts.css">
     <link rel="stylesheet" href="css/style.css">
     <style>
@@ -44,25 +44,25 @@
 <div class="page-transition"></div>
 
 <div class="store-info-bar">
-    <p>EnvÃ­o gratuito en pedidos superiores a <strong>40â‚¬</strong> Â· AtenciÃ³n telefÃ³nica: <strong>955 321 470</strong></p>
+    <p>Envío gratuito en pedidos superiores a <strong>40�,�</strong> · Atención telefónica: <strong>955 321 470</strong></p>
 </div>
 
 <nav class="nav" id="mainNav" style="top:44px">
     <div class="container">
-        <a href="index.html" class="nav-logo"><img src="img/clinica-02.jpeg" alt="San JosÃ© Logo" style="height:40px;width:40px;border-radius:50%;object-fit:cover"><div class="nav-logo-text">San JosÃ©</div></a>
+        <a href="index.html" class="nav-logo"><img src="img/clinica-02.jpeg" alt="San José Logo" style="height:40px;width:40px;border-radius:50%;object-fit:cover"><div class="nav-logo-text">San José</div></a>
         <ul class="nav-links" id="navLinks">
             <li><a href="index.html">Inicio</a></li>
             <li><a href="nosotros.html">Nosotros</a></li>
             <li><a href="servicios.html">Servicios</a></li>
             <li><a href="planes.html">Planes</a></li>
             <li><a href="tienda.html" class="active">Tienda</a></li>
-            <li><a href="resenas.html">ReseÃ±as</a></li>
+            <li><a href="resenas.html">Reseñas</a></li>
             <li><a href="contacto.html">Contacto</a></li>
-            <li><a href="tel:955321470" class="nav-cta">â˜Ž 955 321 470</a></li>
+            <li><a href="tel:955321470" class="nav-cta">�~Z 955 321 470</a></li>
         </ul>
         <div class="nav-right">
-            <button class="cart-btn" id="cartBtn" aria-label="Carrito"><span class="cart-btn-icon">ðŸ›’</span><span class="cart-btn-text">Carrito</span><span class="cart-badge" id="cartBadge">0</span></button>
-            <button class="nav-toggle" id="navToggle" aria-label="MenÃº"><span></span><span></span><span></span></button>
+            <button class="cart-btn" id="cartBtn" aria-label="Carrito"><span class="cart-btn-icon">�Y>'</span><span class="cart-btn-text">Carrito</span><span class="cart-badge" id="cartBadge">0</span></button>
+            <button class="nav-toggle" id="navToggle" aria-label="Menú"><span></span><span></span><span></span></button>
         </div>
     </div>
 </nav>
@@ -71,10 +71,10 @@
     <div class="container">
         <div class="section-label">Tienda Online</div>
         <h1>Productos de calidad para<br>tu mejor amigo</h1>
-        <p>Solo vendemos marcas que nosotros mismos recomendamos. EnvÃ­o gratuito en pedidos superiores a 40â‚¬.</p>
+        <p>Solo vendemos marcas que nosotros mismos recomendamos. Envío gratuito en pedidos superiores a 40�,�.</p>
         <div class="store-tabs">
             <button class="store-tab active" data-cat="todos">Todos</button>
-            <button class="store-tab" data-cat="alimento">AlimentaciÃ³n</button>
+            <button class="store-tab" data-cat="alimento">Alimentación</button>
             <button class="store-tab" data-cat="juguetes">Juguetes</button>
             <button class="store-tab" data-cat="accesorios">Accesorios</button>
             <button class="store-tab" data-cat="higiene">Higiene</button>
@@ -86,8 +86,8 @@
     <div class="container">
         <div class="store-grid-full" id="storeGrid"></div>
         <div class="store-empty" id="storeEmpty" style="display:none">
-            <div class="store-empty-icon">ðŸ”</div>
-            <p>No se encontraron productos en esta categorÃ­a.</p>
+            <div class="store-empty-icon">�Y"�</div>
+            <p>No se encontraron productos en esta categoría.</p>
         </div>
     </div>
 </section>
@@ -102,7 +102,7 @@ fetch('_data/products.json?t='+Date.now())
         grid.innerHTML = products.map(p => `
             <article class="store-item reveal" data-cat="${p.category}" data-id="${p.id}" data-brand="${p.brand}" data-name="${p.name}" data-price="${p.price}" data-img="${p.image}">
                 <div class="store-img"><img src="${p.image}" alt="${p.name}" loading="lazy">${p.tag ? `<div class="store-tag">${p.tag}</div>` : ''}</div>
-                <div class="store-info"><div class="store-brand">${p.brand}</div><div class="store-name">${p.name}</div><div class="store-price"><span class="current">${p.price.toFixed(2)}â‚¬</span></div><button class="store-btn">AÃ±adir al carrito</button></div>
+                <div class="store-info"><div class="store-brand">${p.brand}</div><div class="store-name">${p.name}</div><div class="store-price"><span class="current">${p.price.toFixed(2)}�,�</span></div><button class="store-btn">Añadir al carrito</button></div>
             </article>
         `).join('');
         document.querySelectorAll('.store-btn').forEach(btn => {
@@ -110,9 +110,9 @@ fetch('_data/products.json?t='+Date.now())
                 const i = this.closest('.store-item');
                 const {id, brand, name, price, img} = i.dataset;
                 addToCart(parseInt(id), brand, name, price, img);
-                this.textContent = 'âœ“ AÃ±adido';
+                this.textContent = '�o" Añadido';
                 this.style.background = '#2D6B45';
-                setTimeout(() => { this.textContent = 'AÃ±adir al carrito'; this.style.background = '' }, 1500);
+                setTimeout(() => { this.textContent = 'Añadir al carrito'; this.style.background = '' }, 1500);
             });
         });
         document.querySelectorAll('.reveal').forEach(el => ro.observe(el));
@@ -121,30 +121,30 @@ fetch('_data/products.json?t='+Date.now())
 
 <div class="cart-overlay" id="cartOverlay"></div>
 <div class="cart-sidebar" id="cartSidebar">
-    <div class="cart-header"><h3>ðŸ›’ Tu Carrito</h3><button class="cart-close" id="cartClose">âœ•</button></div>
-    <div class="cart-items" id="cartItems"><div class="cart-empty" id="cartEmpty"><div class="cart-empty-icon">ðŸ›’</div><p>Tu carrito estÃ¡ vacÃ­o</p></div></div>
+    <div class="cart-header"><h3>�Y>' Tu Carrito</h3><button class="cart-close" id="cartClose">�o.</button></div>
+    <div class="cart-items" id="cartItems"><div class="cart-empty" id="cartEmpty"><div class="cart-empty-icon">�Y>'</div><p>Tu carrito está vacío</p></div></div>
     <div class="cart-footer" id="cartFooter" style="display:none">
-        <div class="cart-subtotal"><span>Subtotal</span><strong id="cartTotal">0.00â‚¬</strong></div>
-        <div class="cart-shipping">EnvÃ­o gratuito en pedidos superiores a 40â‚¬</div>
-        <button class="cart-checkout" id="checkoutBtn">Finalizar Compra â†’</button>
-        <button class="cart-continue" id="continueBtn">â† Seguir comprando</button>
+        <div class="cart-subtotal"><span>Subtotal</span><strong id="cartTotal">0.00�,�</strong></div>
+        <div class="cart-shipping">Envío gratuito en pedidos superiores a 40�,�</div>
+        <button class="cart-checkout" id="checkoutBtn">Finalizar Compra �?'</button>
+        <button class="cart-continue" id="continueBtn">�?� Seguir comprando</button>
     </div>
 </div>
 
 <div class="vetbot-overlay" id="vetbotOverlay">
     <div class="vetbot-modal" id="vetbotModal">
         <div class="vetbot-header">
-            <div><h3>ðŸ’¬ Asistente Virtual</h3><p>ClÃ­nica Veterinaria San JosÃ©</p></div>
-            <button class="vetbot-close" id="vetbotClose">âœ•</button>
+            <div><h3>�Y'� Asistente Virtual</h3><p>Clínica Veterinaria San José</p></div>
+            <button class="vetbot-close" id="vetbotClose">�o.</button>
         </div>
         <div class="vetbot-body">
-            <div class="vetbot-status"><div class="vetbot-status-dot"></div><span><strong>VetBot en lÃ­nea</strong> Â· Responde al instante</span></div>
+            <div class="vetbot-status"><div class="vetbot-status-dot"></div><span><strong>VetBot en línea</strong> · Responde al instante</span></div>
             <div class="vetbot-chat" id="vetbotChat">
-                <div class="vetbot-msg vetbot-msg--bot">Â¡Hola! Soy el asistente virtual de la ClÃ­nica Veterinaria San JosÃ©. Â¿En quÃ© puedo ayudarte hoy?</div>
+                <div class="vetbot-msg vetbot-msg--bot">¡Hola! Soy el asistente virtual de la Clínica Veterinaria San José. ¿En qué puedo ayudarte hoy?</div>
             </div>
             <div class="vetbot-input-group">
                 <input type="text" class="vetbot-input" id="vetbotInput" placeholder="Escribe tu mensaje...">
-                <button class="vetbot-send" id="vetbotSend">â†’</button>
+                <button class="vetbot-send" id="vetbotSend">�?'</button>
             </div>
         </div>
     </div>
@@ -153,12 +153,12 @@ fetch('_data/products.json?t='+Date.now())
 <footer class="footer">
     <div class="container">
         <div class="footer-grid">
-            <div><div class="footer-brand">ðŸ¾ ClÃ­nica Veterinaria San JosÃ©</div><p class="footer-desc">MÃ¡s de 15 aÃ±os cuidando las mascotas de San JosÃ© de La Rinconada.</p></div>
-            <div class="footer-col"><h4>Servicios</h4><ul><li><a href="servicios.html">Consulta General</a></li><li><a href="servicios.html">VacunaciÃ³n</a></li><li><a href="servicios.html">CirugÃ­a</a></li><li><a href="servicios.html">Terapias Alternativas</a></li></ul></div>
-            <div class="footer-col"><h4>ClÃ­nica</h4><ul><li><a href="nosotros.html">Sobre nosotros</a></li><li><a href="resenas.html">ReseÃ±as Google</a></li><li><a href="contacto.html">Contacto</a></li></ul></div>
+            <div><div class="footer-brand">�Y�� Clínica Veterinaria San José</div><p class="footer-desc">Más de 15 años cuidando las mascotas de San José de La Rinconada.</p></div>
+            <div class="footer-col"><h4>Servicios</h4><ul><li><a href="servicios.html">Consulta General</a></li><li><a href="servicios.html">Vacunación</a></li><li><a href="servicios.html">Cirugía</a></li><li><a href="servicios.html">Terapias Alternativas</a></li></ul></div>
+            <div class="footer-col"><h4>Clínica</h4><ul><li><a href="nosotros.html">Sobre nosotros</a></li><li><a href="resenas.html">Reseñas Google</a></li><li><a href="contacto.html">Contacto</a></li></ul></div>
             <div class="footer-col"><h4>Contacto</h4><ul><li><a href="tel:955321470">955 321 470</a></li></ul></div>
         </div>
-        <div class="footer-bottom"><span>&copy; 2026 ClÃ­nica Veterinaria San JosÃ©.</span><span><a href="politica-privacidad.html">PolÃ­tica de Privacidad</a> Â· <a href="politica-privacidad.html">Aviso Legal</a></span></div>
+        <div class="footer-bottom"><span>&copy; 2026 Clínica Veterinaria San José.</span><span><a href="politica-privacidad.html">Política de Privacidad</a> · <a href="politica-privacidad.html">Aviso Legal</a></span></div>
     </div>
 </footer>
 
