@@ -1,0 +1,10 @@
+---
+id: 1
+name: "Medium Adult 15kg"
+brand: "Royal Canin"
+price: 52.90
+category: "alimento"
+image: "https://images.unsplash.com/photo-1589924691995-400dc9ecc119?w=400&h=400&fit=crop"
+tag: "-15%"
+description: "Alimento completo para perros de tamaño medio de 12 a 24 meses."
+---

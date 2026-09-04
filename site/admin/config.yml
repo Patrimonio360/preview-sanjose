@@ -5,6 +5,7 @@ backend:
   base_url: https://oauth-sanjose.vercel.app
   auth_endpoint: api/auth
 
+locale: "es"
 media_folder: "site/img/uploads"
 public_folder: "/preview-sanjose/site/img/uploads"
 
@@ -21,10 +22,10 @@ collections:
             widget: "list"
             fields:
               - { label: "ID", name: "id", widget: "number" }
-              - { label: "Marca", name: "brand", widget: "string" }
               - { label: "Nombre", name: "name", widget: "string" }
-              - { label: "Precio (€)", name: "price", widget: "number", value_type: "float" }
-              - label: "Categoría"
+              - { label: "Marca", name: "brand", widget: "string" }
+              - { label: "Precio (EUR)", name: "price", widget: "number", value_type: "float" }
+              - label: "Categoria"
                 name: "category"
                 widget: "select"
                 options:
@@ -34,7 +35,7 @@ collections:
                   - { label: "Higiene", value: "higiene" }
               - { label: "Imagen", name: "image", widget: "image", required: false }
               - { label: "Etiqueta", name: "tag", widget: "string", required: false }
-              - { label: "Descripción", name: "description", widget: "text" }
+              - { label: "Descripcion", name: "description", widget: "text" }
 
   - name: "services"
     label: "Servicios"
@@ -49,15 +50,15 @@ collections:
             fields:
               - { label: "ID", name: "id", widget: "number" }
               - { label: "Nombre", name: "name", widget: "string" }
-              - { label: "Icono", name: "icon", widget: "string" }
-              - { label: "Descripción corta", name: "shortDesc", widget: "string" }
+              - { label: "Icono (emoji)", name: "icon", widget: "string" }
               - { label: "Imagen", name: "image", widget: "image", required: false }
-              - { label: "Descripción completa", name: "description", widget: "text" }
-              - label: "Características"
+              - { label: "Descripcion corta", name: "shortDesc", widget: "string" }
+              - { label: "Descripcion completa", name: "description", widget: "text" }
+              - label: "Caracteristicas"
                 name: "features"
                 widget: "list"
                 field:
-                  label: "Característica"
+                  label: "Caracteristica"
                   name: "feature"
                   widget: "string"
 
@@ -68,36 +69,36 @@ collections:
         name: "plans"
         file: "site/_data/plans.json"
         fields:
-          - label: "Lista de Planes"
+          - label: "Planes"
             name: "plans"
             widget: "list"
             fields:
               - { label: "ID", name: "id", widget: "number" }
               - { label: "Nombre", name: "name", widget: "string" }
               - { label: "Icono", name: "icon", widget: "string" }
-              - { label: "Descripción", name: "description", widget: "string" }
-              - { label: "Precio (€/mes)", name: "price", widget: "number", value_type: "float" }
+              - { label: "Descripcion", name: "description", widget: "string" }
+              - { label: "Precio (EUR/mes)", name: "price", widget: "number", value_type: "float" }
               - { label: "Periodo", name: "period", widget: "string" }
               - { label: "Ahorro", name: "savings", widget: "string", required: false }
               - { label: "Badge", name: "badge", widget: "string", required: false }
-              - label: "Características"
+              - label: "Caracteristicas"
                 name: "features"
                 widget: "list"
                 field:
-                  label: "Característica"
+                  label: "Caracteristica"
                   name: "feature"
                   widget: "string"
 
   - name: "settings"
     label: "Ajustes"
     files:
-      - label: "Info Clínica"
+      - label: "Info Clinica"
         name: "clinic-info"
         file: "site/_data/settings.json"
         fields:
           - { label: "Nombre", name: "name", widget: "string" }
-          - { label: "Dirección", name: "address", widget: "string" }
-          - { label: "Teléfono", name: "phone", widget: "string" }
+          - { label: "Direccion", name: "address", widget: "string" }
+          - { label: "Telefono", name: "phone", widget: "string" }
           - { label: "Email", name: "email", widget: "string" }
           - { label: "Horario", name: "hours", widget: "string" }
 

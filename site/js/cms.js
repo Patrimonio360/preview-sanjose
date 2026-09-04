@@ -22,6 +22,42 @@ var CMS = (function() {
       .catch(function() {});
   }
 
+  function loadSettings() {
+    return fetch('_data/settings.json?t=' + Date.now())
+      .then(function(r) { return r.json(); })
+      .then(function(s) {
+        // Nav phone
+        var navPhone = document.querySelector('.nav-cta');
+        if (navPhone) {
+          navPhone.href = 'tel:' + s.phone.replace(/\s/g, '');
+          navPhone.innerHTML = '&#9742; ' + s.phone;
+        }
+        // Hero badge hours
+        var heroBadge = document.querySelector('.hero-badge span');
+        if (heroBadge && s.hours) {
+          heroBadge.textContent = 'Abierto ahora · ' + s.hours;
+        }
+        // Footer brand
+        var footerBrand = document.querySelector('.footer-brand');
+        if (footerBrand && s.name) {
+          footerBrand.textContent = '🐾 ' + s.name;
+        }
+        // Footer phone
+        var footerPhones = document.querySelectorAll('.footer-col a[href^="tel:"]');
+        footerPhones.forEach(function(a) {
+          a.href = 'tel:' + s.phone.replace(/\s/g, '');
+          a.textContent = s.phone;
+        });
+        // Footer email
+        var footerEmails = document.querySelectorAll('.footer-col a[href^="mailto:"]');
+        footerEmails.forEach(function(a) {
+          a.href = 'mailto:' + s.email;
+          a.textContent = s.email;
+        });
+      })
+      .catch(function() {});
+  }
+
   function resetColors() {
     var root = document.documentElement;
     root.style.setProperty('--forest', DEFAULT_COLORS.primary);
@@ -34,5 +70,5 @@ var CMS = (function() {
     root.style.setProperty('--white', DEFAULT_COLORS.white);
   }
 
-  return { applyColors: applyColors, resetColors: resetColors, DEFAULT_COLORS: DEFAULT_COLORS };
+  return { applyColors: applyColors, loadSettings: loadSettings, resetColors: resetColors, DEFAULT_COLORS: DEFAULT_COLORS };
 })();

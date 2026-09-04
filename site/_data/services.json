@@ -1,47 +1,44 @@
-[
-  {
-    "id": 1,
-    "name": "Consulta General",
-    "icon": "🩺",
-    "shortDesc": "Revisiones completas y diagnóstico personalizado.",
-    "image": "img/clinica-07.jpeg",
-    "description": "Consultas generales con exploración completa, diagnóstico clínico y plan de tratamiento personalizado.",
-    "features": ["Exploración física completa", "Historial clínico actualizado", "Diagnóstico y plan de tratamiento", "Seguimiento post-consulta", "Asesoramiento nutricional"]
-  },
-  {
-    "id": 2,
-    "name": "Vacunación",
-    "icon": "💉",
-    "shortDesc": "Planes de vacunación adaptados a cada mascota.",
-    "image": "img/clinica-05.jpeg",
-    "description": "Programa de vacunación completo adaptado a la especie, edad y estilo de vida de tu mascota.",
-    "features": ["Vacunas obligatorias (moquillo, rabia, parvovirus)", "Vacunas opcionales (leishmaniosis, gripe canina)", "Calendario personalizado", "Pasaporte europeo", "Recordatorios automáticos"]
-  },
-  {
-    "id": 3,
-    "name": "Cirugía",
-    "icon": "⚕️",
-    "shortDesc": "Anestesia inhalatoria con monitorización continua.",
-    "image": "img/clinica-11.jpeg",
-    "description": "Cirugías de todo tipo con los máximos estándares de seguridad y monitorización completa.",
-    "features": ["Cirugía ortopédica y de tejido blando", "Esterilizaciones (macho y hembra)", "Laparoscopia minimamente invasiva", "Anestesia inhalatoria con monitorización", "Cirugía de urgencia en horario clínica"]
-  },
-  {
-    "id": 4,
-    "name": "Laboratorio",
-    "icon": "🔬",
-    "shortDesc": "Análisis de sangre, orina y heces.",
-    "image": "img/clinica-12.jpeg",
-    "description": "Laboratorio propio con capacidad de análisis completos. Resultados rápidos y fiables para un diagnóstico preciso.",
-    "features": ["Hematología completa", "Bioquímica sanguínea", "Análisis de orina y heces", "Ecocardiograma", "Radiografías digitales"]
-  },
-  {
-    "id": 5,
-    "name": "Terapias Alternativas",
-    "icon": "🌿",
-    "shortDesc": "Ozonoterapia, acupuntura y más.",
-    "image": "img/clinica-09.jpeg",
-    "description": "Ozonoterapia, acupuntura y otras terapias complementarias para mejorar la salud y bienestar de tu mascota.",
-    "features": ["Ozonoterapia (OXI3) — antiinflamatorio y regenerativo", "Acupuntura veterinaria para dolor crónico", "Fisioterapia y rehabilitación", "Medicina ortomolecular", "Tratamientos complementarios oncológicos"]
-  }
-]
+{
+  "services": [
+    {
+      "id": 1,
+      "name": "Medicina General",
+      "icon": "🩺",
+      "shortDesc": "Consultas, revisiones completas y diagnóstico precoz.",
+      "description": "Consultas generales con exploración completa, diagnóstico por imagen y análisis clínicos.",
+      "features": ["Consulta general completa", "Exploración física detallada", "Análisis clínicos in situ", "Diagnóstico por imagen"]
+    },
+    {
+      "id": 2,
+      "name": "Vacunación",
+      "icon": "💉",
+      "shortDesc": "Programas de vacunación completos para perros y gatos.",
+      "description": "Planes de vacunación adaptados a cada especie y estilo de vida.",
+      "features": ["Vacunas perro y gato", "Recordatorios automáticos", "Pasaporte europeo"]
+    },
+    {
+      "id": 3,
+      "name": "Cirugía",
+      "icon": "🏥",
+      "shortDesc": "Cirugías generales y ortopédicas con las máximas garantías.",
+      "description": "Cirugías con monitorización continua y equipamiento de última generación.",
+      "features": ["Estérilizaciones", "Cirugía de tejidos blandos", "Ortopedia", "Monitorización continua"]
+    },
+    {
+      "id": 4,
+      "name": "Odontología",
+      "icon": "🦷",
+      "shortDesc": "Limpieza dental, extracciones y tratamiento periodontal.",
+      "description": "Servicio completo de odontología veterinaria con ultrasonido y radiografía dental.",
+      "features": ["Limpieza dental con ultrasonido", "Radiografía dental", "Extracciones", "Tratamiento periodontal"]
+    },
+    {
+      "id": 5,
+      "name": "Terapias Alternativas",
+      "icon": "🌿",
+      "shortDesc": "Acupuntura, fitoterapia y medicina holística complementaria.",
+      "description": "Tratamientos complementarios para mejorar la calidad de vida de tu mascota.",
+      "features": ["Acupuntura veterinaria", "Fitoterapia", "Medicina holística", "Rehabilitación física"]
+    }
+  ]
+}
