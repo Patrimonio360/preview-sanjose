@@ -30,12 +30,12 @@ var CMS = (function() {
         var navPhone = document.querySelector('.nav-cta');
         if (navPhone) {
           navPhone.href = 'tel:' + s.phone.replace(/\s/g, '');
-          navPhone.innerHTML = '&#9742; ' + s.phone;
+          navPhone.innerHTML = '\u260E ' + s.phone;
         }
         // Hero badge hours
         var heroBadge = document.querySelector('.hero-badge span');
         if (heroBadge && s.hours) {
-          heroBadge.textContent = 'Abierto ahora · ' + s.hours;
+          heroBadge.textContent = 'Abierto ahora \u00B7 ' + s.hours;
         }
         // Footer brand
         var footerBrand = document.querySelector('.footer-brand');
@@ -44,8 +44,8 @@ var CMS = (function() {
         }
         // Footer description
         var footerDesc = document.querySelector('.footer-desc');
-        if (footerDesc && s.name) {
-          footerDesc.textContent = 'Mas de 15 anos cuidando las mascotas de ' + s.name.split(' ').pop() + ' y alrededores.';
+        if (footerDesc && s.footerDesc) {
+          footerDesc.textContent = s.footerDesc;
         }
         // Footer phone
         var footerPhones = document.querySelectorAll('.footer-col a[href^="tel:"]');
@@ -111,6 +111,65 @@ var CMS = (function() {
       .catch(function() {});
   }
 
+  function loadTestimonials() {
+    var container = document.getElementById('testimonialsList');
+    if (!container) return;
+    return fetch('_data/reviews/index.json?t=' + Date.now())
+      .then(function(r) { return r.json(); })
+      .then(function(reviews) {
+        container.innerHTML = '';
+        reviews.forEach(function(r) {
+          var stars = '';
+          for (var i = 0; i < (r.rating || 5); i++) stars += '\u2605';
+          var initials = r.author.split(' ').map(function(w){return w[0]}).join('');
+          var card = document.createElement('div');
+          card.className = 'review-home reveal';
+          card.innerHTML = '<div class="review-home-stars">' + stars + '</div>' +
+            '<blockquote>"' + r.text + '"</blockquote>' +
+            '<div class="review-home-author"><div class="review-home-avatar">' + initials + '</div>' +
+            '<div><div class="review-home-name">' + r.author + '</div>' +
+            '<div class="review-home-pet">' + r.pet + '</div></div></div>';
+          container.appendChild(card);
+        });
+      })
+      .catch(function() {});
+  }
+
+  function loadPhotos() {
+    return fetch('_data/photos/index.json?t=' + Date.now())
+      .then(function(r) { return r.json(); })
+      .then(function(photos) {
+        // Hero photos (usage=hero)
+        var heroPhotos = photos.filter(function(p){return p.usage==='hero'});
+        var heroImg = document.querySelector('.hero-img img');
+        if (heroImg && heroPhotos.length > 0) {
+          heroImg.src = heroPhotos[0].image;
+        }
+        // Hero avatars
+        var heroAvatars = document.querySelectorAll('.hero-proof-avatar img, .hero-img-label-avatar img');
+        heroAvatars.forEach(function(img, i) {
+          if (heroPhotos[i % heroPhotos.length]) {
+            img.src = heroPhotos[i % heroPhotos.length].image;
+          }
+        });
+        // About page photos (usage=nosotros)
+        var nosotrosPhotos = photos.filter(function(p){return p.usage==='nosotros'});
+        var aboutImg = document.querySelector('.about-img img');
+        if (aboutImg && nosotrosPhotos.length > 0) {
+          aboutImg.src = nosotrosPhotos[0].image;
+        }
+        // Services page photos (usage=servicios)
+        var svcPhotos = photos.filter(function(p){return p.usage==='servicios'});
+        var svcItems = document.querySelectorAll('.svc-img img');
+        svcItems.forEach(function(img, i) {
+          if (svcPhotos[i % svcPhotos.length]) {
+            img.src = svcPhotos[i % svcPhotos.length].image;
+          }
+        });
+      })
+      .catch(function() {});
+  }
+
   function resetColors() {
     var root = document.documentElement;
     root.style.setProperty('--forest', DEFAULT_COLORS.primary);
@@ -123,5 +182,12 @@ var CMS = (function() {
     root.style.setProperty('--white', DEFAULT_COLORS.white);
   }
 
-  return { applyColors: applyColors, loadSettings: loadSettings, resetColors: resetColors, DEFAULT_COLORS: DEFAULT_COLORS };
+  return {
+    applyColors: applyColors,
+    loadSettings: loadSettings,
+    loadTestimonials: loadTestimonials,
+    loadPhotos: loadPhotos,
+    resetColors: resetColors,
+    DEFAULT_COLORS: DEFAULT_COLORS
+  };
 })();

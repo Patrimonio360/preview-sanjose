@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -91,6 +91,17 @@
     </div>
 </section>
 
+<section class="section" style="background:var(--white)">
+    <div class="container">
+        <div style="text-align:center;margin-bottom:48px">
+            <div class="section-label">Testimonios Destacados</div>
+            <h2 class="section-title">Lo que dicen nuestros clientes</h2>
+            <p class="section-desc mx-auto">Opiniones reales de familias que confian en nosotros.</p>
+        </div>
+        <div class="reviews-home" id="testimonialsList"></div>
+    </div>
+</section>
+
 <div class="cart-overlay" id="cartOverlay"></div>
 <div class="cart-sidebar" id="cartSidebar">
     <div class="cart-header"><h3>ðŸ›’ Tu Carrito</h3><button class="cart-close" id="cartClose">âœ•</button></div>
@@ -130,12 +141,12 @@
             <div class="footer-col"><h4>ClÃ­nica</h4><ul><li><a href="nosotros.html">Sobre nosotros</a></li><li><a href="resenas.html">ReseÃ±as Google</a></li><li><a href="contacto.html">Contacto</a></li></ul></div>
             <div class="footer-col"><h4>Contacto</h4><ul><li><a href="tel:955321470">955 321 470</a></li></ul></div>
         </div>
-        <div class="footer-bottom"><span>&copy; 2026 ClÃ­nica Veterinaria San JosÃ©.</span><span><a href="#">PolÃ­tica de Privacidad</a> Â· <a href="#">Aviso Legal</a></span></div>
+        <div class="footer-bottom"><span>&copy; 2026 ClÃ­nica Veterinaria San JosÃ©.</span><span><a href="politica-privacidad.html">PolÃ­tica de Privacidad</a> Â· <a href="aviso-legal.html">Aviso Legal</a></span></div>
     </div>
 </footer>
 
 <script src="js/cms.js"></script>
-<script>CMS.applyColors(); CMS.loadSettings();</script>
+<script>CMS.applyColors(); CMS.loadSettings(); CMS.loadTestimonials(); CMS.loadPhotos();</script>
 <script src="js/main.js"></script>
 </body>
 </html>

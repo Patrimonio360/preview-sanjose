@@ -1,0 +1,5 @@
+[
+  {"id":1,"author":"María García","pet":"Max · Golden Retriever","text":"Llevamos años con ellos. Siempre nos tratan con una paciencia infinita, tanto a nosotros como a nuestro perrito Max. El trato es cercano y profesional.","rating":5},
+  {"id":2,"author":"Javier Rodríguez","pet":"Simba · Gato Siamés","text":"La Dra. Paula es increíble. Detectó un problema de salud en mi gato que en otra clínica no vieron. Profesionales de verdad, 100% recomendable.","rating":5},
+  {"id":3,"author":"Ana López","pet":"Luna y Coco · Mestizos","text":"El mejor trato que hemos encontrado. Te explican todo con detalle, sin prisas y sin recomendarte cosas innecesarias. Muy honestos.","rating":5}
+]

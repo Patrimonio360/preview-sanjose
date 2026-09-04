@@ -51,9 +51,27 @@ document.querySelectorAll('.nav-links a').forEach(a=>a.addEventListener('click',
 const ro=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('visible');ro.unobserve(x.target)}})},{threshold:.12,rootMargin:'0px 0px -30px 0px'});
 document.querySelectorAll('.reveal').forEach(el=>ro.observe(el));
 
-// Contact form
+// Contact form → WhatsApp
 const cf=document.getElementById('contactForm');
-if(cf)cf.addEventListener('submit',function(e){e.preventDefault();const b=this.querySelector('.btn-submit'),o=b.textContent;b.textContent='✓ Enviado';b.style.background='#2D6B45';setTimeout(()=>{b.textContent=o;b.style.background='';this.reset()},3000)});
+if(cf)cf.addEventListener('submit',function(e){
+  e.preventDefault();
+  const nombre=document.getElementById('nombre').value.trim();
+  const telefono=document.getElementById('telefono').value.trim();
+  const email=document.getElementById('email').value.trim();
+  const asunto=document.getElementById('asunto').value;
+  const mensaje=document.getElementById('mensaje').value.trim();
+  const asuntoMap={cita:'Solicitar cita',consulta:'Consulta sobre servicios',otros:'Otro'};
+  const asuntoTxt=asuntoMap[asunto]||asunto;
+  let txt='Hola, soy '+nombre+'. ';
+  if(telefono)txt+='Tel: '+telefono+'. ';
+  if(email)txt+='Email: '+email+'. ';
+  txt+='Motivo: '+asuntoTxt+'. ';
+  if(mensaje)txt+=mensaje;
+  window.open('https://wa.me/'+clinicPhone+'?text='+encodeURIComponent(txt),'_blank');
+  const b=this.querySelector('.btn-submit'),o=b.textContent;
+  b.textContent='✓ Abriendo WhatsApp...';b.style.background='#2D6B45';
+  setTimeout(()=>{b.textContent=o;b.style.background='';this.reset()},3000);
+});
 
 // Store tabs
 document.querySelectorAll('.store-tab').forEach(t=>t.addEventListener('click',function(){document.querySelectorAll('.store-tab').forEach(b=>b.classList.remove('active'));this.classList.add('active');const c=this.dataset.cat;document.querySelectorAll('.store-item').forEach(i=>{i.style.display=(c==='todos'||i.dataset.cat===c)?'':'none'})}));
