@@ -17,7 +17,7 @@
         .svc-detail p{color:var(--gray700);line-height:1.8;margin-bottom:20px}
         .svc-detail-list{list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:24px}
         .svc-detail-list li{display:flex;align-items:center;gap:10px;font-size:.88rem;color:var(--gray700)}
-        .svc-detail-list li::before{content:'�o"';color:var(--forest);font-weight:700}
+        .svc-detail-list li::before{content:'✓';color:var(--forest);font-weight:700}
         @media(max-width:768px){.svc-detail{grid-template-columns:1fr}.svc-detail.reverse{direction:ltr}}
     </style>
 </head>
@@ -36,10 +36,10 @@
             <li><a href="tienda.html">Tienda</a></li>
             <li><a href="resenas.html">Reseñas</a></li>
             <li><a href="contacto.html">Contacto</a></li>
-            <li><a href="tel:955321470" class="nav-cta">�~Z 955 321 470</a></li>
+            <li><a href="tel:955321470" class="nav-cta">☎ 955 321 470</a></li>
         </ul>
         <div class="nav-right">
-            <button class="cart-btn" id="cartBtn" aria-label="Carrito"><span class="cart-btn-icon">�Y>'</span><span class="cart-btn-text">Carrito</span><span class="cart-badge" id="cartBadge">0</span></button>
+            <button class="cart-btn" id="cartBtn" aria-label="Carrito"><span class="cart-btn-icon">🛒</span><span class="cart-btn-text">Carrito</span><span class="cart-badge" id="cartBadge">0</span></button>
             <button class="nav-toggle" id="navToggle" aria-label="Menú"><span></span><span></span><span></span></button>
         </div>
     </div>
@@ -62,7 +62,8 @@
 <script>
 fetch('_data/services.json?t='+Date.now())
     .then(r => r.json())
-    .then(services => {
+    .then(data => {
+        const services = data.services;
         const container = document.getElementById('svcDetailContainer');
         container.innerHTML = services.map((s, i) => `
             <div class="svc-detail${i % 2 === 1 ? ' reverse' : ''}">
@@ -73,7 +74,7 @@ fetch('_data/services.json?t='+Date.now())
                     <ul class="svc-detail-list">
                         ${s.features.map(f => `<li>${f}</li>`).join('')}
                     </ul>
-                    <a href="#vetbot" class="btn btn-forest vetbot-trigger">Solicitar cita �?'</a>
+                    <a href="#vetbot" class="btn btn-forest vetbot-trigger">Solicitar cita →</a>
                 </div>
             </div>
         `).join('');
@@ -86,21 +87,21 @@ fetch('_data/services.json?t='+Date.now())
 
 <div class="cart-overlay" id="cartOverlay"></div>
 <div class="cart-sidebar" id="cartSidebar">
-    <div class="cart-header"><h3>�Y>' Tu Carrito</h3><button class="cart-close" id="cartClose">�o.</button></div>
-    <div class="cart-items" id="cartItems"><div class="cart-empty" id="cartEmpty"><div class="cart-empty-icon">�Y>'</div><p>Tu carrito está vacío</p></div></div>
+    <div class="cart-header"><h3>🛒 Tu Carrito</h3><button class="cart-close" id="cartClose">✕</button></div>
+    <div class="cart-items" id="cartItems"><div class="cart-empty" id="cartEmpty"><div class="cart-empty-icon">🛒</div><p>Tu carrito está vacío</p></div></div>
     <div class="cart-footer" id="cartFooter" style="display:none">
-        <div class="cart-subtotal"><span>Subtotal</span><strong id="cartTotal">0.00�,�</strong></div>
-        <div class="cart-shipping">Envío gratuito en pedidos superiores a 40�,�</div>
-        <button class="cart-checkout" id="checkoutBtn">Finalizar Compra �?'</button>
-        <button class="cart-continue" id="continueBtn">�?� Seguir comprando</button>
+        <div class="cart-subtotal"><span>Subtotal</span><strong id="cartTotal">0.00€</strong></div>
+        <div class="cart-shipping">Envío gratuito en pedidos superiores a 40€</div>
+        <button class="cart-checkout" id="checkoutBtn">Finalizar Compra →</button>
+        <button class="cart-continue" id="continueBtn">← Seguir comprando</button>
     </div>
 </div>
 
 <div class="vetbot-overlay" id="vetbotOverlay">
     <div class="vetbot-modal" id="vetbotModal">
         <div class="vetbot-header">
-            <div><h3>�Y'� Asistente Virtual</h3><p>Clínica Veterinaria San José</p></div>
-            <button class="vetbot-close" id="vetbotClose">�o.</button>
+            <div><h3>🤖 Asistente Virtual</h3><p>Clínica Veterinaria San José</p></div>
+            <button class="vetbot-close" id="vetbotClose">✕</button>
         </div>
         <div class="vetbot-body">
             <div class="vetbot-status"><div class="vetbot-status-dot"></div><span><strong>VetBot en línea</strong> · Responde al instante</span></div>
@@ -109,7 +110,7 @@ fetch('_data/services.json?t='+Date.now())
             </div>
             <div class="vetbot-input-group">
                 <input type="text" class="vetbot-input" id="vetbotInput" placeholder="Escribe tu mensaje...">
-                <button class="vetbot-send" id="vetbotSend">�?'</button>
+                <button class="vetbot-send" id="vetbotSend">→</button>
             </div>
         </div>
     </div>
@@ -118,12 +119,12 @@ fetch('_data/services.json?t='+Date.now())
 <footer class="footer">
     <div class="container">
         <div class="footer-grid">
-            <div><div class="footer-brand">�Y�� Clínica Veterinaria San José</div><p class="footer-desc">Más de 15 años cuidando las mascotas de San José de La Rinconada.</p></div>
+            <div><div class="footer-brand">🏥 Clínica Veterinaria San José</div><p class="footer-desc">Más de 15 años cuidando las mascotas de San José de La Rinconada.</p></div>
             <div class="footer-col"><h4>Servicios</h4><ul><li><a href="servicios.html">Consulta General</a></li><li><a href="servicios.html">Vacunación</a></li><li><a href="servicios.html">Cirugía</a></li><li><a href="servicios.html">Terapias Alternativas</a></li></ul></div>
             <div class="footer-col"><h4>Clínica</h4><ul><li><a href="nosotros.html">Sobre nosotros</a></li><li><a href="resenas.html">Reseñas Google</a></li><li><a href="contacto.html">Contacto</a></li></ul></div>
             <div class="footer-col"><h4>Contacto</h4><ul><li><a href="tel:955321470">955 321 470</a></li></ul></div>
         </div>
-        <div class="footer-bottom"><span>&copy; 2026 Clínica Veterinaria San José.</span><span><a href="politica-privacidad.html">Política de Privacidad</a> · <a href="politica-privacidad.html">Aviso Legal</a></span></div>
+        <div class="footer-bottom"><span>&copy; 2026 Clínica Veterinaria San José.</span><span><a href="politica-privacidad.html">Política de Privacidad</a> · <a href="aviso-legal.html">Aviso Legal</a></span></div>
     </div>
 </footer>
 
