@@ -1,0 +1,10 @@
+{
+  "responses": [
+    {"id":1,"keywords":"cita,appointment,consultar","response":"Perfecto, para solicitar una cita puedo necesitar algunos datos. ¿Qué tipo de consulta necesitas? (Consulta general, vacunación, cirugía, terapias alternativas...)"},
+    {"id":2,"keywords":"hola,buenas,saludos","response":"¡Hola! Soy el asistente virtual de la Clínica Veterinaria San José. ¿En qué puedo ayudarte?"},
+    {"id":3,"keywords":"vacuna,vacunación,parvovirus,rabia","response":"La vacunación es esencial. Ofrecemos planes de vacunación adaptados a cada mascota. ¿Tienes perro o gato?"},
+    {"id":4,"keywords":"precio,coste,cuánto,cuesta","response":"Nuestros precios son muy competitivos. ¿Te gustaría saber el precio de algún servicio en concreto?"},
+    {"id":5,"keywords":"horario,hora,cuándo,abren,cerrado","response":"Nuestro horario es: Lunes a Viernes de 10:00 a 21:00 y Sábados de 10:00 a 13:30."},
+    {"id":6,"keywords":"urgencia,emergencia,24h,noche,ahora","response":"Para urgencias fuera de horario, llama al 955 321 470 y te redirigimos al servicio de guardia correspondiente."}
+  ]
+}

@@ -30,7 +30,11 @@ cartBtn.addEventListener('click',openCart);
 cartOverlay.addEventListener('click',closeCart);
 cartClose.addEventListener('click',closeCart);
 if(continueBtn)continueBtn.addEventListener('click',closeCart);
-if(checkoutBtn)checkoutBtn.addEventListener('click',()=>{const total=cart.reduce((s,i)=>s+i.price*i.qty,0).toFixed(2);window.open(`https://wa.me/34955321470?text=Hola,%20me%20interesan%20estos%20productos%20de%20la%20tienda%20(%20${total}%20€).%20¿Podéis%20confirmarme%20disponibilidad?`,'_blank');closeCart()});
+
+// WhatsApp checkout — loads phone from settings
+let clinicPhone='34955321470';
+fetch('_data/settings.json?t='+Date.now()).then(function(r){return r.json()}).then(function(s){if(s.whatsapp)clinicPhone=s.whatsapp}).catch(function(){});
+if(checkoutBtn)checkoutBtn.addEventListener('click',()=>{const total=cart.reduce((s,i)=>s+i.price*i.qty,0).toFixed(2);window.open('https://wa.me/'+clinicPhone+'?text=Hola,%20me%20interesan%20estos%20productos%20de%20la%20tienda%20(%20'+total+'%20%E2%82%AC).%20%C2%BFPod%C3%A9is%20confirmarme%20disponibilidad?','_blank');closeCart()});
 
 document.querySelectorAll('.store-btn').forEach(btn=>{btn.addEventListener('click',function(){const i=this.closest('.store-item');const{id,brand,name,price,img}=i.dataset;addToCart(parseInt(id),brand,name,price,img);this.textContent='✓ Añadido';this.style.background='#2D6B45';setTimeout(()=>{this.textContent='Añadir al carrito';this.style.background=''},1500)})});
 
@@ -139,6 +143,7 @@ const vetbotSend=document.getElementById('vetbotSend');
 const vetbotInput=document.getElementById('vetbotInput');
 const vetbotChat=document.getElementById('vetbotChat');
 let vetbotOpen=false;
+let vetbotData={};
 
 function openVetBot(){
     if(!vetbotOverlay)return;
@@ -170,25 +175,32 @@ document.addEventListener('keydown',function(e){
     }
 });
 
-const vetbotResponses={
-    'cita':'Perfecto, para solicitar una cita puedo necesitar algunos datos. ¿Qué tipo de consulta necesitas? (Consulta general, vacunación, cirugía, terapias alternativas...)',
-    'hola':'¡Hola! Soy el asistente virtual de la Clínica Veterinaria San José. ¿En qué puedo ayudarte?',
-    'vacuna':'La vacunación es esencial. Ofrecemos planes de vacunación adaptados a cada mascota. ¿Tienes perro o gato?',
-    'precio':'Nuestros precios son muy competitivos. ¿Te gustaría saber el precio de algún servicio en concreto?',
-    'horario':'Nuestro horario es: Lunes a Viernes de 10:00 a 21:00 y Sábados de 10:00 a 13:30.',
-    'urgencia':'Para urgencias fuera de horario, llama al 955 321 470 y te redirigimos al servicio de guardia correspondiente.',
-    'default':'Gracias por tu interés. Un miembro de nuestro equipo te atenderá pronto. ¿Hay algo más en lo que pueda ayudarte?'
-};
+// Load VetBot responses from JSON files
+fetch('_data/chatbot/index.json?t='+Date.now())
+    .then(function(r){return r.json()})
+    .then(function(data){vetbotData=data})
+    .catch(function(){vetbotData={}});
 
 function getVetBotResponse(msg){
     const lower=msg.toLowerCase();
-    if(lower.includes('cita')||lower.includes('appointment'))return vetbotResponses.cita;
-    if(lower.includes('hola')||lower.includes('buenas'))return vetbotResponses.hola;
-    if(lower.includes('vacuna')||lower.includes('vacunación'))return vetbotResponses.vacuna;
-    if(lower.includes('precio')||lower.includes('coste')||lower.includes('cuánto'))return vetbotResponses.precio;
-    if(lower.includes('horario')||lower.includes('hora')||lower.includes('cuándo'))return vetbotResponses.horario;
-    if(lower.includes('urgencia')||lower.includes('emergencia')||lower.includes('24h')||lower.includes('noche'))return vetbotResponses.urgencia;
-    return vetbotResponses.default;
+    // Check loaded chatbot responses
+    if(vetbotData.responses){
+        for(var i=0;i<vetbotData.responses.length;i++){
+            var r=vetbotData.responses[i];
+            var kws=r.keywords.toLowerCase().split(',').map(function(s){return s.trim()});
+            for(var j=0;j<kws.length;j++){
+                if(lower.includes(kws[j]))return r.response;
+            }
+        }
+    }
+    // Fallback defaults
+    if(lower.includes('cita')||lower.includes('appointment'))return 'Perfecto, para solicitar una cita puedo necesitar algunos datos. ¿Qué tipo de consulta necesitas?';
+    if(lower.includes('hola')||lower.includes('buenas'))return '¡Hola! Soy el asistente virtual de la Clínica Veterinaria San José. ¿En qué puedo ayudarte?';
+    if(lower.includes('vacuna')||lower.includes('vacunación'))return 'La vacunación es esencial. Ofrecemos planes de vacunación adaptados a cada mascota. ¿Tienes perro o gato?';
+    if(lower.includes('precio')||lower.includes('coste')||lower.includes('cuánto'))return 'Nuestros precios son muy competitivos. ¿Te gustaría saber el precio de algún servicio en concreto?';
+    if(lower.includes('horario')||lower.includes('hora')||lower.includes('cuándo'))return 'Nuestro horario es: Lunes a Viernes de 10:00 a 21:00 y Sábados de 10:00 a 13:30.';
+    if(lower.includes('urgencia')||lower.includes('emergencia')||lower.includes('24h')||lower.includes('noche'))return 'Para urgencias fuera de horario, llama al '+clinicPhone.replace(/\s/g,'')+' y te redirigimos al servicio de guardia correspondiente.';
+    return 'Gracias por tu interés. Un miembro de nuestro equipo te atenderá pronto. ¿Hay algo más en lo que pueda ayudarte?';
 }
 
 function addVetBotMsg(text,type){

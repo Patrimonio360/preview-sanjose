@@ -40,7 +40,12 @@ var CMS = (function() {
         // Footer brand
         var footerBrand = document.querySelector('.footer-brand');
         if (footerBrand && s.name) {
-          footerBrand.textContent = '🐾 ' + s.name;
+          footerBrand.textContent = s.name;
+        }
+        // Footer description
+        var footerDesc = document.querySelector('.footer-desc');
+        if (footerDesc && s.name) {
+          footerDesc.textContent = 'Mas de 15 anos cuidando las mascotas de ' + s.name.split(' ').pop() + ' y alrededores.';
         }
         // Footer phone
         var footerPhones = document.querySelectorAll('.footer-col a[href^="tel:"]');
@@ -54,6 +59,54 @@ var CMS = (function() {
           a.href = 'mailto:' + s.email;
           a.textContent = s.email;
         });
+        // Footer social links
+        var socialLinks = document.querySelectorAll('.footer-social a');
+        socialLinks.forEach(function(a) {
+          if (s.facebook && a.href.includes('facebook.com')) {
+            a.href = s.facebook;
+          }
+          if (s.instagram && a.href.includes('instagram.com')) {
+            a.href = s.instagram;
+          }
+        });
+        // WhatsApp buttons
+        var whatsappBtns = document.querySelectorAll('[href*="wa.me/"]');
+        whatsappBtns.forEach(function(a) {
+          a.href = 'https://wa.me/' + s.whatsapp;
+        });
+        // Contacto page info
+        var contactoInfo = document.querySelector('.contacto-info-phone');
+        if (contactoInfo) {
+          contactoInfo.href = 'tel:' + s.phone.replace(/\s/g, '');
+          contactoInfo.textContent = s.phone;
+        }
+        var contactoEmail = document.querySelector('.contacto-info-email');
+        if (contactoEmail) {
+          contactoEmail.href = 'mailto:' + s.email;
+          contactoEmail.textContent = s.email;
+        }
+        var contactoAddress = document.querySelector('.contacto-info-address');
+        if (contactoAddress) {
+          contactoAddress.textContent = s.address;
+        }
+        var contactoHours = document.querySelector('.contacto-info-hours');
+        if (contactoHours) {
+          contactoHours.textContent = s.hours;
+        }
+        // Aviso legal CIF
+        var avisoCif = document.querySelector('.aviso-cif');
+        if (avisoCif && s.cif) {
+          avisoCif.textContent = s.cif;
+        }
+        // Trust stats
+        var trustYears = document.querySelector('[data-trust="years"]');
+        if (trustYears && s.trustYears) trustYears.textContent = s.trustYears;
+        var trustFamilies = document.querySelector('[data-trust="families"]');
+        if (trustFamilies && s.trustFamilies) trustFamilies.textContent = s.trustFamilies;
+        var trustLab = document.querySelector('[data-trust="lab"]');
+        if (trustLab && s.trustLab) trustLab.textContent = s.trustLab;
+        var trustAccessible = document.querySelector('[data-trust="accessible"]');
+        if (trustAccessible && s.trustAccessible) trustAccessible.textContent = s.trustAccessible;
       })
       .catch(function() {});
   }

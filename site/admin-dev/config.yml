@@ -1,0 +1,27 @@
+backend:
+  name: github
+  repo: Patrimonio360/preview-sanjose
+  branch: master
+  base_url: https://oauth-sanjose.vercel.app
+  auth_endpoint: api/auth
+
+locale: "es"
+media_folder: "site/img/uploads"
+public_folder: "/preview-sanjose/site/img/uploads"
+
+collections:
+  - name: "colors"
+    label: "Colores del Sitio"
+    files:
+      - label: "Colores"
+        name: "colors"
+        file: "site/_data/colors.json"
+        fields:
+          - { label: "Color Primario", name: "primary", widget: "color" }
+          - { label: "Primario Claro", name: "primaryLight", widget: "color" }
+          - { label: "Sage", name: "sage", widget: "color" }
+          - { label: "Coral", name: "coral", widget: "color" }
+          - { label: "Coral Oscuro", name: "coralDark", widget: "color" }
+          - { label: "Fondo", name: "cream", widget: "color" }
+          - { label: "Texto", name: "charcoal", widget: "color" }
+          - { label: "Blanco", name: "white", widget: "color" }

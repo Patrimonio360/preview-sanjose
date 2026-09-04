@@ -101,16 +101,60 @@ collections:
           - { label: "Telefono", name: "phone", widget: "string" }
           - { label: "Email", name: "email", widget: "string" }
           - { label: "Horario", name: "hours", widget: "string" }
+          - { label: "CIF/NIF", name: "cif", widget: "string" }
+          - { label: "WhatsApp (sin +)", name: "whatsapp", widget: "string" }
+          - { label: "Facebook URL", name: "facebook", widget: "string" }
+          - { label: "Instagram URL", name: "instagram", widget: "string" }
+          - { label: "Anos de experiencia (confianza)", name: "trustYears", widget: "string" }
+          - { label: "Familias confianza (confianza)", name: "trustFamilies", widget: "string" }
+          - { label: "Laboratorio (confianza)", name: "trustLab", widget: "string" }
+          - { label: "Accesible (confianza)", name: "trustAccessible", widget: "string" }
 
-      - label: "Colores del Sitio"
-        name: "colors"
-        file: "site/_data/colors.json"
-        fields:
-          - { label: "Color Primario", name: "primary", widget: "color" }
-          - { label: "Primario Claro", name: "primaryLight", widget: "color" }
-          - { label: "Sage", name: "sage", widget: "color" }
-          - { label: "Coral", name: "coral", widget: "color" }
-          - { label: "Coral Oscuro", name: "coralDark", widget: "color" }
-          - { label: "Fondo", name: "cream", widget: "color" }
-          - { label: "Texto", name: "charcoal", widget: "color" }
-          - { label: "Blanco", name: "white", widget: "color" }
+  - name: "chatbot"
+    label: "VetBot"
+    folder: "site/_data/chatbot"
+    create: true
+    delete: true
+    slug: "{{id}}-{{slug}}"
+    summary: "{{keywords}}"
+    fields:
+      - { label: "ID", name: "id", widget: "number" }
+      - { label: "Palabras clave", name: "keywords", widget: "string" }
+      - { label: "Respuesta", name: "response", widget: "text" }
+
+  - name: "reviews"
+    label: "Testimonios"
+    folder: "site/_data/reviews"
+    create: true
+    delete: true
+    slug: "{{id}}-{{slug}}"
+    summary: "{{author}} - {{pet}}"
+    fields:
+      - { label: "ID", name: "id", widget: "number" }
+      - { label: "Autor", name: "author", widget: "string" }
+      - { label: "Mascota (nombre y tipo)", name: "pet", widget: "string" }
+      - { label: "Texto", name: "text", widget: "text" }
+      - { label: "Estrellas (1-5)", name: "rating", widget: "number", min: 1, max: 5 }
+
+  - name: "photos"
+    label: "Fotos Clinica"
+    folder: "site/_data/photos"
+    create: true
+    delete: true
+    slug: "{{id}}-{{slug}}"
+    summary: "{{title}} - {{usage}}"
+    fields:
+      - { label: "ID", name: "id", widget: "number" }
+      - { label: "Titulo", name: "title", widget: "string" }
+      - { label: "Imagen", name: "image", widget: "image" }
+      - label: "Donde se usa"
+        name: "usage"
+        widget: "select"
+        options:
+          - { label: "Portada / Hero", value: "hero" }
+          - { label: "Inicio (Resto)", value: "home" }
+          - { label: "Pagina Nosotros", value: "nosotros" }
+          - { label: "Pagina Servicios", value: "servicios" }
+          - { label: "Pagina Contacto", value: "contacto" }
+          - { label: "Footer / General", value: "general" }
+      - { label: "Descripcion", name: "description", widget: "string", required: false }
