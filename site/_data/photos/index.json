@@ -23,7 +23,7 @@
   {
     "id": 4,
     "title": "Equipo veterinario",
-    "image": "img/clinica-04.jpeg",
+    "image": "https://raw.githubusercontent.com/Patrimonio360/preview-sanjose/master/site/img/uploads/20260905_clinica-04.jpeg",
     "usage": "nosotros",
     "description": "Nuestro equipo de profesionales."
   },
