@@ -90,8 +90,8 @@ var CMS = (function() {
           contactoAddress.textContent = s.address;
         }
         var contactoHours = document.querySelector('.contacto-info-hours');
-        if (contactoHours) {
-          contactoHours.textContent = s.hours;
+        if (contactoHours && s.hours) {
+          contactoHours.innerHTML = s.hours.replace(/\n/g, '<br>');
         }
         // Aviso legal CIF
         var avisoCif = document.querySelector('.aviso-cif');
