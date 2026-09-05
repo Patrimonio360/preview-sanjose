@@ -849,6 +849,9 @@
       <div class="sidebar-item" data-section="settings">
         <span class="icon">&#x2699;&#xFE0F;</span> Ajustes
       </div>
+      <div class="sidebar-item" data-section="themes">
+        <span class="icon">&#x1F3A8;</span> Temas
+      </div>
       <div class="sidebar-item" data-section="chatbot">
         <span class="icon">&#x1F916;</span> VetBot
       </div>
@@ -1076,7 +1079,8 @@
       chatbot: 'site/_data/chatbot/index.json',
       reviews: 'site/_data/reviews/index.json',
       photos: 'site/_data/photos/index.json',
-      appointments: 'site/_data/appointments.json'
+      appointments: 'site/_data/appointments.json',
+      themes: 'site/_data/colors.json'
     };
     return map[section];
   }
@@ -1142,8 +1146,11 @@
         renderSettings(data);
       } else if (section === 'appointments') {
         renderAppointments(data);
+      } else if (section === 'themes') {
+        renderThemes(data);
       } else {
-        var items = data[section] || [];
+        var items = Array.isArray(data) ? data : (data[section] || []);
+        currentData[section] = Array.isArray(data) ? data : data;
         renderGrid(section, items);
       }
 
@@ -1476,6 +1483,71 @@
     }
   };
 
+  // ===== THEMES =====
+  var THEMES = [
+    { name: 'Forest (Original)', id: 'forest', primary: '#1A3C2A', primaryLight: '#2D6B45', sage: '#6B9B7A', coral: '#D4764E', coralDark: '#B85E3A', cream: '#FBF9F5', charcoal: '#1C1C1C' },
+    { name: 'Oceano', id: 'ocean', primary: '#0D3B66', primaryLight: '#1D6FA5', sage: '#5B9BD5', coral: '#FF8C42', coralDark: '#D97328', cream: '#F0F7FF', charcoal: '#1A1A2E' },
+    { name: 'Atardecer', id: 'sunset', primary: '#8B2500', primaryLight: '#C44536', sage: '#E8985E', coral: '#D4764E', coralDark: '#B85E3A', cream: '#FFF5EE', charcoal: '#2C1810' },
+    { name: 'Real', id: 'royal', primary: '#2E1065', primaryLight: '#5B21B6', sage: '#8B5CF6', coral: '#F59E0B', coralDark: '#D97706', cream: '#FAF5FF', charcoal: '#1E1B4B' },
+    { name: 'Morena', id: 'moorish', primary: '#3D2B1F', primaryLight: '#6B4226', sage: '#A0785A', coral: '#C97B4B', coralDark: '#A86232', cream: '#FDF6EC', charcoal: '#2C1A0E' },
+    { name: 'Rosa Pastel', id: 'rose', primary: '#9D4C6E', primaryLight: '#C4728E', sage: '#E8A0B5', coral: '#F472B6', coralDark: '#DB2777', cream: '#FFF1F5', charcoal: '#4A1942' },
+    { name: 'Lavanda', id: 'lavender', primary: '#4C1D95', primaryLight: '#6D28D9', sage: '#A78BFA', coral: '#F472B6', coralDark: '#DB2777', cream: '#F5F3FF', charcoal: '#2E1065' },
+    { name: 'Tropical', id: 'tropical', primary: '#065F46', primaryLight: '#059669', sage: '#34D399', coral: '#F97316', coralDark: '#EA580C', cream: '#ECFDF5', charcoal: '#064E3B' }
+  ];
+
+  function renderThemes(data) {
+    var main = $('#main-content');
+    var currentPrimary = data.primary || '#1A3C2A';
+    var activeTheme = THEMES.find(function(t) { return t.primary === currentPrimary; });
+
+    var html = '<div class="main-header"><span class="main-title">Temas de color</span></div>';
+    html += '<p style="color:var(--gray-500);margin-bottom:24px;font-size:14px">Selecciona un tema para cambiar todos los colores de la web de una vez.</p>';
+    html += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px">';
+
+    THEMES.forEach(function(theme) {
+      var isActive = activeTheme && activeTheme.id === theme.id;
+      var border = isActive ? 'border:3px solid var(--forest)' : 'border:3px solid transparent';
+      html += '<div class="theme-card" data-theme="' + theme.id + '" style="background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);cursor:pointer;transition:all .2s;' + border + '" onclick="window._applyTheme(\'' + theme.id + '\')">';
+      html += '<div style="display:flex;gap:0;border-radius:var(--radius) var(--radius) 0 0;overflow:hidden;height:48px">';
+      html += '<div style="flex:3;background:' + theme.primary + '"></div>';
+      html += '<div style="flex:2;background:' + theme.primaryLight + '"></div>';
+      html += '<div style="flex:1;background:' + theme.sage + '"></div>';
+      html += '<div style="flex:1;background:' + theme.coral + '"></div>';
+      html += '</div>';
+      html += '<div style="padding:14px 16px">';
+      html += '<div style="font-weight:600;font-size:14px;color:var(--charcoal)">' + theme.name + '</div>';
+      if (isActive) html += '<div style="font-size:11px;color:var(--forest);font-weight:600;margin-top:4px">Tema activo</div>';
+      html += '</div></div>';
+    });
+
+    html += '</div>';
+    main.innerHTML = html;
+  }
+
+  window._applyTheme = async function(themeId) {
+    var theme = THEMES.find(function(t) { return t.id === themeId; });
+    if (!theme) return;
+
+    var colors = {
+      primary: theme.primary,
+      primaryLight: theme.primaryLight,
+      sage: theme.sage,
+      coral: theme.coral,
+      coralDark: theme.coralDark,
+      cream: theme.cream,
+      charcoal: theme.charcoal,
+      white: '#FFFFFF'
+    };
+
+    try {
+      await githubWrite(getFilePath('themes'), colors, 'admin: aplicar tema "' + theme.name + '" - ' + new Date().toISOString());
+      showToast('Tema "' + theme.name + '" aplicado');
+      loadSection('themes');
+    } catch (e) {
+      showToast('Error al aplicar tema: ' + e.message, true);
+    }
+  };
+
   // ===== CRUD OPERATIONS =====
 
   // ADD
@@ -1490,9 +1562,15 @@
     else if (section === 'appointments') showToast('Las citas se crean desde la web', true);
   };
 
+  function getDataItems(section) {
+    var d = currentData[section];
+    if (Array.isArray(d)) return d;
+    return d[section] || [];
+  }
+
   // EDIT
   window._edit = function(idx) {
-    var items = currentData[currentSection][currentSection] || [];
+    var items = getDataItems(currentSection);
     var item = items[idx];
     if (currentSection === 'products') openProductModal(item, idx);
     else if (currentSection === 'services') openServiceModal(item, idx);
@@ -1504,7 +1582,7 @@
 
   // DELETE
   window._delete = async function(idx) {
-    var items = currentData[currentSection][currentSection] || [];
+    var items = getDataItems(currentSection);
     var item = items[idx];
     var name = item.name || item.title || item.author || 'este elemento';
     var ok = await showConfirm('Eliminar "' + name + '"?');
