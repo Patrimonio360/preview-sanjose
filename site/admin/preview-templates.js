@@ -37,38 +37,56 @@
   CMS.registerPreviewTemplate('products', createClassFunc({
     render: function() {
       var data = this.props.entry.get('data');
-      var name = data.get('name') || 'Producto';
-      var brand = data.get('brand') || '';
-      var price = data.get('price') || 0;
-      var image = data.get('image') || '';
-      var tag = data.get('tag') || '';
-      var description = data.get('description') || '';
+      var products = data.get('products') || data;
 
-      var imgHtml = image
-        ? '<img src="' + image + '" style="width:100%;height:100%;object-fit:cover;" />'
-        : '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#999;font-size:48px;">\uD83D\uDCF7</div>';
+      // If it's a list of products, render all
+      var items = [];
+      if (products && typeof products.forEach === 'function') {
+        products.forEach(function(p) {
+          items.push(p);
+        });
+      } else if (products && products.toJS) {
+        items = products.toJS();
+      }
 
-      var tagHtml = tag
-        ? '<div style="position:relative;margin-top:-48px;margin-left:12px;margin-bottom:12px;"><span style="background:#D4764E;color:white;font-size:11px;font-weight:700;padding:4px 12px;border-radius:50px;">' + tag + '</span></div>'
-        : '';
+      // If no items found, try treating data as single product
+      if (items.length === 0) {
+        items = [data];
+      }
 
-      var descHtml = description
-        ? '<div style="font-size:12px;color:#666;line-height:1.6;margin-bottom:16px;">' + description.substring(0, 120) + (description.length > 120 ? '...' : '') + '</div>'
-        : '';
+      var allHtml = '<div style="font-family:Inter,system-ui,sans-serif;padding:16px;">'
+        + '<h2 style="font-size:20px;font-weight:700;color:#1C1C1C;margin:0 0 16px 0;">Productos (' + items.length + ')</h2>'
+        + '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;">';
 
-      var html = ''
-        + '<div style="font-family:Inter,system-ui,sans-serif;max-width:400px;margin:0 auto;background:#FBF9F5;border-radius:16px;overflow:hidden;">'
-        + '<div style="width:100%;aspect-ratio:1;overflow:hidden;background:#eee;">' + imgHtml + '</div>'
-        + tagHtml
-        + '<div style="padding:0 16px 16px;">'
-        + '<div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">' + brand + '</div>'
-        + '<div style="font-size:14px;font-weight:600;color:#1C1C1C;margin-bottom:8px;line-height:1.3;">' + name + '</div>'
-        + '<div style="font-family:Fraunces,serif;font-size:20px;color:#1A3C2A;margin-bottom:12px;">' + price.toFixed(2) + '\u20AC</div>'
-        + descHtml
-        + '<button style="width:100%;padding:12px;border-radius:50px;background:#1A3C2A;color:white;border:none;font-size:13px;font-weight:600;cursor:pointer;">A\u00F1adir al carrito</button>'
-        + '</div></div>';
+      items.forEach(function(item) {
+        var name = item.get ? (item.get('name') || 'Producto') : (item.name || 'Producto');
+        var brand = item.get ? (item.get('brand') || '') : (item.brand || '');
+        var price = item.get ? (item.get('price') || 0) : (item.price || 0);
+        var image = item.get ? (item.get('image') || '') : (item.image || '');
+        var tag = item.get ? (item.get('tag') || '') : (item.tag || '');
+        var description = item.get ? (item.get('description') || '') : (item.description || '');
 
-      return render(html);
+        var imgHtml = image
+          ? '<img src="' + image + '" style="width:100%;height:100%;object-fit:cover;" />'
+          : '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#999;font-size:48px;">\uD83D\uDCF7</div>';
+
+        var tagHtml = tag
+          ? '<div style="position:relative;margin-top:-48px;margin-left:12px;margin-bottom:12px;"><span style="background:#D4764E;color:white;font-size:11px;font-weight:700;padding:4px 12px;border-radius:50px;">' + tag + '</span></div>'
+          : '';
+
+        allHtml += '<div style="background:#FBF9F5;border-radius:16px;overflow:hidden;">'
+          + '<div style="width:100%;aspect-ratio:1;overflow:hidden;background:#eee;">' + imgHtml + '</div>'
+          + tagHtml
+          + '<div style="padding:0 16px 16px;">'
+          + '<div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">' + brand + '</div>'
+          + '<div style="font-size:14px;font-weight:600;color:#1C1C1C;margin-bottom:8px;line-height:1.3;">' + name + '</div>'
+          + '<div style="font-family:Fraunces,serif;font-size:20px;color:#1A3C2A;margin-bottom:12px;">' + (typeof price === 'number' ? price.toFixed(2) : price) + '\u20AC</div>'
+          + '<button style="width:100%;padding:12px;border-radius:50px;background:#1A3C2A;color:white;border:none;font-size:13px;font-weight:600;cursor:pointer;">A\u00F1adir al carrito</button>'
+          + '</div></div>';
+      });
+
+      allHtml += '</div></div>';
+      return render(allHtml);
     }
   }));
 
@@ -78,46 +96,61 @@
   CMS.registerPreviewTemplate('services', createClassFunc({
     render: function() {
       var data = this.props.entry.get('data');
-      var name = data.get('name') || 'Servicio';
-      var icon = data.get('icon') || '\uD83E\uDE7A';
-      var shortDesc = data.get('shortDesc') || '';
-      var description = data.get('description') || '';
-      var image = data.get('image') || '';
-      var features = data.get('features') || [];
+      var services = data.get('services') || data;
 
-      var imgHtml = image
-        ? '<div style="width:100%;border-radius:12px;overflow:hidden;margin-bottom:20px;"><img src="' + image + '" style="width:100%;aspect-ratio:16/10;object-fit:cover;display:block;" /></div>'
-        : '';
-
-      var featuresHtml = '';
-      if (features && features.size > 0) {
-        featuresHtml = '<div style="margin-bottom:20px;">';
-        features.forEach(function(f) {
-          var ft = typeof f === 'object' ? (f.get('feature') || f.get('')) : f;
-          if (ft) {
-            featuresHtml += '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #f0f0f0;">'
-              + '<span style="color:#2D6B45;font-weight:700;font-size:12px;">\u2713</span>'
-              + '<span style="font-size:13px;color:#555;">' + ft + '</span></div>';
-          }
-        });
-        featuresHtml += '</div>';
+      var items = [];
+      if (services && typeof services.forEach === 'function') {
+        services.forEach(function(s) { items.push(s); });
+      } else if (services && services.toJS) {
+        items = services.toJS();
       }
+      if (items.length === 0) items = [data];
 
-      var html = ''
-        + '<div style="font-family:Inter,system-ui,sans-serif;max-width:600px;margin:0 auto;background:white;border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,0.08);overflow:hidden;">'
-        + '<div style="padding:24px;">'
-        + '<div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;">'
-        + '<div style="width:56px;height:56px;background:#FBF9F5;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;">' + icon + '</div>'
-        + '<div><h3 style="font-size:18px;font-weight:700;color:#1C1C1C;margin:0 0 4px 0;">' + name + '</h3>'
-        + (shortDesc ? '<p style="font-size:13px;color:#888;margin:0;">' + shortDesc + '</p>' : '')
-        + '</div></div>'
-        + imgHtml
-        + (description ? '<div style="font-size:14px;color:#555;line-height:1.8;margin-bottom:20px;">' + description + '</div>' : '')
-        + featuresHtml
-        + '<a href="#" style="display:block;text-align:center;padding:12px;border-radius:50px;background:#1A3C2A;color:white;text-decoration:none;font-size:13px;font-weight:600;">Solicitar cita \u2192</a>'
-        + '</div></div>';
+      var allHtml = '<div style="font-family:Inter,system-ui,sans-serif;padding:16px;">'
+        + '<h2 style="font-size:20px;font-weight:700;color:#1C1C1C;margin:0 0 16px 0;">Servicios (' + items.length + ')</h2>';
 
-      return render(html);
+      items.forEach(function(item) {
+        var name = item.get ? (item.get('name') || 'Servicio') : (item.name || 'Servicio');
+        var icon = item.get ? (item.get('icon') || '\uD83E\uDE7A') : (item.icon || '\uD83E\uDE7A');
+        var shortDesc = item.get ? (item.get('shortDesc') || '') : (item.shortDesc || '');
+        var description = item.get ? (item.get('description') || '') : (item.description || '');
+        var image = item.get ? (item.get('image') || '') : (item.image || '');
+        var features = item.get ? item.get('features') : (item.features || []);
+
+        var imgHtml = image
+          ? '<div style="width:100%;border-radius:12px;overflow:hidden;margin-bottom:20px;"><img src="' + image + '" style="width:100%;aspect-ratio:16/10;object-fit:cover;display:block;" /></div>'
+          : '';
+
+        var featuresHtml = '';
+        if (features && features.size > 0) {
+          featuresHtml = '<div style="margin-bottom:20px;">';
+          features.forEach(function(f) {
+            var ft = typeof f === 'object' ? (f.get ? (f.get('feature') || f.get('')) : (f.feature || f)) : f;
+            if (ft) {
+              featuresHtml += '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #f0f0f0;">'
+                + '<span style="color:#2D6B45;font-weight:700;font-size:12px;">\u2713</span>'
+                + '<span style="font-size:13px;color:#555;">' + ft + '</span></div>';
+            }
+          });
+          featuresHtml += '</div>';
+        }
+
+        allHtml += '<div style="background:white;border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,0.08);overflow:hidden;margin-bottom:16px;">'
+          + '<div style="padding:24px;">'
+          + '<div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;">'
+          + '<div style="width:56px;height:56px;background:#FBF9F5;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;">' + icon + '</div>'
+          + '<div><h3 style="font-size:18px;font-weight:700;color:#1C1C1C;margin:0 0 4px 0;">' + name + '</h3>'
+          + (shortDesc ? '<p style="font-size:13px;color:#888;margin:0;">' + shortDesc + '</p>' : '')
+          + '</div></div>'
+          + imgHtml
+          + (description ? '<div style="font-size:14px;color:#555;line-height:1.8;margin-bottom:20px;">' + description + '</div>' : '')
+          + featuresHtml
+          + '<a href="#" style="display:block;text-align:center;padding:12px;border-radius:50px;background:#1A3C2A;color:white;text-decoration:none;font-size:13px;font-weight:600;">Solicitar cita \u2192</a>'
+          + '</div></div>';
+      });
+
+      allHtml += '</div>';
+      return render(allHtml);
     }
   }));
 
@@ -127,55 +160,71 @@
   CMS.registerPreviewTemplate('plans', createClassFunc({
     render: function() {
       var data = this.props.entry.get('data');
-      var name = data.get('name') || 'Plan';
-      var icon = data.get('icon') || '\uD83D\uDCCB';
-      var price = data.get('price') || 0;
-      var period = data.get('period') || 'mes';
-      var description = data.get('description') || '';
-      var badge = data.get('badge') || '';
-      var savings = data.get('savings') || '';
-      var features = data.get('features') || [];
+      var plans = data.get('plans') || data;
 
-      var borderColor = badge ? '#D4764E' : 'transparent';
-      var badgeHtml = badge
-        ? '<div style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:#D4764E;color:white;font-size:11px;font-weight:700;padding:4px 14px;border-radius:50px;text-transform:uppercase;letter-spacing:0.5px;">' + badge + '</div>'
-        : '';
-
-      var savingsHtml = savings
-        ? '<div style="font-size:12px;color:#2D6B45;font-weight:600;margin-bottom:16px;padding:6px 12px;background:#E8F5E9;border-radius:8px;display:inline-block;">' + savings + '</div>'
-        : '';
-
-      var featuresHtml = '';
-      if (features && features.size > 0) {
-        featuresHtml = '<div style="text-align:left;margin-bottom:24px;">';
-        features.forEach(function(f) {
-          var ft = typeof f === 'object' ? (f.get('feature') || f.get('')) : f;
-          if (ft) {
-            featuresHtml += '<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f0f0f0;font-size:13px;color:#555;">'
-              + '<span style="color:#2D6B45;font-weight:700;">\u2713</span>'
-              + '<span>' + ft + '</span></div>';
-          }
-        });
-        featuresHtml += '</div>';
+      var items = [];
+      if (plans && typeof plans.forEach === 'function') {
+        plans.forEach(function(p) { items.push(p); });
+      } else if (plans && plans.toJS) {
+        items = plans.toJS();
       }
+      if (items.length === 0) items = [data];
 
-      var btnBg = badge ? '#D4764E' : '#1A3C2A';
-      var priceStr = price.toFixed(2).replace('.', ',');
+      var allHtml = '<div style="font-family:Inter,system-ui,sans-serif;padding:16px;">'
+        + '<h2 style="font-size:20px;font-weight:700;color:#1C1C1C;margin:0 0 16px 0;">Planes de Salud (' + items.length + ')</h2>'
+        + '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;">';
 
-      var html = ''
-        + '<div style="font-family:Inter,system-ui,sans-serif;max-width:340px;margin:0 auto;background:white;border-radius:20px;box-shadow:0 4px 20px rgba(0,0,0,0.08);text-align:center;position:relative;border:2px solid ' + borderColor + ';padding:32px 24px;">'
-        + badgeHtml
-        + '<div style="font-size:36px;margin-bottom:12px;">' + icon + '</div>'
-        + '<div style="font-size:13px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">' + name + '</div>'
-        + '<div style="font-family:Fraunces,serif;font-size:36px;color:#1A3C2A;margin-bottom:4px;line-height:1;"><span>' + priceStr + '</span></div>'
-        + '<div style="font-size:13px;color:#888;margin-bottom:20px;">\u20AC/' + period + '</div>'
-        + savingsHtml
-        + (description ? '<div style="font-size:13px;color:#666;line-height:1.6;margin-bottom:20px;">' + description + '</div>' : '')
-        + featuresHtml
-        + '<a href="#" style="display:block;width:100%;padding:12px;border-radius:50px;background:' + btnBg + ';color:white;text-decoration:none;font-size:13px;font-weight:600;">Ver detalles \u2192</a>'
-        + '</div>';
+      items.forEach(function(item) {
+        var name = item.get ? (item.get('name') || 'Plan') : (item.name || 'Plan');
+        var icon = item.get ? (item.get('icon') || '\uD83D\uDCCB') : (item.icon || '\uD83D\uDCCB');
+        var price = item.get ? (item.get('price') || 0) : (item.price || 0);
+        var period = item.get ? (item.get('period') || 'mes') : (item.period || 'mes');
+        var description = item.get ? (item.get('description') || '') : (item.description || '');
+        var badge = item.get ? (item.get('badge') || '') : (item.badge || '');
+        var savings = item.get ? (item.get('savings') || '') : (item.savings || '');
+        var features = item.get ? item.get('features') : (item.features || []);
 
-      return render(html);
+        var borderColor = badge ? '#D4764E' : 'transparent';
+        var badgeHtml = badge
+          ? '<div style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:#D4764E;color:white;font-size:11px;font-weight:700;padding:4px 14px;border-radius:50px;text-transform:uppercase;letter-spacing:0.5px;">' + badge + '</div>'
+          : '';
+
+        var savingsHtml = savings
+          ? '<div style="font-size:12px;color:#2D6B45;font-weight:600;margin-bottom:16px;padding:6px 12px;background:#E8F5E9;border-radius:8px;display:inline-block;">' + savings + '</div>'
+          : '';
+
+        var featuresHtml = '';
+        if (features && features.size > 0) {
+          featuresHtml = '<div style="text-align:left;margin-bottom:24px;">';
+          features.forEach(function(f) {
+            var ft = typeof f === 'object' ? (f.get ? (f.get('feature') || f.get('')) : (f.feature || f)) : f;
+            if (ft) {
+              featuresHtml += '<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f0f0f0;font-size:13px;color:#555;">'
+                + '<span style="color:#2D6B45;font-weight:700;">\u2713</span>'
+                + '<span>' + ft + '</span></div>';
+            }
+          });
+          featuresHtml += '</div>';
+        }
+
+        var btnBg = badge ? '#D4764E' : '#1A3C2A';
+        var priceStr = (typeof price === 'number' ? price.toFixed(2) : price).replace('.', ',');
+
+        allHtml += '<div style="background:white;border-radius:20px;box-shadow:0 4px 20px rgba(0,0,0,0.08);text-align:center;position:relative;border:2px solid ' + borderColor + ';padding:32px 24px;">'
+          + badgeHtml
+          + '<div style="font-size:36px;margin-bottom:12px;">' + icon + '</div>'
+          + '<div style="font-size:13px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">' + name + '</div>'
+          + '<div style="font-family:Fraunces,serif;font-size:36px;color:#1A3C2A;margin-bottom:4px;line-height:1;"><span>' + priceStr + '</span></div>'
+          + '<div style="font-size:13px;color:#888;margin-bottom:20px;">\u20AC/' + period + '</div>'
+          + savingsHtml
+          + (description ? '<div style="font-size:13px;color:#666;line-height:1.6;margin-bottom:20px;">' + description + '</div>' : '')
+          + featuresHtml
+          + '<a href="#" style="display:block;width:100%;padding:12px;border-radius:50px;background:' + btnBg + ';color:white;text-decoration:none;font-size:13px;font-weight:600;">Ver detalles \u2192</a>'
+          + '</div>';
+      });
+
+      allHtml += '</div></div>';
+      return render(allHtml);
     }
   }));
 
