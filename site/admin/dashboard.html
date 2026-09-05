@@ -846,7 +846,7 @@
     if (!pwd) return;
     var hash = await hashPassword(pwd);
     try {
-      var res = await fetch('_data/admin-config.json?t=' + Date.now());
+      var res = await fetch('../_data/admin-config.json?t=' + Date.now());
       var config = await res.json();
       if (hash === config.passwordHash) {
         GITHUB_TOKEN = config.githubToken;
@@ -868,7 +868,7 @@
 
   // Check existing session
   if (sessionStorage.getItem('admin_auth') === 'true') {
-    fetch('_data/admin-config.json?t=' + Date.now())
+    fetch('../_data/admin-config.json?t=' + Date.now())
       .then(function(r) { return r.json(); })
       .then(function(c) {
         GITHUB_TOKEN = c.githubToken;
