@@ -3,7 +3,7 @@
   "address": "Avda. San José, 173, 41300 San José de La Rinconada, Sevilla",
   "phone": "955 321 470",
   "email": "sanjose.clinicaveterinaria@gmail.com",
-  "hours": "L-V: 10:00 - 21:00\n",
+  "hours": "L-V 10:00-21:00 · Sáb 10:00-13:30",
   "cif": "B-91234567",
   "whatsapp": "34955321470",
   "facebook": "https://www.facebook.com/CVetSanJose",
@@ -13,6 +13,6 @@
   "trustFamilies": "186",
   "trustLab": "100%",
   "trustAccessible": "100%",
-  "storeEnabled": "",
+  "storeEnabled": false,
   "patrimonio360Email": "contacto@patrimonio360.com"
 }
