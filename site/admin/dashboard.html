@@ -2029,6 +2029,15 @@
       branch: GITHUB_BRANCH
     };
 
+    // Check if file already exists to get its sha
+    try {
+      var existing = await fetch(url + '?ref=' + GITHUB_BRANCH, { headers: apiHeaders() });
+      if (existing.ok) {
+        var existingData = await existing.json();
+        body.sha = existingData.sha;
+      }
+    } catch (e) {}
+
     var res = await fetch(url, { method: 'PUT', headers: apiHeaders(), body: JSON.stringify(body) });
     if (!res.ok) {
       var err = await res.json().catch(function() { return {}; });
