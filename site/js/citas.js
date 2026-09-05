@@ -1,4 +1,5 @@
 (function() {
+  function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
   var services = [];
   var selectedDate = null;
   var selectedTime = null;
@@ -180,6 +181,22 @@
       .then(function(data) {
         // Try to send email via Web3Forms
         sendBookingEmail(appointment, dateDisplay);
+
+        // Build summary
+        var summary = document.getElementById('bookingSummary');
+        if (summary) {
+          summary.innerHTML = ''
+            + '<div style="margin-bottom:12px;font-weight:600;color:var(--forest);font-size:15px">Resumen de tu cita:</div>'
+            + '<div style="display:grid;grid-template-columns:auto 1fr;gap:6px 16px">'
+            + '<div style="font-weight:600;color:var(--gray-500)">Servicio:</div><div>' + esc(appointment.service) + '</div>'
+            + '<div style="font-weight:600;color:var(--gray-500)">Fecha:</div><div>' + dateDisplay + '</div>'
+            + '<div style="font-weight:600;color:var(--gray-500)">Hora:</div><div>' + esc(appointment.time) + '</div>'
+            + '<div style="font-weight:600;color:var(--gray-500)">Nombre:</div><div>' + esc(appointment.patientName) + '</div>'
+            + '<div style="font-weight:600;color:var(--gray-500)">Teléfono:</div><div>' + esc(appointment.patientPhone) + '</div>'
+            + '<div style="font-weight:600;color:var(--gray-500)">Email:</div><div>' + esc(appointment.patientEmail) + '</div>'
+            + '</div>'
+            + (appointment.message ? '<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--gray-200)"><div style="font-weight:600;color:var(--gray-500);margin-bottom:4px">Mensaje:</div><div style="font-style:italic;color:var(--gray-600)">' + esc(appointment.message) + '</div></div>' : '');
+        }
 
         // Show success
         document.getElementById('bookingForm').style.display = 'none';
