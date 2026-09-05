@@ -1,0 +1,1610 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel de Administracion — Clinica Veterinaria San Jose</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --forest: #1A3C2A;
+      --forest-light: #2D6B45;
+      --sage: #6B9B7A;
+      --coral: #D4764E;
+      --cream: #FBF9F5;
+      --charcoal: #1C1C1C;
+      --white: #FFFFFF;
+      --gray-50: #F9FAFB;
+      --gray-100: #F3F4F6;
+      --gray-200: #E5E7EB;
+      --gray-300: #D1D5DB;
+      --gray-400: #9CA3AF;
+      --gray-500: #6B7280;
+      --gray-600: #4B5563;
+      --gray-700: #374151;
+      --gray-800: #1F2937;
+      --gray-900: #111827;
+      --radius: 12px;
+      --radius-sm: 8px;
+      --radius-lg: 16px;
+      --shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+      --shadow-md: 0 4px 6px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.06);
+      --shadow-lg: 0 10px 15px rgba(0,0,0,0.1), 0 4px 6px rgba(0,0,0,0.05);
+      --shadow-xl: 0 20px 25px rgba(0,0,0,0.1), 0 10px 10px rgba(0,0,0,0.04);
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: var(--gray-50);
+      color: var(--charcoal);
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    /* ===== LOGIN ===== */
+    #login-screen {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background: linear-gradient(135deg, var(--forest) 0%, var(--forest-light) 100%);
+      padding: 20px;
+    }
+
+    .login-card {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-xl);
+      padding: 48px 40px;
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+    }
+
+    .login-logo {
+      width: 72px;
+      height: 72px;
+      background: var(--cream);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      margin: 0 auto 24px;
+    }
+
+    .login-title {
+      font-family: 'Fraunces', serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--forest);
+      margin-bottom: 4px;
+    }
+
+    .login-subtitle {
+      font-size: 14px;
+      color: var(--gray-500);
+      margin-bottom: 32px;
+    }
+
+    .login-field {
+      position: relative;
+      margin-bottom: 16px;
+    }
+
+    .login-field input {
+      width: 100%;
+      padding: 14px 16px;
+      border: 2px solid var(--gray-200);
+      border-radius: var(--radius);
+      font-size: 15px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .login-field input:focus {
+      border-color: var(--forest-light);
+    }
+
+    .login-error {
+      color: #DC2626;
+      font-size: 13px;
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--forest);
+      color: var(--white);
+      border: none;
+      border-radius: var(--radius);
+      font-size: 15px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .login-btn:hover { background: var(--forest-light); }
+    .login-btn:active { transform: scale(0.98); }
+
+    /* ===== DASHBOARD LAYOUT ===== */
+    #dashboard-screen { display: none; min-height: 100vh; }
+
+    .topbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background: var(--white);
+      border-bottom: 1px solid var(--gray-200);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      z-index: 100;
+    }
+
+    .topbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .topbar-brand-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--cream);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .topbar-brand-text {
+      font-family: 'Fraunces', serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--forest);
+    }
+
+    .topbar-brand-sub {
+      font-size: 11px;
+      color: var(--gray-400);
+      font-weight: 400;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .topbar-status {
+      font-size: 12px;
+      color: var(--gray-400);
+      padding: 4px 10px;
+      background: var(--gray-100);
+      border-radius: 20px;
+    }
+
+    .topbar-status.connected { color: var(--forest-light); background: #E8F5E9; }
+
+    .btn-logout {
+      padding: 8px 16px;
+      background: transparent;
+      color: var(--gray-600);
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 500;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-logout:hover { background: var(--gray-100); color: var(--gray-800); }
+
+    .sidebar {
+      position: fixed;
+      top: 60px;
+      left: 0;
+      bottom: 0;
+      width: 240px;
+      background: var(--white);
+      border-right: 1px solid var(--gray-200);
+      padding: 16px 0;
+      overflow-y: auto;
+    }
+
+    .sidebar-section {
+      padding: 0 16px;
+      margin-bottom: 8px;
+    }
+
+    .sidebar-label {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--gray-400);
+      padding: 8px 16px;
+    }
+
+    .sidebar-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 16px;
+      color: var(--gray-600);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      margin: 2px 8px;
+      transition: all 0.15s;
+    }
+
+    .sidebar-item:hover { background: var(--gray-100); color: var(--gray-800); }
+    .sidebar-item.active { background: var(--forest); color: var(--white); }
+    .sidebar-item .icon { font-size: 18px; width: 24px; text-align: center; }
+
+    .main {
+      margin-left: 240px;
+      margin-top: 60px;
+      padding: 32px;
+      min-height: calc(100vh - 60px);
+    }
+
+    .main-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+
+    .main-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--charcoal);
+    }
+
+    .main-count {
+      font-size: 14px;
+      color: var(--gray-400);
+      font-weight: 400;
+      margin-left: 8px;
+    }
+
+    /* ===== BUTTONS ===== */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 20px;
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--forest);
+      color: var(--white);
+    }
+
+    .btn-primary:hover { background: var(--forest-light); }
+
+    .btn-coral {
+      background: var(--coral);
+      color: var(--white);
+    }
+
+    .btn-coral:hover { background: #c06840; }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--gray-600);
+      border: 1px solid var(--gray-200);
+    }
+
+    .btn-ghost:hover { background: var(--gray-100); }
+
+    .btn-danger {
+      background: #FEE2E2;
+      color: #DC2626;
+    }
+
+    .btn-danger:hover { background: #FECACA; }
+
+    .btn-sm { padding: 6px 12px; font-size: 12px; }
+
+    /* ===== CARDS GRID ===== */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      transition: box-shadow 0.2s, transform 0.2s;
+      cursor: pointer;
+    }
+
+    .card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+
+    .card-img {
+      width: 100%;
+      aspect-ratio: 16/12;
+      object-fit: cover;
+      background: var(--gray-100);
+      display: block;
+    }
+
+    .card-img-placeholder {
+      width: 100%;
+      aspect-ratio: 16/12;
+      background: var(--gray-100);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      color: var(--gray-300);
+    }
+
+    .card-body {
+      padding: 16px;
+    }
+
+    .card-tag {
+      display: inline-block;
+      padding: 2px 8px;
+      background: var(--coral);
+      color: var(--white);
+      font-size: 10px;
+      font-weight: 700;
+      border-radius: 20px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .card-category {
+      font-size: 11px;
+      color: var(--gray-400);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    .card-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--charcoal);
+      margin-bottom: 2px;
+    }
+
+    .card-brand {
+      font-size: 12px;
+      color: var(--gray-500);
+      margin-bottom: 8px;
+    }
+
+    .card-price {
+      font-family: 'Fraunces', serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--forest);
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 6px;
+      padding: 0 16px 16px;
+    }
+
+    .card-actions .btn { flex: 1; justify-content: center; }
+
+    /* ===== MODAL ===== */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      display: none;
+      align-items: stretch;
+      justify-content: flex-end;
+    }
+
+    .modal-overlay.open { display: flex; }
+
+    .modal-panel {
+      width: 100%;
+      max-width: 560px;
+      background: var(--white);
+      overflow-y: auto;
+      box-shadow: var(--shadow-xl);
+      animation: slideIn 0.25s ease-out;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateX(100%); }
+      to { transform: translateX(0); }
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--gray-200);
+      position: sticky;
+      top: 0;
+      background: var(--white);
+      z-index: 1;
+    }
+
+    .modal-title {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .modal-close {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: none;
+      background: var(--gray-100);
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+
+    .modal-close:hover { background: var(--gray-200); }
+
+    .modal-body {
+      padding: 24px;
+    }
+
+    .modal-footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--gray-200);
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+      position: sticky;
+      bottom: 0;
+      background: var(--white);
+    }
+
+    /* ===== FORM FIELDS ===== */
+    .field {
+      margin-bottom: 20px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gray-700);
+      margin-bottom: 6px;
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid var(--gray-200);
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s;
+      background: var(--white);
+    }
+
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      border-color: var(--forest-light);
+    }
+
+    .field textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .field-preview {
+      margin-top: 8px;
+    }
+
+    .field-preview img {
+      max-width: 100%;
+      max-height: 200px;
+      border-radius: var(--radius-sm);
+      object-fit: cover;
+    }
+
+    /* ===== SERVICES/PLANS CARDS ===== */
+    .card-icon {
+      font-size: 32px;
+      margin-bottom: 12px;
+    }
+
+    .card-desc {
+      font-size: 13px;
+      color: var(--gray-500);
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+
+    .card-features {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .card-feature {
+      font-size: 11px;
+      padding: 2px 8px;
+      background: var(--gray-100);
+      border-radius: 20px;
+      color: var(--gray-600);
+    }
+
+    /* ===== SETTINGS FORM ===== */
+    .settings-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .settings-grid .field-full {
+      grid-column: 1 / -1;
+    }
+
+    /* ===== REVIEW/PHOTO CARDS ===== */
+    .review-stars {
+      color: #F4B400;
+      font-size: 14px;
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+    }
+
+    .review-text {
+      font-size: 13px;
+      color: var(--gray-600);
+      font-style: italic;
+      line-height: 1.6;
+      margin-bottom: 12px;
+    }
+
+    .review-author {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .review-pet {
+      font-size: 12px;
+      color: var(--gray-400);
+    }
+
+    .photo-usage {
+      display: inline-block;
+      padding: 2px 8px;
+      background: var(--cream);
+      border-radius: 4px;
+      font-size: 11px;
+      color: var(--gray-500);
+      margin-top: 4px;
+    }
+
+    /* ===== TOAST ===== */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      padding: 12px 20px;
+      background: var(--forest);
+      color: var(--white);
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-weight: 500;
+      box-shadow: var(--shadow-lg);
+      z-index: 2000;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.error { background: #DC2626; }
+
+    /* ===== LOADING ===== */
+    .loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 60px;
+      color: var(--gray-400);
+      font-size: 14px;
+      gap: 8px;
+    }
+
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--gray-200);
+      border-top-color: var(--forest);
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ===== CONFIRM DIALOG ===== */
+    .confirm-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .confirm-overlay.open { display: flex; }
+
+    .confirm-box {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 32px;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+      box-shadow: var(--shadow-xl);
+    }
+
+    .confirm-icon { font-size: 40px; margin-bottom: 16px; }
+    .confirm-text { font-size: 15px; color: var(--gray-700); margin-bottom: 24px; }
+    .confirm-actions { display: flex; gap: 12px; justify-content: center; }
+
+    /* ===== EMPTY STATE ===== */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--gray-400);
+    }
+
+    .empty-state-icon { font-size: 48px; margin-bottom: 16px; }
+    .empty-state-text { font-size: 15px; margin-bottom: 20px; }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .main { margin-left: 0; padding: 16px; }
+      .cards-grid { grid-template-columns: 1fr; }
+      .field-row { grid-template-columns: 1fr; }
+      .settings-grid { grid-template-columns: 1fr; }
+      .modal-panel { max-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== LOGIN ==================== -->
+  <div id="login-screen">
+    <div class="login-card">
+      <div class="login-logo">&#x1F41E;</div>
+      <div class="login-title">Clinica Veterinaria San Jose</div>
+      <div class="login-subtitle">Panel de administracion</div>
+      <div class="login-field">
+        <input type="password" id="login-password" placeholder="Introduce la contrasena" autocomplete="current-password">
+      </div>
+      <div class="login-error" id="login-error">Contrasena incorrecta</div>
+      <button class="login-btn" id="login-btn">Entrar</button>
+    </div>
+  </div>
+
+  <!-- ==================== DASHBOARD ==================== -->
+  <div id="dashboard-screen">
+    <!-- Topbar -->
+    <div class="topbar">
+      <div class="topbar-brand">
+        <div class="topbar-brand-icon">&#x1F41E;</div>
+        <div>
+          <div class="topbar-brand-text">Clinica Veterinaria San Jose</div>
+          <div class="topbar-brand-sub">Panel de administracion</div>
+        </div>
+      </div>
+      <div class="topbar-actions">
+        <span class="topbar-status" id="api-status">Conectando...</span>
+        <button class="btn-logout" id="logout-btn">Cerrar sesion</button>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-label">Contenido</div>
+      <div class="sidebar-item active" data-section="products">
+        <span class="icon">&#x1F6D2;</span> Productos
+      </div>
+      <div class="sidebar-item" data-section="services">
+        <span class="icon">&#x1FA7A;</span> Servicios
+      </div>
+      <div class="sidebar-item" data-section="plans">
+        <span class="icon">&#x1F4CB;</span> Planes
+      </div>
+      <div class="sidebar-label">Configuracion</div>
+      <div class="sidebar-item" data-section="settings">
+        <span class="icon">&#x2699;&#xFE0F;</span> Ajustes
+      </div>
+      <div class="sidebar-item" data-section="chatbot">
+        <span class="icon">&#x1F916;</span> VetBot
+      </div>
+      <div class="sidebar-label">Contenido</div>
+      <div class="sidebar-item" data-section="reviews">
+        <span class="icon">&#x2B50;</span> Testimonios
+      </div>
+      <div class="sidebar-item" data-section="photos">
+        <span class="icon">&#x1F4F7;</span> Fotos
+      </div>
+    </div>
+
+    <!-- Main content -->
+    <div class="main" id="main-content">
+      <div class="loading"><div class="spinner"></div> Cargando...</div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL ==================== -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal-panel" id="modal-panel">
+      <div class="modal-header">
+        <div class="modal-title" id="modal-title">Editar</div>
+        <button class="modal-close" id="modal-close">&times;</button>
+      </div>
+      <div class="modal-body" id="modal-body"></div>
+      <div class="modal-footer" id="modal-footer"></div>
+    </div>
+  </div>
+
+  <!-- ==================== CONFIRM DIALOG ==================== -->
+  <div class="confirm-overlay" id="confirm-overlay">
+    <div class="confirm-box">
+      <div class="confirm-icon">&#x26A0;&#xFE0F;</div>
+      <div class="confirm-text" id="confirm-text"></div>
+      <div class="confirm-actions">
+        <button class="btn btn-ghost" id="confirm-cancel">Cancelar</button>
+        <button class="btn btn-danger" id="confirm-ok">Eliminar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== TOAST ==================== -->
+  <div class="toast" id="toast"></div>
+
+<script>
+(function() {
+  // ===== CONFIG =====
+  var GITHUB_TOKEN = '';
+  var GITHUB_REPO = '';
+  var GITHUB_BRANCH = 'master';
+  var currentSection = 'products';
+  var currentData = {};
+  var currentSHA = {};
+
+  // ===== DOM REFS =====
+  var $ = function(sel) { return document.querySelector(sel); };
+  var $$ = function(sel) { return document.querySelectorAll(sel); };
+
+  // ===== SHA-256 HASH =====
+  async function hashPassword(pwd) {
+    var enc = new TextEncoder();
+    var data = enc.encode(pwd);
+    var hashBuf = await crypto.subtle.digest('SHA-256', data);
+    var arr = Array.from(new Uint8Array(hashBuf));
+    return arr.map(function(b) { return b.toString(16).padStart(2, '0'); }).join('');
+  }
+
+  // ===== LOGIN =====
+  $('#login-btn').addEventListener('click', doLogin);
+  $('#login-password').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') doLogin();
+  });
+
+  async function doLogin() {
+    var pwd = $('#login-password').value;
+    if (!pwd) return;
+    var hash = await hashPassword(pwd);
+    try {
+      var res = await fetch('_data/admin-config.json?t=' + Date.now());
+      var config = await res.json();
+      if (hash === config.passwordHash) {
+        GITHUB_TOKEN = config.githubToken;
+        GITHUB_REPO = config.repo;
+        $('#login-screen').style.display = 'none';
+        $('#dashboard-screen').style.display = 'block';
+        sessionStorage.setItem('admin_auth', 'true');
+        loadSection('products');
+      } else {
+        $('#login-error').style.display = 'block';
+        $('#login-password').value = '';
+        $('#login-password').focus();
+      }
+    } catch (e) {
+      $('#login-error').textContent = 'Error de conexion';
+      $('#login-error').style.display = 'block';
+    }
+  }
+
+  // Check existing session
+  if (sessionStorage.getItem('admin_auth') === 'true') {
+    fetch('_data/admin-config.json?t=' + Date.now())
+      .then(function(r) { return r.json(); })
+      .then(function(c) {
+        GITHUB_TOKEN = c.githubToken;
+        GITHUB_REPO = c.repo;
+        $('#login-screen').style.display = 'none';
+        $('#dashboard-screen').style.display = 'block';
+        loadSection('products');
+      });
+  }
+
+  // Logout
+  $('#logout-btn').addEventListener('click', function() {
+    sessionStorage.removeItem('admin_auth');
+    location.reload();
+  });
+
+  // ===== SIDEBAR =====
+  $$('.sidebar-item').forEach(function(item) {
+    item.addEventListener('click', function() {
+      $$('.sidebar-item').forEach(function(i) { i.classList.remove('active'); });
+      item.classList.add('active');
+      loadSection(item.dataset.section);
+    });
+  });
+
+  // ===== GITHUB API =====
+  function apiHeaders() {
+    return {
+      'Authorization': 'token ' + GITHUB_TOKEN,
+      'Accept': 'application/vnd.github.v3+json',
+      'Content-Type': 'application/json'
+    };
+  }
+
+  async function githubRead(path) {
+    var url = 'https://api.github.com/repos/' + GITHUB_REPO + '/contents/' + path;
+    var res = await fetch(url, { headers: apiHeaders() });
+    if (!res.ok) throw new Error('GitHub read failed: ' + res.status);
+    var data = await res.json();
+    var content = decodeURIComponent(escape(atob(data.content)));
+    currentSHA[path] = data.sha;
+    return JSON.parse(content);
+  }
+
+  async function githubWrite(path, obj, message) {
+    var url = 'https://api.github.com/repos/' + GITHUB_REPO + '/contents/' + path;
+    var body = {
+      message: message,
+      content: btoa(unescape(encodeURIComponent(JSON.stringify(obj, null, 2)))),
+      sha: currentSHA[path] || '',
+      branch: GITHUB_BRANCH
+    };
+    var res = await fetch(url, { method: 'PUT', headers: apiHeaders(), body: JSON.stringify(body) });
+    if (!res.ok) {
+      var err = await res.json().catch(function() { return {}; });
+      throw new Error(err.message || 'GitHub write failed: ' + res.status);
+    }
+    var data = await res.json();
+    currentSHA[path] = data.content.sha;
+    return data;
+  }
+
+  function getFilePath(section) {
+    var map = {
+      products: 'site/_data/products.json',
+      services: 'site/_data/services.json',
+      plans: 'site/_data/plans.json',
+      settings: 'site/_data/settings.json',
+      chatbot: 'site/_data/chatbot/index.json',
+      reviews: 'site/_data/reviews/index.json',
+      photos: 'site/_data/photos/index.json'
+    };
+    return map[section];
+  }
+
+  function getDataKey(section) {
+    return section === 'settings' ? null : section;
+  }
+
+  // ===== TOAST =====
+  function showToast(msg, isError) {
+    var t = $('#toast');
+    t.textContent = msg;
+    t.className = 'toast' + (isError ? ' error' : '');
+    setTimeout(function() { t.classList.add('show'); }, 10);
+    setTimeout(function() { t.classList.remove('show'); }, 3000);
+  }
+
+  // ===== CONFIRM =====
+  function showConfirm(text) {
+    return new Promise(function(resolve) {
+      $('#confirm-text').textContent = text;
+      $('#confirm-overlay').classList.add('open');
+      $('#confirm-ok').onclick = function() {
+        $('#confirm-overlay').classList.remove('open');
+        resolve(true);
+      };
+      $('#confirm-cancel').onclick = function() {
+        $('#confirm-overlay').classList.remove('open');
+        resolve(false);
+      };
+    });
+  }
+
+  // ===== MODAL =====
+  function openModal(title, bodyHtml, footerHtml) {
+    $('#modal-title').textContent = title;
+    $('#modal-body').innerHTML = bodyHtml;
+    $('#modal-footer').innerHTML = footerHtml;
+    $('#modal-overlay').classList.add('open');
+  }
+
+  function closeModal() {
+    $('#modal-overlay').classList.remove('open');
+  }
+
+  $('#modal-close').addEventListener('click', closeModal);
+  $('#modal-overlay').addEventListener('click', function(e) {
+    if (e.target === $('#modal-overlay')) closeModal();
+  });
+
+  // ===== LOAD SECTION =====
+  async function loadSection(section) {
+    currentSection = section;
+    var main = $('#main-content');
+    main.innerHTML = '<div class="loading"><div class="spinner"></div> Cargando...</div>';
+
+    try {
+      var path = getFilePath(section);
+      var data = await githubRead(path);
+      currentData[section] = data;
+
+      if (section === 'settings') {
+        renderSettings(data);
+      } else {
+        var items = data[section] || [];
+        renderGrid(section, items);
+      }
+
+      $('#api-status').textContent = 'Conectado';
+      $('#api-status').className = 'topbar-status connected';
+    } catch (e) {
+      main.innerHTML = '<div class="empty-state"><div class="empty-state-icon">&#x26A0;&#xFE0F;</div><div class="empty-state-text">Error al cargar: ' + e.message + '</div></div>';
+      $('#api-status').textContent = 'Error';
+    }
+  }
+
+  // ===== RENDER GRID =====
+  function renderGrid(section, items) {
+    var main = $('#main-content');
+    var titles = { products: 'Productos', services: 'Servicios', plans: 'Planes', chatbot: 'VetBot', reviews: 'Testimonios', photos: 'Fotos' };
+    var labels = { products: 'producto', services: 'servicio', plans: 'plan', chatbot: 'respuesta', reviews: 'testimonio', photos: 'foto' };
+
+    var html = '<div class="main-header"><div><span class="main-title">' + titles[section] + '</span><span class="main-count">' + items.length + ' ' + labels[section] + (items.length !== 1 ? 's' : '') + '</span></div>';
+    html += '<button class="btn btn-primary" onclick="window._add()">+ Anadir</button></div>';
+
+    if (items.length === 0) {
+      html += '<div class="empty-state"><div class="empty-state-icon">&#x1F4CB;</div><div class="empty-state-text">No hay ' + labels[section] + 's ainda</div>';
+      html += '<button class="btn btn-primary" onclick="window._add()">+ Anadir ' + labels[section] + '</button></div>';
+    } else {
+      html += '<div class="cards-grid">';
+      items.forEach(function(item, idx) {
+        html += renderCard(section, item, idx);
+      });
+      html += '</div>';
+    }
+
+    main.innerHTML = html;
+
+    // Bind card events
+    main.querySelectorAll('.card').forEach(function(card) {
+      var idx = parseInt(card.dataset.index);
+      card.addEventListener('click', function(e) {
+        if (e.target.closest('.btn-danger')) return;
+        window._edit(idx);
+      });
+    });
+
+    main.querySelectorAll('.btn-danger').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        window._delete(parseInt(btn.dataset.index));
+      });
+    });
+  }
+
+  function renderCard(section, item, idx) {
+    if (section === 'products') return renderProductCard(item, idx);
+    if (section === 'services') return renderServiceCard(item, idx);
+    if (section === 'plans') return renderPlanCard(item, idx);
+    if (section === 'chatbot') return renderChatbotCard(item, idx);
+    if (section === 'reviews') return renderReviewCard(item, idx);
+    if (section === 'photos') return renderPhotoCard(item, idx);
+    return '';
+  }
+
+  function renderProductCard(p, idx) {
+    var img = p.image ? '<img class="card-img" src="' + esc(p.image) + '" alt="" loading="lazy">' : '<div class="card-img-placeholder">&#x1F4F7;</div>';
+    var tag = p.tag ? '<span class="card-tag">' + esc(p.tag) + '</span>' : '';
+    return '<div class="card" data-index="' + idx + '">' + img
+      + '<div class="card-body">' + tag
+      + '<div class="card-category">' + esc(p.category || '') + '</div>'
+      + '<div class="card-name">' + esc(p.name) + '</div>'
+      + '<div class="card-brand">' + esc(p.brand) + '</div>'
+      + '<div class="card-price">' + formatPrice(p.price) + '</div>'
+      + '</div>'
+      + '<div class="card-actions">'
+      + '<button class="btn btn-danger btn-sm" data-index="' + idx + '">&#x1F5D1; Eliminar</button>'
+      + '</div></div>';
+  }
+
+  function renderServiceCard(s, idx) {
+    var img = s.image ? '<img class="card-img" src="' + esc(s.image) + '" alt="" loading="lazy">' : '';
+    var feats = '';
+    if (s.features && s.features.length) {
+      feats = '<div class="card-features">';
+      s.features.slice(0, 3).forEach(function(f) {
+        feats += '<span class="card-feature">' + esc(typeof f === 'string' ? f : f.feature || '') + '</span>';
+      });
+      if (s.features.length > 3) feats += '<span class="card-feature">+' + (s.features.length - 3) + '</span>';
+      feats += '</div>';
+    }
+    return '<div class="card" data-index="' + idx + '">'
+      + (img ? '<div style="padding:16px 16px 0">' + img + '</div>' : '')
+      + '<div class="card-body">'
+      + '<div class="card-icon">' + (s.icon || '') + '</div>'
+      + '<div class="card-name">' + esc(s.name) + '</div>'
+      + '<div class="card-desc">' + esc(s.shortDesc || '') + '</div>'
+      + feats
+      + '</div>'
+      + '<div class="card-actions">'
+      + '<button class="btn btn-danger btn-sm" data-index="' + idx + '">&#x1F5D1; Eliminar</button>'
+      + '</div></div>';
+  }
+
+  function renderPlanCard(p, idx) {
+    var badge = p.badge ? '<span class="card-tag">' + esc(p.badge) + '</span>' : '';
+    var feats = '';
+    if (p.features && p.features.length) {
+      feats = '<div class="card-features">';
+      p.features.slice(0, 3).forEach(function(f) {
+        feats += '<span class="card-feature">' + esc(typeof f === 'string' ? f : f.feature || '') + '</span>';
+      });
+      feats += '</div>';
+    }
+    return '<div class="card" data-index="' + idx + '">'
+      + '<div class="card-body" style="text-align:center">'
+      + badge
+      + '<div class="card-icon">' + (p.icon || '') + '</div>'
+      + '<div class="card-name">' + esc(p.name) + '</div>'
+      + '<div class="card-price" style="font-size:28px">' + formatPrice(p.price) + '<span style="font-size:14px;color:var(--gray-400);font-family:Inter">/' + esc(p.period || 'mes') + '</span></div>'
+      + (p.savings ? '<div style="font-size:12px;color:var(--forest-light);font-weight:600;margin:8px 0">' + esc(p.savings) + '</div>' : '')
+      + feats
+      + '</div>'
+      + '<div class="card-actions">'
+      + '<button class="btn btn-danger btn-sm" data-index="' + idx + '">&#x1F5D1; Eliminar</button>'
+      + '</div></div>';
+  }
+
+  function renderChatbotCard(c, idx) {
+    var kws = '';
+    if (c.keywords) {
+      kws = c.keywords.split(',').map(function(k) {
+        return '<span class="card-feature">' + esc(k.trim()) + '</span>';
+      }).join('');
+    }
+    return '<div class="card" data-index="' + idx + '">'
+      + '<div class="card-body">'
+      + '<div class="card-category">Respuesta del bot</div>'
+      + '<div class="card-features" style="margin-bottom:12px">' + kws + '</div>'
+      + '<div class="card-desc" style="max-height:60px;overflow:hidden">' + esc(c.response || '') + '</div>'
+      + '</div>'
+      + '<div class="card-actions">'
+      + '<button class="btn btn-danger btn-sm" data-index="' + idx + '">&#x1F5D1; Eliminar</button>'
+      + '</div></div>';
+  }
+
+  function renderReviewCard(r, idx) {
+    var stars = '';
+    for (var i = 0; i < 5; i++) stars += i < (r.rating || 5) ? '&#x2605;' : '&#x2606;';
+    return '<div class="card" data-index="' + idx + '">'
+      + '<div class="card-body">'
+      + '<div class="review-stars">' + stars + '</div>'
+      + '<div class="review-text">"' + esc(r.text || '') + '"</div>'
+      + '<div class="review-author">' + esc(r.author || '') + '</div>'
+      + '<div class="review-pet">' + esc(r.pet || '') + '</div>'
+      + '</div>'
+      + '<div class="card-actions">'
+      + '<button class="btn btn-danger btn-sm" data-index="' + idx + '">&#x1F5D1; Eliminar</button>'
+      + '</div></div>';
+  }
+
+  function renderPhotoCard(p, idx) {
+    var img = p.image ? '<img class="card-img" src="' + esc(p.image) + '" alt="" loading="lazy">' : '<div class="card-img-placeholder">&#x1F4F7;</div>';
+    var usageLabels = { hero:'Portada', home:'Inicio', nosotros:'Nosotros', servicios:'Servicios', contacto:'Contacto', general:'General' };
+    return '<div class="card" data-index="' + idx + '">' + img
+      + '<div class="card-body">'
+      + '<div class="card-name">' + esc(p.title || '') + '</div>'
+      + '<div class="photo-usage">' + (usageLabels[p.usage] || p.usage || '') + '</div>'
+      + (p.description ? '<div class="card-desc">' + esc(p.description) + '</div>' : '')
+      + '</div>'
+      + '<div class="card-actions">'
+      + '<button class="btn btn-danger btn-sm" data-index="' + idx + '">&#x1F5D1; Eliminar</button>'
+      + '</div></div>';
+  }
+
+  // ===== SETTINGS =====
+  function renderSettings(data) {
+    var main = $('#main-content');
+    var fields = [
+      { key: 'name', label: 'Nombre de la clinica', icon: '&#x1F3E5;' },
+      { key: 'address', label: 'Direccion', icon: '&#x1F4CD;' },
+      { key: 'phone', label: 'Telefono', icon: '&#x260E;&#xFE0F;' },
+      { key: 'email', label: 'Email', icon: '&#x2709;&#xFE0F;' },
+      { key: 'hours', label: 'Horario', icon: '&#x1F4C5;' },
+      { key: 'cif', label: 'CIF/NIF', icon: '&#x1F4CB;' },
+      { key: 'whatsapp', label: 'WhatsApp (sin +)', icon: '&#x1F4AC;' },
+      { key: 'facebook', label: 'Facebook URL', icon: '&#x1F4D8;' },
+      { key: 'instagram', label: 'Instagram URL', icon: '&#x1F4F7;' },
+      { key: 'footerDesc', label: 'Texto del footer', icon: '&#x1F4DD;' },
+      { key: 'trustYears', label: 'Anos de experiencia', icon: '&#x1F31F;' },
+      { key: 'trustFamilies', label: 'Familias atendidas', icon: '&#x1F46A;' },
+      { key: 'trustLab', label: 'Laboratorio', icon: '&#x1F52C;' },
+      { key: 'trustAccessible', label: 'Accesible', icon: '&#x267F;' }
+    ];
+
+    var html = '<div class="main-header"><span class="main-title">Ajustes de la clinica</span></div>';
+    html += '<div style="background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:32px;max-width:800px">';
+    html += '<div class="settings-grid">';
+    fields.forEach(function(f) {
+      var val = data[f.key] || '';
+      html += '<div class="field"><label>' + f.icon + ' ' + f.label + '</label>';
+      if (f.key === 'footerDesc') {
+        html += '<textarea id="setting-' + f.key + '" rows="3">' + esc(val) + '</textarea>';
+      } else {
+        html += '<input type="text" id="setting-' + f.key + '" value="' + esc(val) + '">';
+      }
+      html += '</div>';
+    });
+    html += '</div>';
+    html += '<div style="margin-top:24px;display:flex;gap:12px">';
+    html += '<button class="btn btn-primary" id="save-settings-btn">Guardar cambios</button>';
+    html += '</div></div>';
+    main.innerHTML = html;
+
+    $('#save-settings-btn').addEventListener('click', saveSettings);
+  }
+
+  async function saveSettings() {
+    var data = {};
+    $$('.settings-grid .field').forEach(function(field) {
+      var key = field.querySelector('input, textarea').id.replace('setting-', '');
+      data[key] = field.querySelector('input, textarea').value;
+    });
+    try {
+      await githubWrite(getFilePath('settings'), data, 'admin: actualizar ajustes - ' + new Date().toISOString());
+      showToast('Ajustes guardados correctamente');
+    } catch (e) {
+      showToast('Error al guardar: ' + e.message, true);
+    }
+  }
+
+  // ===== CRUD OPERATIONS =====
+
+  // ADD
+  window._add = function() {
+    var section = currentSection;
+    if (section === 'products') openProductModal(null, -1);
+    else if (section === 'services') openServiceModal(null, -1);
+    else if (section === 'plans') openPlanModal(null, -1);
+    else if (section === 'chatbot') openChatbotModal(null, -1);
+    else if (section === 'reviews') openReviewModal(null, -1);
+    else if (section === 'photos') openPhotoModal(null, -1);
+  };
+
+  // EDIT
+  window._edit = function(idx) {
+    var items = currentData[currentSection][currentSection] || [];
+    var item = items[idx];
+    if (currentSection === 'products') openProductModal(item, idx);
+    else if (currentSection === 'services') openServiceModal(item, idx);
+    else if (currentSection === 'plans') openPlanModal(item, idx);
+    else if (currentSection === 'chatbot') openChatbotModal(item, idx);
+    else if (currentSection === 'reviews') openReviewModal(item, idx);
+    else if (currentSection === 'photos') openPhotoModal(item, idx);
+  };
+
+  // DELETE
+  window._delete = async function(idx) {
+    var items = currentData[currentSection][currentSection] || [];
+    var item = items[idx];
+    var name = item.name || item.title || item.author || 'este elemento';
+    var ok = await showConfirm('Eliminar "' + name + '"?');
+    if (!ok) return;
+
+    items.splice(idx, 1);
+    try {
+      var path = getFilePath(currentSection);
+      var msg = 'admin: eliminar ' + currentSection + ' "' + name + '" - ' + new Date().toISOString();
+      await githubWrite(path, currentData[currentSection], msg);
+      showToast('Eliminado correctamente');
+      loadSection(currentSection);
+    } catch (e) {
+      items.splice(idx, 0, item);
+      showToast('Error al eliminar: ' + e.message, true);
+    }
+  };
+
+  // ===== PRODUCT MODAL =====
+  function openProductModal(item, idx) {
+    var isNew = idx === -1;
+    var p = item || { id: nextId('products'), brand: '', name: '', price: 0, category: 'alimento', image: '', tag: '', description: '' };
+    var title = isNew ? 'Anadir producto' : 'Editar: ' + p.name;
+
+    var html = '<div class="field-row">'
+      + '<div class="field"><label>Nombre</label><input type="text" id="mp-name" value="' + esc(p.name) + '"></div>'
+      + '<div class="field"><label>Marca</label><input type="text" id="mp-brand" value="' + esc(p.brand) + '"></div>'
+      + '</div>'
+      + '<div class="field-row">'
+      + '<div class="field"><label>Precio (EUR)</label><input type="number" step="0.01" id="mp-price" value="' + p.price + '"></div>'
+      + '<div class="field"><label>Categoria</label><select id="mp-category">'
+      + '<option value="alimento"' + (p.category === 'alimento' ? ' selected' : '') + '>Alimento</option>'
+      + '<option value="juguetes"' + (p.category === 'juguetes' ? ' selected' : '') + '>Juguetes</option>'
+      + '<option value="accesorios"' + (p.category === 'accesorios' ? ' selected' : '') + '>Accesorios</option>'
+      + '<option value="higiene"' + (p.category === 'higiene' ? ' selected' : '') + '>Higiene</option>'
+      + '</select></div></div>'
+      + '<div class="field-row">'
+      + '<div class="field"><label>Etiqueta (opcional)</label><input type="text" id="mp-tag" value="' + esc(p.tag || '') + '" placeholder="ej: -15%, Novedad"></div>'
+      + '<div class="field"><label>Imagen URL</label><input type="url" id="mp-image" value="' + esc(p.image || '') + '" placeholder="https://..."></div>'
+      + '</div>'
+      + '<div class="field-preview" id="mp-image-preview"></div>'
+      + '<div class="field"><label>Descripcion</label><textarea id="mp-desc" rows="3">' + esc(p.description || '') + '</textarea></div>';
+
+    var footer = '<button class="btn btn-ghost" onclick="window._closeModal()">Cancelar</button>'
+      + '<button class="btn btn-primary" id="mp-save">Guardar</button>';
+
+    openModal(title, html, footer);
+
+    // Image preview
+    var imgInput = $('#mp-image');
+    var previewDiv = $('#mp-image-preview');
+    function updatePreview() {
+      if (imgInput.value) {
+        previewDiv.innerHTML = '<img src="' + esc(imgInput.value) + '" alt="Preview">';
+      } else {
+        previewDiv.innerHTML = '';
+      }
+    }
+    imgInput.addEventListener('input', updatePreview);
+    if (p.image) updatePreview();
+
+    $('#mp-save').addEventListener('click', async function() {
+      var updated = {
+        id: p.id,
+        brand: $('#mp-brand').value,
+        name: $('#mp-name').value,
+        price: parseFloat($('#mp-price').value) || 0,
+        category: $('#mp-category').value,
+        image: $('#mp-image').value,
+        tag: $('#mp-tag').value,
+        description: $('#mp-desc').value
+      };
+      var items = currentData.products.products;
+      if (isNew) {
+        items.push(updated);
+      } else {
+        items[idx] = updated;
+      }
+      try {
+        await githubWrite(getFilePath('products'), currentData.products, 'admin: ' + (isNew ? 'anadir' : 'editar') + ' producto "' + updated.name + '" - ' + new Date().toISOString());
+        closeModal();
+        showToast(isNew ? 'Producto anadido' : 'Producto actualizado');
+        loadSection('products');
+      } catch (e) {
+        if (isNew) items.pop(); else items[idx] = item;
+        showToast('Error al guardar: ' + e.message, true);
+      }
+    });
+  }
+
+  // ===== SERVICE MODAL =====
+  function openServiceModal(item, idx) {
+    var isNew = idx === -1;
+    var s = item || { id: nextId('services'), name: '', icon: '', shortDesc: '', description: '', image: '', features: [] };
+    var title = isNew ? 'Anadir servicio' : 'Editar: ' + s.name;
+    var feats = (s.features || []).map(function(f) { return typeof f === 'string' ? f : (f.feature || ''); }).join('\n');
+
+    var html = '<div class="field-row">'
+      + '<div class="field"><label>Nombre</label><input type="text" id="ms-name" value="' + esc(s.name) + '"></div>'
+      + '<div class="field"><label>Icono (emoji)</label><input type="text" id="ms-icon" value="' + esc(s.icon || '') + '"></div>'
+      + '</div>'
+      + '<div class="field"><label>Descripcion corta</label><input type="text" id="ms-short" value="' + esc(s.shortDesc || '') + '"></div>'
+      + '<div class="field"><label>Imagen URL</label><input type="url" id="ms-image" value="' + esc(s.image || '') + '"></div>'
+      + '<div class="field-preview" id="ms-image-preview"></div>'
+      + '<div class="field"><label>Descripcion completa</label><textarea id="ms-desc" rows="4">' + esc(s.description || '') + '</textarea></div>'
+      + '<div class="field"><label>Caracteristicas (una por linea)</label><textarea id="ms-features" rows="4">' + esc(feats) + '</textarea></div>';
+
+    var footer = '<button class="btn btn-ghost" onclick="window._closeModal()">Cancelar</button>'
+      + '<button class="btn btn-primary" id="ms-save">Guardar</button>';
+
+    openModal(title, html, footer);
+
+    var imgInput = $('#ms-image');
+    var previewDiv = $('#ms-image-preview');
+    function updatePreview() {
+      previewDiv.innerHTML = imgInput.value ? '<img src="' + esc(imgInput.value) + '" alt="Preview">' : '';
+    }
+    imgInput.addEventListener('input', updatePreview);
+    if (s.image) updatePreview();
+
+    $('#ms-save').addEventListener('click', async function() {
+      var featuresText = $('#ms-features').value.trim();
+      var features = featuresText ? featuresText.split('\n').filter(function(l) { return l.trim(); }) : [];
+      var updated = {
+        id: s.id,
+        name: $('#ms-name').value,
+        icon: $('#ms-icon').value,
+        shortDesc: $('#ms-short').value,
+        description: $('#ms-desc').value,
+        image: $('#ms-image').value,
+        features: features
+      };
+      var items = currentData.services.services;
+      if (isNew) items.push(updated); else items[idx] = updated;
+      try {
+        await githubWrite(getFilePath('services'), currentData.services, 'admin: ' + (isNew ? 'anadir' : 'editar') + ' servicio "' + updated.name + '" - ' + new Date().toISOString());
+        closeModal();
+        showToast(isNew ? 'Servicio anadido' : 'Servicio actualizado');
+        loadSection('services');
+      } catch (e) {
+        if (isNew) items.pop(); else items[idx] = item;
+        showToast('Error al guardar: ' + e.message, true);
+      }
+    });
+  }
+
+  // ===== PLAN MODAL =====
+  function openPlanModal(item, idx) {
+    var isNew = idx === -1;
+    var p = item || { id: nextId('plans'), name: '', icon: '', description: '', price: 0, period: 'mes', savings: '', badge: '', features: [] };
+    var title = isNew ? 'Anadir plan' : 'Editar: ' + p.name;
+    var feats = (p.features || []).map(function(f) { return typeof f === 'string' ? f : (f.feature || ''); }).join('\n');
+
+    var html = '<div class="field-row">'
+      + '<div class="field"><label>Nombre</label><input type="text" id="mpl-name" value="' + esc(p.name) + '"></div>'
+      + '<div class="field"><label>Icono (emoji)</label><input type="text" id="mpl-icon" value="' + esc(p.icon || '') + '"></div>'
+      + '</div>'
+      + '<div class="field-row">'
+      + '<div class="field"><label>Precio (EUR/mes)</label><input type="number" step="0.01" id="mpl-price" value="' + p.price + '"></div>'
+      + '<div class="field"><label>Periodo</label><input type="text" id="mpl-period" value="' + esc(p.period || 'mes') + '"></div>'
+      + '</div>'
+      + '<div class="field-row">'
+      + '<div class="field"><label>Badge (opcional)</label><input type="text" id="mpl-badge" value="' + esc(p.badge || '') + '" placeholder="Mas Popular"></div>'
+      + '<div class="field"><label>Ahorro (opcional)</label><input type="text" id="mpl-savings" value="' + esc(p.savings || '') + '" placeholder="Ahorra 40e/anio"></div>'
+      + '</div>'
+      + '<div class="field"><label>Descripcion</label><input type="text" id="mpl-desc" value="' + esc(p.description || '') + '"></div>'
+      + '<div class="field"><label>Caracteristicas (una por linea)</label><textarea id="mpl-features" rows="4">' + esc(feats) + '</textarea></div>';
+
+    var footer = '<button class="btn btn-ghost" onclick="window._closeModal()">Cancelar</button>'
+      + '<button class="btn btn-primary" id="mpl-save">Guardar</button>';
+
+    openModal(title, html, footer);
+
+    $('#mpl-save').addEventListener('click', async function() {
+      var featuresText = $('#mpl-features').value.trim();
+      var features = featuresText ? featuresText.split('\n').filter(function(l) { return l.trim(); }) : [];
+      var updated = {
+        id: p.id,
+        name: $('#mpl-name').value,
+        icon: $('#mpl-icon').value,
+        description: $('#mpl-desc').value,
+        price: parseFloat($('#mpl-price').value) || 0,
+        period: $('#mpl-period').value,
+        savings: $('#mpl-savings').value,
+        badge: $('#mpl-badge').value,
+        features: features
+      };
+      var items = currentData.plans.plans;
+      if (isNew) items.push(updated); else items[idx] = updated;
+      try {
+        await githubWrite(getFilePath('plans'), currentData.plans, 'admin: ' + (isNew ? 'anadir' : 'editar') + ' plan "' + updated.name + '" - ' + new Date().toISOString());
+        closeModal();
+        showToast(isNew ? 'Plan anadido' : 'Plan actualizado');
+        loadSection('plans');
+      } catch (e) {
+        if (isNew) items.pop(); else items[idx] = item;
+        showToast('Error al guardar: ' + e.message, true);
+      }
+    });
+  }
+
+  // ===== CHATBOT MODAL =====
+  function openChatbotModal(item, idx) {
+    var isNew = idx === -1;
+    var c = item || { id: nextId('chatbot'), keywords: '', response: '' };
+    var title = isNew ? 'Anadir respuesta VetBot' : 'Editar respuesta';
+
+    var html = '<div class="field"><label>Palabras clave (separadas por coma)</label><input type="text" id="mcb-keywords" value="' + esc(c.keywords || '') + '" placeholder="hola, saludo, hey"></div>'
+      + '<div class="field"><label>Respuesta del bot</label><textarea id="mcb-response" rows="5">' + esc(c.response || '') + '</textarea></div>';
+
+    var footer = '<button class="btn btn-ghost" onclick="window._closeModal()">Cancelar</button>'
+      + '<button class="btn btn-primary" id="mcb-save">Guardar</button>';
+
+    openModal(title, html, footer);
+
+    $('#mcb-save').addEventListener('click', async function() {
+      var updated = { id: c.id, keywords: $('#mcb-keywords').value, response: $('#mcb-response').value };
+      var items = currentData.chatbot.responses;
+      if (isNew) items.push(updated); else items[idx] = updated;
+      try {
+        await githubWrite(getFilePath('chatbot'), currentData.chatbot, 'admin: ' + (isNew ? 'anadir' : 'editar') + ' respuesta VetBot - ' + new Date().toISOString());
+        closeModal();
+        showToast(isNew ? 'Respuesta anadida' : 'Respuesta actualizada');
+        loadSection('chatbot');
+      } catch (e) {
+        if (isNew) items.pop(); else items[idx] = item;
+        showToast('Error al guardar: ' + e.message, true);
+      }
+    });
+  }
+
+  // ===== REVIEW MODAL =====
+  function openReviewModal(item, idx) {
+    var isNew = idx === -1;
+    var r = item || { id: nextId('reviews'), author: '', pet: '', text: '', rating: 5 };
+    var title = isNew ? 'Anadir testimonio' : 'Editar testimonio';
+
+    var html = '<div class="field-row">'
+      + '<div class="field"><label>Autor</label><input type="text" id="mr-author" value="' + esc(r.author || '') + '"></div>'
+      + '<div class="field"><label>Mascota (nombre y tipo)</label><input type="text" id="mr-pet" value="' + esc(r.pet || '') + '"></div>'
+      + '</div>'
+      + '<div class="field"><label>Texto del testimonio</label><textarea id="mr-text" rows="4">' + esc(r.text || '') + '</textarea></div>'
+      + '<div class="field"><label>Estrellas (1-5)</label><input type="number" min="1" max="5" id="mr-rating" value="' + (r.rating || 5) + '"></div>';
+
+    var footer = '<button class="btn btn-ghost" onclick="window._closeModal()">Cancelar</button>'
+      + '<button class="btn btn-primary" id="mr-save">Guardar</button>';
+
+    openModal(title, html, footer);
+
+    $('#mr-save').addEventListener('click', async function() {
+      var updated = {
+        id: r.id,
+        author: $('#mr-author').value,
+        pet: $('#mr-pet').value,
+        text: $('#mr-text').value,
+        rating: parseInt($('#mr-rating').value) || 5
+      };
+      var items = currentData.reviews;
+      if (isNew) items.push(updated); else items[idx] = updated;
+      try {
+        await githubWrite(getFilePath('reviews'), currentData.reviews, 'admin: ' + (isNew ? 'anadir' : 'editar') + ' testimonio - ' + new Date().toISOString());
+        closeModal();
+        showToast(isNew ? 'Testimonio anadido' : 'Testimonio actualizado');
+        loadSection('reviews');
+      } catch (e) {
+        if (isNew) items.pop(); else items[idx] = item;
+        showToast('Error al guardar: ' + e.message, true);
+      }
+    });
+  }
+
+  // ===== PHOTO MODAL =====
+  function openPhotoModal(item, idx) {
+    var isNew = idx === -1;
+    var p = item || { id: nextId('photos'), title: '', image: '', usage: 'general', description: '' };
+    var title = isNew ? 'Anadir foto' : 'Editar foto';
+
+    var html = '<div class="field"><label>Titulo</label><input type="text" id="mph-title" value="' + esc(p.title || '') + '"></div>'
+      + '<div class="field"><label>Imagen URL</label><input type="url" id="mph-image" value="' + esc(p.image || '') + '"></div>'
+      + '<div class="field-preview" id="mph-image-preview"></div>'
+      + '<div class="field"><label>Donde se usa</label><select id="mph-usage">'
+      + '<option value="hero"' + (p.usage === 'hero' ? ' selected' : '') + '>Portada / Hero</option>'
+      + '<option value="home"' + (p.usage === 'home' ? ' selected' : '') + '>Inicio</option>'
+      + '<option value="nosotros"' + (p.usage === 'nosotros' ? ' selected' : '') + '>Nosotros</option>'
+      + '<option value="servicios"' + (p.usage === 'servicios' ? ' selected' : '') + '>Servicios</option>'
+      + '<option value="contacto"' + (p.usage === 'contacto' ? ' selected' : '') + '>Contacto</option>'
+      + '<option value="general"' + (p.usage === 'general' ? ' selected' : '') + '>General</option>'
+      + '</select></div>'
+      + '<div class="field"><label>Descripcion (opcional)</label><input type="text" id="mph-desc" value="' + esc(p.description || '') + '"></div>';
+
+    var footer = '<button class="btn btn-ghost" onclick="window._closeModal()">Cancelar</button>'
+      + '<button class="btn btn-primary" id="mph-save">Guardar</button>';
+
+    openModal(title, html, footer);
+
+    var imgInput = $('#mph-image');
+    var previewDiv = $('#mph-image-preview');
+    function updatePreview() {
+      previewDiv.innerHTML = imgInput.value ? '<img src="' + esc(imgInput.value) + '" alt="Preview">' : '';
+    }
+    imgInput.addEventListener('input', updatePreview);
+    if (p.image) updatePreview();
+
+    $('#mph-save').addEventListener('click', async function() {
+      var updated = {
+        id: p.id,
+        title: $('#mph-title').value,
+        image: $('#mph-image').value,
+        usage: $('#mph-usage').value,
+        description: $('#mph-desc').value
+      };
+      var items = currentData.photos;
+      if (isNew) items.push(updated); else items[idx] = updated;
+      try {
+        await githubWrite(getFilePath('photos'), currentData.photos, 'admin: ' + (isNew ? 'anadir' : 'editar') + ' foto "' + updated.title + '" - ' + new Date().toISOString());
+        closeModal();
+        showToast(isNew ? 'Foto anadida' : 'Foto actualizada');
+        loadSection('photos');
+      } catch (e) {
+        if (isNew) items.pop(); else items[idx] = item;
+        showToast('Error al guardar: ' + e.message, true);
+      }
+    });
+  }
+
+  // ===== HELPERS =====
+  window._closeModal = closeModal;
+
+  function esc(str) {
+    if (!str) return '';
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+  }
+
+  function formatPrice(price) {
+    if (typeof price !== 'number') return price;
+    return price.toFixed(2).replace('.', ',') + '\u20AC';
+  }
+
+  function nextId(section) {
+    var items = currentData[section] ? (currentData[section][section] || currentData[section]) : [];
+    if (!items.length) return 1;
+    var max = 0;
+    items.forEach(function(i) { if (i.id > max) max = i.id; });
+    return max + 1;
+  }
+})();
+</script>
+</body>
+</html>
