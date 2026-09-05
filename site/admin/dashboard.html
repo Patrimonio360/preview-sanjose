@@ -707,6 +707,42 @@
     .empty-state-icon { font-size: 48px; margin-bottom: 16px; }
     .empty-state-text { font-size: 15px; margin-bottom: 20px; }
 
+    /* ===== FILE UPLOAD ===== */
+    .upload-zone {
+      border: 2px dashed var(--gray-300);
+      border-radius: var(--radius-sm);
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: var(--gray-50);
+      margin-bottom: 8px;
+    }
+    .upload-zone:hover { border-color: var(--forest-light); background: #E8F5E9; }
+    .upload-zone.dragover { border-color: var(--forest); background: #E8F5E9; }
+    .upload-zone-icon { font-size: 32px; margin-bottom: 8px; }
+    .upload-zone-text { font-size: 13px; color: var(--gray-500); }
+    .upload-zone-text strong { color: var(--forest); }
+    .upload-zone input[type="file"] { display: none; }
+    .upload-progress {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      padding: 10px;
+      background: var(--gray-50);
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      color: var(--gray-600);
+      margin-bottom: 8px;
+    }
+    .upload-progress.active { display: flex; }
+    .upload-or {
+      font-size: 12px;
+      color: var(--gray-400);
+      text-align: center;
+      margin: 4px 0;
+    }
+
     /* ===== EMOJI PICKER ===== */
     .emoji-picker { margin-bottom: 20px; }
     .emoji-picker label { display: block; font-size: 13px; font-weight: 600; color: var(--gray-700); margin-bottom: 6px; }
@@ -815,6 +851,10 @@
       </div>
       <div class="sidebar-item" data-section="chatbot">
         <span class="icon">&#x1F916;</span> VetBot
+      </div>
+      <div class="sidebar-label">Gestion</div>
+      <div class="sidebar-item" data-section="appointments">
+        <span class="icon">&#x1F4C5;</span> Citas
       </div>
       <div class="sidebar-label">Contenido</div>
       <div class="sidebar-item" data-section="reviews">
@@ -1035,7 +1075,8 @@
       settings: 'site/_data/settings.json',
       chatbot: 'site/_data/chatbot/index.json',
       reviews: 'site/_data/reviews/index.json',
-      photos: 'site/_data/photos/index.json'
+      photos: 'site/_data/photos/index.json',
+      appointments: 'site/_data/appointments.json'
     };
     return map[section];
   }
@@ -1099,6 +1140,8 @@
 
       if (section === 'settings') {
         renderSettings(data);
+      } else if (section === 'appointments') {
+        renderAppointments(data);
       } else {
         var items = data[section] || [];
         renderGrid(section, items);
@@ -1288,7 +1331,9 @@
       { key: 'trustYears', label: 'Anos de experiencia', icon: '&#x1F31F;' },
       { key: 'trustFamilies', label: 'Familias atendidas', icon: '&#x1F46A;' },
       { key: 'trustLab', label: 'Laboratorio', icon: '&#x1F52C;' },
-      { key: 'trustAccessible', label: 'Accesible', icon: '&#x267F;' }
+      { key: 'trustAccessible', label: 'Accesible', icon: '&#x267F;' },
+      { key: 'storeEnabled', label: 'Tienda activada (true/false)', icon: '&#x1F6D2;' },
+      { key: 'patrimonio360Email', label: 'Email Patrimonio360', icon: '&#x2709;&#xFE0F;' }
     ];
 
     var html = '<div class="main-header"><span class="main-title">Ajustes de la clinica</span></div>';
@@ -1327,6 +1372,110 @@
     }
   }
 
+  // ===== APPOINTMENTS =====
+  var APPT_STATUS = { pending: 'Pendiente', confirmed: 'Confirmada', cancelled: 'Cancelada' };
+  var APPT_STATUS_COLOR = { pending: '#F59E0B', confirmed: '#10B981', cancelled: '#EF4444' };
+  var apptFilter = 'all';
+
+  function renderAppointments(data) {
+    var main = $('#main-content');
+    var appts = data.appointments || [];
+
+    var html = '<div class="main-header"><div><span class="main-title">Citas</span><span class="main-count">' + appts.length + ' cita' + (appts.length !== 1 ? 's' : '') + '</span></div></div>';
+
+    // Filters
+    html += '<div style="display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap">';
+    html += '<button class="btn ' + (apptFilter === 'all' ? 'btn-primary' : 'btn-ghost') + '" onclick="window._apptFilter(\'all\')">Todas</button>';
+    html += '<button class="btn ' + (apptFilter === 'pending' ? 'btn-primary' : 'btn-ghost') + '" onclick="window._apptFilter(\'pending\')">Pendientes</button>';
+    html += '<button class="btn ' + (apptFilter === 'confirmed' ? 'btn-primary' : 'btn-ghost') + '" onclick="window._apptFilter(\'confirmed\')">Confirmadas</button>';
+    html += '<button class="btn ' + (apptFilter === 'cancelled' ? 'btn-primary' : 'btn-ghost') + '" onclick="window._apptFilter(\'cancelled\')">Canceladas</button>';
+    html += '</div>';
+
+    var filtered = apptFilter === 'all' ? appts : appts.filter(function(a) { return a.status === apptFilter; });
+
+    if (filtered.length === 0) {
+      html += '<div class="empty-state"><div class="empty-state-icon">&#x1F4C5;</div><div class="empty-state-text">No hay citas ' + (apptFilter === 'all' ? '' : 'con estado "' + APPT_STATUS[apptFilter] + '"') + '</div></div>';
+    } else {
+      html += '<div class="cards-grid">';
+      filtered.forEach(function(a, i) {
+        var realIdx = appts.indexOf(a);
+        var statusColor = APPT_STATUS_COLOR[a.status] || '#9CA3AF';
+        var statusLabel = APPT_STATUS[a.status] || a.status;
+        var dateDisplay = a.date ? new Date(a.date + 'T00:00:00').toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric', month: 'short' }) : '';
+        html += '<div class="card" data-index="' + realIdx + '">'
+          + '<div class="card-body">'
+          + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">'
+          + '<span style="font-size:13px;font-weight:600;color:var(--forest)">' + esc(a.service || '') + '</span>'
+          + '<span style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:50px;background:' + statusColor + '20;color:' + statusColor + '">' + statusLabel + '</span>'
+          + '</div>'
+          + '<div class="card-name">' + esc(a.patientName || '') + '</div>'
+          + '<div class="card-brand">' + esc(a.patientPhone || '') + ' · ' + esc(a.patientEmail || '') + '</div>'
+          + '<div style="font-size:13px;color:var(--gray-500);margin-top:8px">' + dateDisplay + ' · ' + esc(a.time || '') + '</div>'
+          + (a.message ? '<div style="font-size:12px;color:var(--gray-400);margin-top:6px;font-style:italic">"' + esc(a.message) + '"</div>' : '')
+          + '</div>'
+          + '<div class="card-actions">';
+        if (a.status === 'pending') {
+          html += '<button class="btn btn-sm btn-primary" onclick="event.stopPropagation();window._confirmAppt(' + realIdx + ')">Confirmar</button>';
+          html += '<button class="btn btn-sm btn-danger" onclick="event.stopPropagation();window._cancelAppt(' + realIdx + ')">Cancelar</button>';
+        } else {
+          html += '<button class="btn btn-sm btn-danger" onclick="event.stopPropagation();window._deleteAppt(' + realIdx + ')">Eliminar</button>';
+        }
+        html += '</div></div>';
+      });
+      html += '</div>';
+    }
+
+    main.innerHTML = html;
+  }
+
+  window._apptFilter = function(filter) {
+    apptFilter = filter;
+    renderAppointments(currentData.appointments);
+  };
+
+  window._confirmAppt = async function(idx) {
+    var appts = currentData.appointments.appointments;
+    appts[idx].status = 'confirmed';
+    try {
+      await githubWrite(getFilePath('appointments'), currentData.appointments, 'admin: confirmar cita de ' + (appts[idx].patientName || '') + ' - ' + new Date().toISOString());
+      showToast('Cita confirmada');
+      loadSection('appointments');
+    } catch (e) {
+      appts[idx].status = 'pending';
+      showToast('Error: ' + e.message, true);
+    }
+  };
+
+  window._cancelAppt = async function(idx) {
+    var appts = currentData.appointments.appointments;
+    var ok = await showConfirm('Cancelar la cita de ' + (appts[idx].patientName || '') + '?');
+    if (!ok) return;
+    appts[idx].status = 'cancelled';
+    try {
+      await githubWrite(getFilePath('appointments'), currentData.appointments, 'admin: cancelar cita de ' + (appts[idx].patientName || '') + ' - ' + new Date().toISOString());
+      showToast('Cita cancelada');
+      loadSection('appointments');
+    } catch (e) {
+      appts[idx].status = 'pending';
+      showToast('Error: ' + e.message, true);
+    }
+  };
+
+  window._deleteAppt = async function(idx) {
+    var appts = currentData.appointments.appointments;
+    var name = appts[idx].patientName || 'esta cita';
+    var ok = await showConfirm('Eliminar cita de "' + name + '"?');
+    if (!ok) return;
+    appts.splice(idx, 1);
+    try {
+      await githubWrite(getFilePath('appointments'), currentData.appointments, 'admin: eliminar cita de ' + name + ' - ' + new Date().toISOString());
+      showToast('Cita eliminada');
+      loadSection('appointments');
+    } catch (e) {
+      showToast('Error: ' + e.message, true);
+    }
+  };
+
   // ===== CRUD OPERATIONS =====
 
   // ADD
@@ -1338,6 +1487,7 @@
     else if (section === 'chatbot') openChatbotModal(null, -1);
     else if (section === 'reviews') openReviewModal(null, -1);
     else if (section === 'photos') openPhotoModal(null, -1);
+    else if (section === 'appointments') showToast('Las citas se crean desde la web', true);
   };
 
   // EDIT
@@ -1391,11 +1541,10 @@
       + '<option value="accesorios"' + (p.category === 'accesorios' ? ' selected' : '') + '>Accesorios</option>'
       + '<option value="higiene"' + (p.category === 'higiene' ? ' selected' : '') + '>Higiene</option>'
       + '</select></div></div>'
-      + '<div class="field-row">'
       + '<div class="field"><label>Etiqueta (opcional)</label><input type="text" id="mp-tag" value="' + esc(p.tag || '') + '" placeholder="ej: -15%, Novedad"></div>'
-      + '<div class="field"><label>Imagen URL</label><input type="url" id="mp-image" value="' + esc(p.image || '') + '" placeholder="https://..."></div>'
       + '</div>'
-      + '<div class="field-preview" id="mp-image-preview"></div>'
+      + '<div class="field"><label>Imagen del producto</label></div>'
+      + '<div id="mp-upload-container"></div>'
       + '<div class="field"><label>Descripcion</label><textarea id="mp-desc" rows="3">' + esc(p.description || '') + '</textarea></div>';
 
     var footer = '<button class="btn btn-ghost" onclick="window._closeModal()">Cancelar</button>'
@@ -1403,18 +1552,7 @@
 
     openModal(title, html, footer);
 
-    // Image preview
-    var imgInput = $('#mp-image');
-    var previewDiv = $('#mp-image-preview');
-    function updatePreview() {
-      if (imgInput.value) {
-        previewDiv.innerHTML = '<img src="' + esc(imgInput.value) + '" alt="Preview">';
-      } else {
-        previewDiv.innerHTML = '';
-      }
-    }
-    imgInput.addEventListener('input', updatePreview);
-    if (p.image) updatePreview();
+    var mpUpload = createUploadField('mp-upload-container', p.image, 'site/img/uploads');
 
     $('#mp-save').addEventListener('click', async function() {
       var updated = {
@@ -1423,7 +1561,7 @@
         name: $('#mp-name').value,
         price: parseFloat($('#mp-price').value) || 0,
         category: $('#mp-category').value,
-        image: $('#mp-image').value,
+        image: mpUpload.getUrl(),
         tag: $('#mp-tag').value,
         description: $('#mp-desc').value
       };
@@ -1455,8 +1593,8 @@
     var html = '<div class="field"><label>Nombre</label><input type="text" id="ms-name" value="' + esc(s.name) + '"></div>'
       + '<div id="ms-emoji-container"></div>'
       + '<div class="field"><label>Descripcion corta</label><input type="text" id="ms-short" value="' + esc(s.shortDesc || '') + '"></div>'
-      + '<div class="field"><label>Imagen URL</label><input type="url" id="ms-image" value="' + esc(s.image || '') + '"></div>'
-      + '<div class="field-preview" id="ms-image-preview"></div>'
+      + '<div class="field"><label>Imagen del servicio</label></div>'
+      + '<div id="ms-upload-container"></div>'
       + '<div class="field"><label>Descripcion completa</label><textarea id="ms-desc" rows="4">' + esc(s.description || '') + '</textarea></div>'
       + '<div class="field"><label>Caracteristicas (una por linea)</label><textarea id="ms-features" rows="4">' + esc(feats) + '</textarea></div>';
 
@@ -1466,14 +1604,7 @@
     openModal(title, html, footer);
 
     var msEmoji = createEmojiPicker('ms-emoji-container', s.icon);
-
-    var imgInput = $('#ms-image');
-    var previewDiv = $('#ms-image-preview');
-    function updatePreview() {
-      previewDiv.innerHTML = imgInput.value ? '<img src="' + esc(imgInput.value) + '" alt="Preview">' : '';
-    }
-    imgInput.addEventListener('input', updatePreview);
-    if (s.image) updatePreview();
+    var msUpload = createUploadField('ms-upload-container', s.image, 'site/img/uploads');
 
     $('#ms-save').addEventListener('click', async function() {
       var featuresText = $('#ms-features').value.trim();
@@ -1484,7 +1615,7 @@
         icon: msEmoji.getValue(),
         shortDesc: $('#ms-short').value,
         description: $('#ms-desc').value,
-        image: $('#ms-image').value,
+        image: msUpload.getUrl(),
         features: features
       };
       var items = currentData.services.services;
@@ -1633,8 +1764,8 @@
     var title = isNew ? 'Anadir foto' : 'Editar foto';
 
     var html = '<div class="field"><label>Titulo</label><input type="text" id="mph-title" value="' + esc(p.title || '') + '"></div>'
-      + '<div class="field"><label>Imagen URL</label><input type="url" id="mph-image" value="' + esc(p.image || '') + '"></div>'
-      + '<div class="field-preview" id="mph-image-preview"></div>'
+      + '<div class="field"><label>Imagen</label></div>'
+      + '<div id="mph-upload-container"></div>'
       + '<div class="field"><label>Donde se usa</label><select id="mph-usage">'
       + '<option value="hero"' + (p.usage === 'hero' ? ' selected' : '') + '>Portada / Hero</option>'
       + '<option value="home"' + (p.usage === 'home' ? ' selected' : '') + '>Inicio</option>'
@@ -1650,19 +1781,13 @@
 
     openModal(title, html, footer);
 
-    var imgInput = $('#mph-image');
-    var previewDiv = $('#mph-image-preview');
-    function updatePreview() {
-      previewDiv.innerHTML = imgInput.value ? '<img src="' + esc(imgInput.value) + '" alt="Preview">' : '';
-    }
-    imgInput.addEventListener('input', updatePreview);
-    if (p.image) updatePreview();
+    var mphUpload = createUploadField('mph-upload-container', p.image, 'site/img/uploads');
 
     $('#mph-save').addEventListener('click', async function() {
       var updated = {
         id: p.id,
         title: $('#mph-title').value,
-        image: $('#mph-image').value,
+        image: mphUpload.getUrl(),
         usage: $('#mph-usage').value,
         description: $('#mph-desc').value
       };
@@ -1795,6 +1920,114 @@
 
     return {
       getValue: function() { return document.getElementById(containerId + '-value').value; }
+    };
+  }
+
+  // ===== FILE UPLOAD =====
+  async function uploadImage(file, folder) {
+    folder = folder || 'site/img/uploads';
+    var ext = file.name.split('.').pop().toLowerCase();
+    var safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+    var datePrefix = new Date().toISOString().slice(0,10).replace(/-/g, '');
+    var fileName = datePrefix + '_' + safeName;
+    var path = folder + '/' + fileName;
+
+    var reader = new FileReader();
+    var base64 = await new Promise(function(resolve) {
+      reader.onload = function() {
+        var b64 = reader.result.split(',')[1];
+        resolve(b64);
+      };
+      reader.readAsDataURL(file);
+    });
+
+    var url = 'https://api.github.com/repos/' + GITHUB_REPO + '/contents/' + path;
+    var body = {
+      message: 'admin: subir imagen ' + fileName,
+      content: base64,
+      branch: GITHUB_BRANCH
+    };
+
+    var res = await fetch(url, { method: 'PUT', headers: apiHeaders(), body: JSON.stringify(body) });
+    if (!res.ok) {
+      var err = await res.json().catch(function() { return {}; });
+      throw new Error(err.message || 'Upload failed: ' + res.status);
+    }
+
+    var raw = 'https://raw.githubusercontent.com/' + GITHUB_REPO + '/' + GITHUB_BRANCH + '/' + path;
+    return raw;
+  }
+
+  function createUploadField(containerId, currentUrl, folder) {
+    var container = document.getElementById(containerId);
+    if (!container) return { getUrl: function() { return ''; } };
+
+    container.innerHTML = ''
+      + '<div class="upload-zone" id="' + containerId + '-zone">'
+      + '<div class="upload-zone-icon">&#x1F4E4;</div>'
+      + '<div class="upload-zone-text"><strong>Clic para subir</strong> o arrastra una imagen</div>'
+      + '<input type="file" id="' + containerId + '-file" accept="image/*">'
+      + '</div>'
+      + '<div class="upload-progress" id="' + containerId + '-progress"><div class="spinner"></div> Subiendo imagen...</div>'
+      + '<div class="upload-or">o introduce una URL manualmente:</div>'
+      + '<input type="url" id="' + containerId + '-url" value="' + esc(currentUrl || '') + '" placeholder="https://..." style="width:100%;padding:10px 14px;border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);font-size:14px;font-family:inherit;outline:none">'
+      + '<div class="field-preview" id="' + containerId + '-preview" style="margin-top:8px"></div>';
+
+    var zone = document.getElementById(containerId + '-zone');
+    var fileInput = document.getElementById(containerId + '-file');
+    var urlInput = document.getElementById(containerId + '-url');
+    var progress = document.getElementById(containerId + '-progress');
+    var preview = document.getElementById(containerId + '-preview');
+
+    function showPreview(url) {
+      if (url) {
+        preview.innerHTML = '<img src="' + esc(url) + '" alt="Preview">';
+      } else {
+        preview.innerHTML = '';
+      }
+    }
+
+    showPreview(currentUrl);
+
+    zone.addEventListener('click', function() { fileInput.click(); });
+    zone.addEventListener('dragover', function(e) { e.preventDefault(); zone.classList.add('dragover'); });
+    zone.addEventListener('dragleave', function() { zone.classList.remove('dragover'); });
+    zone.addEventListener('drop', function(e) {
+      e.preventDefault();
+      zone.classList.remove('dragover');
+      if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+    });
+    fileInput.addEventListener('change', function() {
+      if (fileInput.files.length) handleFile(fileInput.files[0]);
+    });
+
+    async function handleFile(file) {
+      if (!file.type.startsWith('image/')) {
+        showToast('Solo se permiten imagenes', true);
+        return;
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        showToast('Maximo 5MB', true);
+        return;
+      }
+      progress.classList.add('active');
+      zone.style.display = 'none';
+      try {
+        var url = await uploadImage(file, folder);
+        urlInput.value = url;
+        showPreview(url);
+        showToast('Imagen subida correctamente');
+      } catch (e) {
+        showToast('Error al subir: ' + e.message, true);
+      }
+      progress.classList.remove('active');
+      zone.style.display = '';
+    }
+
+    urlInput.addEventListener('input', function() { showPreview(urlInput.value); });
+
+    return {
+      getUrl: function() { return urlInput.value; }
     };
   }
 

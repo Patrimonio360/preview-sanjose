@@ -12,5 +12,7 @@
   "trustYears": "15+",
   "trustFamilies": "186",
   "trustLab": "100%",
-  "trustAccessible": "100%"
+  "trustAccessible": "100%",
+  "storeEnabled": false,
+  "patrimonio360Email": "contacto@patrimonio360.com"
 }

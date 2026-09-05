@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pedir Cita | Clínica Veterinaria San José</title>
+    <meta name="description" content="Reserva tu cita online en la Clínica Veterinaria San José. Selecciona servicio, fecha y hora.">
+    <link rel="stylesheet" href="css/fonts.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .booking-section{padding:60px 0}
+        .booking-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
+        .booking-form-card{background:var(--white);border-radius:20px;padding:32px;box-shadow:0 8px 40px rgba(0,0,0,.08)}
+        .booking-form-title{font-family:'Fraunces',serif;font-size:22px;font-weight:700;color:var(--forest);margin-bottom:24px}
+        .form-group{margin-bottom:20px}
+        .form-group label{display:block;font-size:13px;font-weight:600;color:var(--charcoal);margin-bottom:6px}
+        .form-group input,.form-group select,.form-group textarea{width:100%;padding:12px 16px;border:2px solid #e5e7eb;border-radius:12px;font-size:15px;font-family:inherit;outline:none;transition:border-color .2s;background:var(--white)}
+        .form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--forest)}
+        .form-group textarea{resize:vertical;min-height:80px}
+        .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+        .btn-book{width:100%;padding:16px;background:var(--forest);color:var(--white);border:none;border-radius:12px;font-size:16px;font-weight:700;font-family:inherit;cursor:pointer;transition:all .2s}
+        .btn-book:hover{background:var(--forest-light);transform:translateY(-2px);box-shadow:0 8px 24px rgba(26,60,42,.3)}
+        .btn-book:disabled{opacity:.5;cursor:not-allowed;transform:none}
+
+        /* Calendar */
+        .calendar-card{background:var(--white);border-radius:20px;padding:32px;box-shadow:0 8px 40px rgba(0,0,0,.08)}
+        .calendar-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+        .calendar-month{font-family:'Fraunces',serif;font-size:20px;font-weight:700;color:var(--forest)}
+        .calendar-nav{display:flex;gap:8px}
+        .calendar-nav button{width:36px;height:36px;border-radius:50%;border:2px solid #e5e7eb;background:var(--white);font-size:16px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center}
+        .calendar-nav button:hover{border-color:var(--forest);color:var(--forest)}
+        .calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:24px}
+        .calendar-dayname{text-align:center;font-size:11px;font-weight:600;color:var(--gray-400);text-transform:uppercase;padding:8px 0}
+        .calendar-day{text-align:center;padding:12px 4px;border-radius:10px;font-size:14px;cursor:pointer;transition:all .15s;color:var(--charcoal)}
+        .calendar-day:hover:not(.disabled):not(.empty){background:var(--cream);color:var(--forest)}
+        .calendar-day.today{font-weight:700;color:var(--forest);box-shadow:inset 0 0 0 2px var(--forest)}
+        .calendar-day.selected{background:var(--forest);color:var(--white);font-weight:600}
+        .calendar-day.disabled{color:var(--gray-300);cursor:not-allowed}
+        .calendar-day.empty{cursor:default}
+
+        /* Time slots */
+        .timeslots-title{font-size:14px;font-weight:600;color:var(--charcoal);margin-bottom:12px}
+        .timeslots-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:24px}
+        .timeslot{padding:10px;border:2px solid #e5e7eb;border-radius:10px;text-align:center;font-size:13px;font-weight:500;cursor:pointer;transition:all .15s}
+        .timeslot:hover:not(.disabled){border-color:var(--forest);color:var(--forest)}
+        .timeslot.selected{background:var(--forest);color:var(--white);border-color:var(--forest)}
+        .timeslot.disabled{background:var(--gray-100);color:var(--gray-300);cursor:not-allowed}
+
+        /* Success */
+        .booking-success{text-align:center;padding:40px;display:none}
+        .booking-success-icon{font-size:64px;margin-bottom:16px}
+        .booking-success-title{font-family:'Fraunces',serif;font-size:24px;font-weight:700;color:var(--forest);margin-bottom:8px}
+        .booking-success-text{font-size:15px;color:var(--gray-500);line-height:1.6;margin-bottom:24px}
+
+        @media(max-width:768px){
+            .booking-grid{grid-template-columns:1fr}
+            .form-row{grid-template-columns:1fr}
+            .timeslots-grid{grid-template-columns:repeat(3,1fr)}
+        }
+    </style>
+</head>
+<body>
+<div class="cursor-ring"></div>
+<div class="page-transition"></div>
+
+<nav class="nav" id="mainNav">
+    <div class="container">
+        <a href="index.html" class="nav-logo"><img src="img/clinica-02.jpeg" alt="San José Logo" style="height:40px;width:40px;border-radius:50%;object-fit:cover"><div class="nav-logo-text">San José</div></a>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="index.html">Inicio</a></li>
+            <li><a href="nosotros.html">Nosotros</a></li>
+            <li><a href="servicios.html">Servicios</a></li>
+            <li><a href="planes.html">Planes</a></li>
+            <li><a href="citas.html" class="active">Citas</a></li>
+            <li><a href="tienda.html">Tienda</a></li>
+            <li><a href="resenas.html">Reseñas</a></li>
+            <li><a href="contacto.html">Contacto</a></li>
+            <li><a href="tel:955321470" class="nav-cta">☎ 955 321 470</a></li>
+        </ul>
+        <div class="nav-right">
+            <button class="nav-toggle" id="navToggle" aria-label="Menú"><span></span><span></span><span></span></button>
+        </div>
+    </div>
+</nav>
+
+<div class="page-header">
+    <div class="container">
+        <div class="section-label">Citas</div>
+        <h1>Pide tu cita online</h1>
+        <p>Selecciona el servicio, la fecha y la hora que mejor te venga. Te confirmaremos por email.</p>
+    </div>
+</div>
+
+<section class="booking-section">
+    <div class="container">
+        <div class="booking-grid">
+            <!-- Calendar -->
+            <div class="calendar-card">
+                <div class="calendar-header">
+                    <button class="calendar-nav-btn" id="calPrev" aria-label="Mes anterior">‹</button>
+                    <div class="calendar-month" id="calMonth"></div>
+                    <button class="calendar-nav-btn" id="calNext" aria-label="Mes siguiente">›</button>
+                </div>
+                <div class="calendar-grid" id="calGrid"></div>
+
+                <div class="timeslots-title" id="timeslotsTitle" style="display:none">Horas disponibles:</div>
+                <div class="timeslots-grid" id="timeslotsGrid"></div>
+            </div>
+
+            <!-- Form -->
+            <div class="booking-form-card">
+                <div class="booking-form-title">Datos de la cita</div>
+                <form id="bookingForm">
+                    <div class="form-group">
+                        <label>Servicio *</label>
+                        <select id="bookService" required>
+                            <option value="">Selecciona un servicio...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Fecha seleccionada *</label>
+                        <input type="text" id="bookDate" readonly placeholder="Selecciona una fecha en el calendario" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Hora seleccionada *</label>
+                        <input type="text" id="bookTime" readonly placeholder="Selecciona una hora" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Nombre *</label>
+                            <input type="text" id="bookName" placeholder="Tu nombre" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Teléfono *</label>
+                            <input type="tel" id="bookPhone" placeholder="612 345 678" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Email *</label>
+                        <input type="email" id="bookEmail" placeholder="tu@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Motivo de la consulta</label>
+                        <textarea id="bookMessage" placeholder="Cuéntanos brevemente el motivo de tu visita..."></textarea>
+                    </div>
+                    <button type="submit" class="btn-book" id="bookSubmit">Reservar cita</button>
+                </form>
+
+                <div class="booking-success" id="bookingSuccess">
+                    <div class="booking-success-icon">✅</div>
+                    <div class="booking-success-title">¡Cita solicitada!</div>
+                    <div class="booking-success-text">
+                        Hemos enviado tu solicitud de cita a la clínica.<br>
+                        Recibirás un email de confirmación en breve.<br><br>
+                        Si tienes prisa, llámanos al <strong>955 321 470</strong>
+                    </div>
+                    <button class="btn-book" onclick="location.reload()">Reservar otra cita</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer class="footer">
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-brand-col">
+                <div class="footer-brand">Clínica Veterinaria San José</div>
+                <p class="footer-desc">Más de 15 años cuidando las mascotas de San José de La Rinconada y alrededores.</p>
+                <div class="footer-contact">
+                    <div>☎ <a href="tel:955321470">955 321 470</a></div>
+                    <div>✉ <a href="mailto:sanjose.clinicaveterinaria@gmail.com">sanjose.clinicaveterinaria@gmail.com</a></div>
+                    <div>📍 Avda. San José, 173, La Rinconada, Sevilla</div>
+                </div>
+            </div>
+            <div class="footer-col"><h4>Servicios</h4><ul><li><a href="servicios.html">Consulta General</a></li><li><a href="servicios.html">Vacunación</a></li><li><a href="servicios.html">Cirugía</a></li><li><a href="servicios.html">Terapias Alternativas</a></li></ul></div>
+            <div class="footer-col"><h4>Clínica</h4><ul><li><a href="nosotros.html">Sobre nosotros</a></li><li><a href="resenas.html">Reseñas Google</a></li><li><a href="citas.html">Pedir cita</a></li><li><a href="contacto.html">Contacto</a></li></ul></div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 Clínica Veterinaria San José. Todos los derechos reservados.</p>
+            <div class="footer-links"><a href="politica-privacidad.html">Política de Privacidad</a><a href="aviso-legal.html">Aviso Legal</a></div>
+        </div>
+    </div>
+</footer>
+
+<script src="js/main.js"></script>
+<script src="js/cms.js"></script>
+<script>CMS.applyColors(); CMS.loadSettings();</script>
+<script src="js/citas.js"></script>
+</body>
+</html>
