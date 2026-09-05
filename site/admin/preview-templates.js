@@ -4,9 +4,9 @@
 (function() {
   var h = React.createElement;
 
-  function PreviewBlock(html) {
+  function PreviewBlock(props) {
     return h('div', {
-      dangerouslySetInnerHTML: { __html: html },
+      dangerouslySetInnerHTML: { __html: props.html },
       style: { padding: '20px' }
     });
   }
