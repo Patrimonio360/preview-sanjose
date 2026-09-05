@@ -199,19 +199,20 @@
       .then(function(settings) {
         var clinicEmail = settings.email || 'sanjose.clinicaveterinaria@gmail.com';
         var phone = settings.phone || '955 321 470';
+        var clinicName = settings.name || 'Clinica Veterinaria San Jose';
 
-        // Send via Web3Forms
-        var web3Key = 'REEMPLAZAR_CON_KEY';
+        // Send notification to clinic via Web3Forms
+        var web3Key = '6d0e9bc7-1c66-445a-ae61-3a2a232429fe';
         var subject = 'Nueva cita solicitada — ' + appt.patientName;
         var message = 'Nueva solicitud de cita:\n\n'
           + 'Paciente: ' + appt.patientName + '\n'
-          + 'Teléfono: ' + appt.patientPhone + '\n'
+          + 'Telefono: ' + appt.patientPhone + '\n'
           + 'Email: ' + appt.patientEmail + '\n'
           + 'Servicio: ' + appt.service + '\n'
           + 'Fecha: ' + dateDisplay + '\n'
           + 'Hora: ' + appt.time + '\n'
           + (appt.message ? 'Mensaje: ' + appt.message + '\n' : '')
-          + '\nPara confirmar la cita, accede al panel de administración.';
+          + '\nPara confirmar la cita, accede al panel de administracion.';
 
         fetch('https://api.web3forms.com/submit', {
           method: 'POST',
@@ -219,10 +220,30 @@
           body: JSON.stringify({
             access_key: web3Key,
             subject: subject,
-            from_name: 'Cita Web - Clinica San Jose',
+            from_name: 'Cita Web - ' + clinicName,
             email: clinicEmail,
             message: message,
             botcheck: ''
+          })
+        }).catch(function() {});
+
+        // Send confirmation to patient via Vercel endpoint
+        var patientDateDisplay = new Date(appt.date + 'T00:00:00').toLocaleDateString('es-ES', {
+          weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+        });
+
+        fetch('/api/send-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            patientName: appt.patientName,
+            patientEmail: appt.patientEmail,
+            service: appt.service,
+            date: appt.date,
+            time: appt.time,
+            clinicName: clinicName,
+            clinicEmail: clinicEmail,
+            clinicPhone: phone
           })
         }).catch(function() {});
       })
