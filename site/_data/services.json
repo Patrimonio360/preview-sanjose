@@ -6,15 +6,25 @@
       "icon": "🩺",
       "shortDesc": "Consultas, revisiones completas y diagnóstico precoz.",
       "description": "Consultas generales con exploración completa, diagnóstico por imagen y análisis clínicos.",
-      "features": ["Consulta general completa", "Exploración física detallada", "Análisis clínicos in situ", "Diagnóstico por imagen"]
+      "features": [
+        "Consulta general completa",
+        "Exploración física detallada",
+        "Análisis clínicos in situ",
+        "Diagnóstico por imagen"
+      ]
     },
     {
       "id": 2,
-      "name": "Vacunación",
+      "name": "Pruebas vacunas",
       "icon": "💉",
       "shortDesc": "Programas de vacunación completos para perros y gatos.",
       "description": "Planes de vacunación adaptados a cada especie y estilo de vida.",
-      "features": ["Vacunas perro y gato", "Recordatorios automáticos", "Pasaporte europeo"]
+      "image": "https://hvc.cat/wp-content/uploads/2021/02/cuales-son-las-vacunas-para-perros-obligatorias-y-cuando-ponerlas-1.jpg",
+      "features": [
+        "Vacunas perro y gato",
+        "Recordatorios automáticos",
+        "Pasaporte europeo"
+      ]
     },
     {
       "id": 3,
@@ -22,7 +32,12 @@
       "icon": "🏥",
       "shortDesc": "Cirugías generales y ortopédicas con las máximas garantías.",
       "description": "Cirugías con monitorización continua y equipamiento de última generación.",
-      "features": ["Estérilizaciones", "Cirugía de tejidos blandos", "Ortopedia", "Monitorización continua"]
+      "features": [
+        "Estérilizaciones",
+        "Cirugía de tejidos blandos",
+        "Ortopedia",
+        "Monitorización continua"
+      ]
     },
     {
       "id": 4,
@@ -30,7 +45,12 @@
       "icon": "🦷",
       "shortDesc": "Limpieza dental, extracciones y tratamiento periodontal.",
       "description": "Servicio completo de odontología veterinaria con ultrasonido y radiografía dental.",
-      "features": ["Limpieza dental con ultrasonido", "Radiografía dental", "Extracciones", "Tratamiento periodontal"]
+      "features": [
+        "Limpieza dental con ultrasonido",
+        "Radiografía dental",
+        "Extracciones",
+        "Tratamiento periodontal"
+      ]
     },
     {
       "id": 5,
@@ -38,7 +58,12 @@
       "icon": "🌿",
       "shortDesc": "Acupuntura, fitoterapia y medicina holística complementaria.",
       "description": "Tratamientos complementarios para mejorar la calidad de vida de tu mascota.",
-      "features": ["Acupuntura veterinaria", "Fitoterapia", "Medicina holística", "Rehabilitación física"]
+      "features": [
+        "Acupuntura veterinaria",
+        "Fitoterapia",
+        "Medicina holística",
+        "Rehabilitación física"
+      ]
     }
   ]
 }
