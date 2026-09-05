@@ -1,18 +1,114 @@
 [
-  {"id":1,"title":"Fachada de la clínica","image":"img/clinica-01.jpeg","usage":"general","description":"Vista exterior de la clínica."},
-  {"id":2,"title":"Sala de espera","image":"img/clinica-02.jpeg","usage":"general","description":"Interior de la sala de espera."},
-  {"id":3,"title":"Consultorio principal","image":"img/clinica-03.jpeg","usage":"nosotros","description":"Consultorio donde Dra. Paula atiende."},
-  {"id":4,"title":"Equipo veterinario","image":"img/clinica-04.jpeg","usage":"nosotros","description":"Nuestro equipo de profesionales."},
-  {"id":5,"title":"Sala de ecografías","image":"img/clinica-05.jpeg","usage":"servicios","description":"Equipamiento de diagnóstico por imagen."},
-  {"id":6,"title":"Quirófano","image":"img/clinica-06.jpeg","usage":"servicios","description":"Quirófano equipado."},
-  {"id":7,"title":"Paciente feliz","image":"img/clinica-07.jpeg","usage":"home","description":"Paciente después de su revisión."},
-  {"id":8,"title":"Dra. Paula con paciente","image":"img/clinica-08.jpeg","usage":"hero","description":"Dra. Paula Canalias atendiendo."},
-  {"id":9,"title":"Zona de radiografías","image":"img/clinica-09.jpeg","usage":"servicios","description":"Equipamiento de rayos X digital."},
-  {"id":10,"title":"Área de laboratorio","image":"img/clinica-10.jpeg","usage":"servicios","description":"Laboratorio de análisis clínicos."},
-  {"id":11,"title":"Patio exterior","image":"img/clinica-11.jpeg","usage":"general","description":"Zona exterior para descanso."},
-  {"id":12,"title":"Detalle clínica","image":"img/clinica-12.jpeg","usage":"home","description":"Detalles que hacen única a San José."},
-  {"id":13,"title":"Recepción","image":"img/clinica-13.jpeg","usage":"general","description":"Zona de recepción."},
-  {"id":14,"title":"Mascota en consulta","image":"img/clinica-14.jpeg","usage":"home","description":"Momento de la atención veterinaria."},
-  {"id":15,"title":"Equipo completo","image":"img/clinica-15.jpeg","usage":"nosotros","description":"Todo el equipo de la clínica."},
-  {"id":16,"title":"Exterior clínica","image":"img/clinica-16.jpeg","usage":"hero","description":"Vista panorámica del exterior."}
+  {
+    "id": 1,
+    "title": "Fachada de la clínica",
+    "image": "img/clinica-01.jpeg",
+    "usage": "general",
+    "description": "Vista exterior de la clínica."
+  },
+  {
+    "id": 2,
+    "title": "Sala de espera",
+    "image": "img/clinica-02.jpeg",
+    "usage": "general",
+    "description": "Interior de la sala de espera."
+  },
+  {
+    "id": 3,
+    "title": "Consultorio principal",
+    "image": "https://raw.githubusercontent.com/Patrimonio360/preview-sanjose/master/site/img/uploads/20260905_clinica-03.jpeg",
+    "usage": "nosotros",
+    "description": "Consultorio donde Dra. Paula atiende."
+  },
+  {
+    "id": 4,
+    "title": "Equipo veterinario",
+    "image": "img/clinica-04.jpeg",
+    "usage": "nosotros",
+    "description": "Nuestro equipo de profesionales."
+  },
+  {
+    "id": 5,
+    "title": "Sala de ecografías",
+    "image": "img/clinica-05.jpeg",
+    "usage": "servicios",
+    "description": "Equipamiento de diagnóstico por imagen."
+  },
+  {
+    "id": 6,
+    "title": "Quirófano",
+    "image": "img/clinica-06.jpeg",
+    "usage": "servicios",
+    "description": "Quirófano equipado."
+  },
+  {
+    "id": 7,
+    "title": "Paciente feliz",
+    "image": "img/clinica-07.jpeg",
+    "usage": "home",
+    "description": "Paciente después de su revisión."
+  },
+  {
+    "id": 8,
+    "title": "Dra. Paula con paciente",
+    "image": "img/clinica-08.jpeg",
+    "usage": "hero",
+    "description": "Dra. Paula Canalias atendiendo."
+  },
+  {
+    "id": 9,
+    "title": "Zona de radiografías",
+    "image": "img/clinica-09.jpeg",
+    "usage": "servicios",
+    "description": "Equipamiento de rayos X digital."
+  },
+  {
+    "id": 10,
+    "title": "Área de laboratorio",
+    "image": "img/clinica-10.jpeg",
+    "usage": "servicios",
+    "description": "Laboratorio de análisis clínicos."
+  },
+  {
+    "id": 11,
+    "title": "Patio exterior",
+    "image": "img/clinica-11.jpeg",
+    "usage": "general",
+    "description": "Zona exterior para descanso."
+  },
+  {
+    "id": 12,
+    "title": "Detalle clínica",
+    "image": "img/clinica-12.jpeg",
+    "usage": "home",
+    "description": "Detalles que hacen única a San José."
+  },
+  {
+    "id": 13,
+    "title": "Recepción",
+    "image": "img/clinica-13.jpeg",
+    "usage": "general",
+    "description": "Zona de recepción."
+  },
+  {
+    "id": 14,
+    "title": "Mascota en consulta",
+    "image": "img/clinica-14.jpeg",
+    "usage": "home",
+    "description": "Momento de la atención veterinaria."
+  },
+  {
+    "id": 15,
+    "title": "Equipo completo",
+    "image": "img/clinica-15.jpeg",
+    "usage": "nosotros",
+    "description": "Todo el equipo de la clínica."
+  },
+  {
+    "id": 16,
+    "title": "Exterior clínica",
+    "image": "img/clinica-16.jpeg",
+    "usage": "hero",
+    "description": "Vista panorámica del exterior."
+  }
 ]
