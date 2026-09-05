@@ -20,6 +20,7 @@ collections:
           - label: "Productos"
             name: "products"
             widget: "list"
+            summary: "{{fields.name}} — {{fields.brand}} ({{fields.price}}€)"
             fields:
               - { label: "ID", name: "id", widget: "number" }
               - { label: "Nombre", name: "name", widget: "string" }
@@ -47,6 +48,7 @@ collections:
           - label: "Servicios"
             name: "services"
             widget: "list"
+            summary: "{{fields.name}}"
             fields:
               - { label: "ID", name: "id", widget: "number" }
               - { label: "Nombre", name: "name", widget: "string" }
@@ -72,6 +74,7 @@ collections:
           - label: "Planes"
             name: "plans"
             widget: "list"
+            summary: "{{fields.name}} — {{fields.price}}€/mes"
             fields:
               - { label: "ID", name: "id", widget: "number" }
               - { label: "Nombre", name: "name", widget: "string" }
@@ -105,10 +108,11 @@ collections:
           - { label: "WhatsApp (sin +)", name: "whatsapp", widget: "string" }
           - { label: "Facebook URL", name: "facebook", widget: "string" }
           - { label: "Instagram URL", name: "instagram", widget: "string" }
-          - { label: "Anos de experiencia (confianza)", name: "trustYears", widget: "string" }
-          - { label: "Familias confianza (confianza)", name: "trustFamilies", widget: "string" }
-          - { label: "Laboratorio (confianza)", name: "trustLab", widget: "string" }
-          - { label: "Accesible (confianza)", name: "trustAccessible", widget: "string" }
+          - { label: "Texto footer", name: "footerDesc", widget: "string" }
+          - { label: "Anos de experiencia", name: "trustYears", widget: "string" }
+          - { label: "Familias confianza", name: "trustFamilies", widget: "string" }
+          - { label: "Laboratorio", name: "trustLab", widget: "string" }
+          - { label: "Accesible", name: "trustAccessible", widget: "string" }
 
   - name: "chatbot"
     label: "VetBot"
