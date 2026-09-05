@@ -9,7 +9,7 @@
   {
     "id": 2,
     "title": "Sala de espera",
-    "image": "img/clinica-02.jpeg",
+    "image": "https://raw.githubusercontent.com/Patrimonio360/preview-sanjose/master/site/img/uploads/20260905_clinica-13.jpeg",
     "usage": "general",
     "description": "Interior de la sala de espera."
   },
