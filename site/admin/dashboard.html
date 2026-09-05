@@ -707,6 +707,52 @@
     .empty-state-icon { font-size: 48px; margin-bottom: 16px; }
     .empty-state-text { font-size: 15px; margin-bottom: 20px; }
 
+    /* ===== EMOJI PICKER ===== */
+    .emoji-picker { margin-bottom: 20px; }
+    .emoji-picker label { display: block; font-size: 13px; font-weight: 600; color: var(--gray-700); margin-bottom: 6px; }
+    .emoji-selected {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border: 1.5px solid var(--gray-200);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: border-color 0.2s;
+      background: var(--white);
+    }
+    .emoji-selected:hover { border-color: var(--forest-light); }
+    .emoji-selected .emoji-char { font-size: 28px; }
+    .emoji-selected .emoji-label { font-size: 13px; color: var(--gray-500); }
+    .emoji-grid {
+      display: none;
+      grid-template-columns: repeat(8, 1fr);
+      gap: 4px;
+      padding: 12px;
+      background: var(--white);
+      border: 1.5px solid var(--gray-200);
+      border-radius: var(--radius-sm);
+      margin-top: 6px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    .emoji-grid.open { display: grid; }
+    .emoji-option {
+      width: 100%;
+      aspect-ratio: 1;
+      border: 2px solid transparent;
+      border-radius: 6px;
+      background: transparent;
+      font-size: 22px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+    }
+    .emoji-option:hover { background: var(--gray-100); transform: scale(1.15); }
+    .emoji-option.selected { border-color: var(--forest); background: #E8F5E9; }
+
     /* ===== RESPONSIVE ===== */
     @media (max-width: 768px) {
       .sidebar { display: none; }
@@ -1406,10 +1452,8 @@
     var title = isNew ? 'Anadir servicio' : 'Editar: ' + s.name;
     var feats = (s.features || []).map(function(f) { return typeof f === 'string' ? f : (f.feature || ''); }).join('\n');
 
-    var html = '<div class="field-row">'
-      + '<div class="field"><label>Nombre</label><input type="text" id="ms-name" value="' + esc(s.name) + '"></div>'
-      + '<div class="field"><label>Icono (emoji)</label><input type="text" id="ms-icon" value="' + esc(s.icon || '') + '"></div>'
-      + '</div>'
+    var html = '<div class="field"><label>Nombre</label><input type="text" id="ms-name" value="' + esc(s.name) + '"></div>'
+      + '<div id="ms-emoji-container"></div>'
       + '<div class="field"><label>Descripcion corta</label><input type="text" id="ms-short" value="' + esc(s.shortDesc || '') + '"></div>'
       + '<div class="field"><label>Imagen URL</label><input type="url" id="ms-image" value="' + esc(s.image || '') + '"></div>'
       + '<div class="field-preview" id="ms-image-preview"></div>'
@@ -1420,6 +1464,8 @@
       + '<button class="btn btn-primary" id="ms-save">Guardar</button>';
 
     openModal(title, html, footer);
+
+    var msEmoji = createEmojiPicker('ms-emoji-container', s.icon);
 
     var imgInput = $('#ms-image');
     var previewDiv = $('#ms-image-preview');
@@ -1435,7 +1481,7 @@
       var updated = {
         id: s.id,
         name: $('#ms-name').value,
-        icon: $('#ms-icon').value,
+        icon: msEmoji.getValue(),
         shortDesc: $('#ms-short').value,
         description: $('#ms-desc').value,
         image: $('#ms-image').value,
@@ -1462,10 +1508,8 @@
     var title = isNew ? 'Anadir plan' : 'Editar: ' + p.name;
     var feats = (p.features || []).map(function(f) { return typeof f === 'string' ? f : (f.feature || ''); }).join('\n');
 
-    var html = '<div class="field-row">'
-      + '<div class="field"><label>Nombre</label><input type="text" id="mpl-name" value="' + esc(p.name) + '"></div>'
-      + '<div class="field"><label>Icono (emoji)</label><input type="text" id="mpl-icon" value="' + esc(p.icon || '') + '"></div>'
-      + '</div>'
+    var html = '<div class="field"><label>Nombre</label><input type="text" id="mpl-name" value="' + esc(p.name) + '"></div>'
+      + '<div id="mpl-emoji-container"></div>'
       + '<div class="field-row">'
       + '<div class="field"><label>Precio (EUR/mes)</label><input type="number" step="0.01" id="mpl-price" value="' + p.price + '"></div>'
       + '<div class="field"><label>Periodo</label><input type="text" id="mpl-period" value="' + esc(p.period || 'mes') + '"></div>'
@@ -1482,13 +1526,15 @@
 
     openModal(title, html, footer);
 
+    var mplEmoji = createEmojiPicker('mpl-emoji-container', p.icon);
+
     $('#mpl-save').addEventListener('click', async function() {
       var featuresText = $('#mpl-features').value.trim();
       var features = featuresText ? featuresText.split('\n').filter(function(l) { return l.trim(); }) : [];
       var updated = {
         id: p.id,
         name: $('#mpl-name').value,
-        icon: $('#mpl-icon').value,
+        icon: mplEmoji.getValue(),
         description: $('#mpl-desc').value,
         price: parseFloat($('#mpl-price').value) || 0,
         period: $('#mpl-period').value,
@@ -1632,6 +1678,124 @@
         showToast('Error al guardar: ' + e.message, true);
       }
     });
+  }
+
+  // ===== EMOJI PICKER =====
+  var VET_EMOJIS = [
+    {emoji:'\uD83D\uDC1B', label:'Escarabajo'},
+    {emoji:'\uD83D\uDC36', label:'Perro'},
+    {emoji:'\uD83D\uDC31', label:'Gato'},
+    {emoji:'\uD83D\uDC2D', label:'Raton'},
+    {emoji:'\uD83D\uDC37', label:'Cerdo'},
+    {emoji:'\uD83E\uDD8A', label:'Hamster'},
+    {emoji:'\uD83D\uDC2F', label:'Tigre'},
+    {emoji:'\uD83E\uDD81', label:'Leon'},
+    {emoji:'\uD83E\uDD9A', label:'Tortuga'},
+    {emoji:'\uD83D\uDC0D', label:'Serpiente'},
+    {emoji:'\uD83E\uDD8E', label:'Pulpo'},
+    {emoji:'\uD83D\uDC20', label:'Pez'},
+    {emoji:'\uD83E\uDD87', label:'Pato'},
+    {emoji:'\uD83E\uDD85', label:'Aguila'},
+    {emoji:'\uD83D\uDC26', label:'Pajaro'},
+    {emoji:'\uD83E\uDD9B', label:'Cangrejo'},
+    {emoji:'\uD83D\uDC22', label:'Caracol'},
+    {emoji:'\uD83D\uDC1E', label:'Abeja'},
+    {emoji:'\uD83E\uDD8B', label:'Mariposa'},
+    {emoji:'\uD83D\uDC3B', label:'Oso'},
+    {emoji:'\uD83E\uDDA8', label:'Foca'},
+    {emoji:'\uD83D\uDC3C', label:'Panda'},
+    {emoji:'\uD83E\uDD98', label:'Mono'},
+    {emoji:'\uD83D\uDC2A', label:'Vaca'},
+    {emoji:'\u2764\uFE0F', label:'Corazon'},
+    {emoji:'\uD83E\uDE78', label:'Estetoscopio'},
+    {emoji:'\uD83E\uDE7A', label:'Estetoscopio2'},
+    {emoji:'\uD83C\uDFE5', label:'Hospital'},
+    {emoji:'\uD83D\uDC8A', label:'Inyeccion'},
+    {emoji:'\uD83E\uDE7C', label:'Pildoras'},
+    {emoji:'\u2695\uFE0F', label:'Medicina'},
+    {emoji:'\uD83E\uDE79', label:'Mascara'},
+    {emoji:'\uD83E\uDDF0', label:'Pipeta'},
+    {emoji:'\u2702\uFE0F', label:'Tijeras'},
+    {emoji:'\uD83E\uDDF6', label:'Jabon'},
+    {emoji:'\uD83E\uDDF4', label:'Toalla'},
+    {emoji:'\uD83D\uDCCB', label:'Clipboard'},
+    {emoji:'\uD83D\uDCCA', label:'Grafico'},
+    {emoji:'\uD83C\uDFAF', label:'Objetivo'},
+    {emoji:'\uD83D\uDE80', label:'Exito'},
+    {emoji:'\u2B50', label:'Estrella'},
+    {emoji:'\uD83D\uDD25', label:'Fuego'},
+    {emoji:'\uD83C\uDF1F', label:'Brillante'},
+    {emoji:'\uD83D\uDCA1', label:'Ideas'},
+    {emoji:'\uD83D\uDD12', label:'Seguridad'},
+    {emoji:'\uD83D\uDEE1\uFE0F', label:'Proteccion'},
+    {emoji:'\uD83D\uDCAA', label:'Fuerza'},
+    {emoji:'\uD83D\uDC4D', label:'Ok'},
+    {emoji:'\uD83D\uDC4E', label:'No'},
+    {emoji:'\uD83D\uDE0D', label:'Amor'},
+    {emoji:'\uD83D\uDCA2', label:'Molesto'},
+    {emoji:'\uD83D\uDE0A', label:'Sonrisa'},
+    {emoji:'\uD83E\uDD17', label:'Abrazo'},
+    {emoji:'\uD83D\uDCAC', label:'Chat'},
+    {emoji:'\uD83D\uDCE7', label:'Email'},
+    {emoji:'\u260E\uFE0F', label:'Telefono'},
+    {emoji:'\uD83D\uDCCD', label:'Ubicacion'},
+    {emoji:'\uD83D\uDCB0', label:'Dinero'},
+    {emoji:'\uD83D\uDCC6', label:'Agenda'},
+    {emoji:'\uD83D\uDCC5', label:'Calendario'},
+    {emoji:'\u23F0', label:'Reloj'},
+    {emoji:'\uD83C\uDFE0', label:'Casa'},
+    {emoji:'\uD83C\uDFE8', label:'Clinica'},
+    {emoji:'\uD83C\uDFE1', label:'Edificio'},
+    {emoji:'\uD83D\uDE97', label:'Ambulancia'},
+    {emoji:'\uD83D\uDD34', label:'Rojo'},
+    {emoji:'\uD83D\uDFE2', label:'Verde'},
+    {emoji:'\uD83D\uDD35', label:'Azul'},
+    {emoji:'\uD83D\uDFE1', label:'Amarillo'}
+  ];
+
+  function createEmojiPicker(containerId, selectedEmoji) {
+    var container = document.getElementById(containerId);
+    if (!container) return { getValue: function() { return ''; } };
+
+    var currentEmoji = selectedEmoji || '';
+    var currentLabel = '';
+    VET_EMOJIS.forEach(function(e) { if (e.emoji === currentEmoji) currentLabel = e.label; });
+
+    container.innerHTML = '<label>Icono (emoji)</label>'
+      + '<div class="emoji-selected" id="' + containerId + '-trigger">'
+      + '<span class="emoji-char">' + (currentEmoji || '\u2795') + '</span>'
+      + '<span class="emoji-label">' + (currentLabel || 'Seleccionar icono...') + '</span>'
+      + '</div>'
+      + '<div class="emoji-grid" id="' + containerId + '-grid"></div>'
+      + '<input type="hidden" id="' + containerId + '-value" value="' + esc(currentEmoji) + '">';
+
+    var grid = document.getElementById(containerId + '-grid');
+    VET_EMOJIS.forEach(function(e) {
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'emoji-option' + (e.emoji === currentEmoji ? ' selected' : '');
+      btn.textContent = e.emoji;
+      btn.title = e.label;
+      btn.addEventListener('click', function() {
+        currentEmoji = e.emoji;
+        currentLabel = e.label;
+        document.getElementById(containerId + '-value').value = e.emoji;
+        document.getElementById(containerId + '-trigger').querySelector('.emoji-char').textContent = e.emoji;
+        document.getElementById(containerId + '-trigger').querySelector('.emoji-label').textContent = e.label;
+        grid.querySelectorAll('.emoji-option').forEach(function(b) { b.classList.remove('selected'); });
+        btn.classList.add('selected');
+        grid.classList.remove('open');
+      });
+      grid.appendChild(btn);
+    });
+
+    document.getElementById(containerId + '-trigger').addEventListener('click', function() {
+      grid.classList.toggle('open');
+    });
+
+    return {
+      getValue: function() { return document.getElementById(containerId + '-value').value; }
+    };
   }
 
   // ===== HELPERS =====
