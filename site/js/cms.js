@@ -35,7 +35,7 @@ var CMS = (function() {
         // Hero badge hours
         var heroBadge = document.querySelector('.hero-badge span');
         if (heroBadge && s.hours) {
-          heroBadge.innerHTML = 'Abierto ahora \u00B7 ' + s.hours.replace(/\n/g, '<br>');
+          heroBadge.textContent = 'Abierto ahora \u00B7 ' + s.hours;
         }
         // Footer brand
         var footerBrand = document.querySelector('.footer-brand');
