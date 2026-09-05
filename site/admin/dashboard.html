@@ -1731,6 +1731,8 @@
       + '<div class="field"><label>Ahorro (opcional)</label><input type="text" id="mpl-savings" value="' + esc(p.savings || '') + '" placeholder="Ahorra 40e/anio"></div>'
       + '</div>'
       + '<div class="field"><label>Descripcion</label><input type="text" id="mpl-desc" value="' + esc(p.description || '') + '"></div>'
+      + '<div class="field"><label>Imagen de fondo (opcional)</label></div>'
+      + '<div id="mpl-image-container"></div>'
       + '<div class="field"><label>Caracteristicas (una por linea)</label><textarea id="mpl-features" rows="4">' + esc(feats) + '</textarea></div>';
 
     var footer = '<button class="btn btn-ghost" onclick="window._closeModal()">Cancelar</button>'
@@ -1739,6 +1741,7 @@
     openModal(title, html, footer);
 
     var mplEmoji = createEmojiPicker('mpl-emoji-container', p.icon);
+    var mplImage = createUploadField('mpl-image-container', p.image, 'site/img/uploads');
 
     $('#mpl-save').addEventListener('click', async function() {
       var featuresText = $('#mpl-features').value.trim();
@@ -1752,6 +1755,7 @@
         period: $('#mpl-period').value,
         savings: $('#mpl-savings').value,
         badge: $('#mpl-badge').value,
+        image: mplImage.getUrl(),
         features: features
       };
       var items = currentData.plans.plans;
