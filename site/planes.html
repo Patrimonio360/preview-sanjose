@@ -63,7 +63,7 @@
         <div class="plans-grid" id="plansGrid"></div>
         <div class="plans-cta">
             <p>Todos los planes incluyen asesoramiento telefónico ilimitado y prioridad en citas.</p>
-            <a href="#vetbot" class="btn btn-forest vetbot-trigger">🤖 Consultar planes</a>
+            <a href="citas.html" class="btn btn-forest">Consultar planes</a>
         </div>
     </div>
 </section>
@@ -160,12 +160,9 @@ fetch('_data/plans.json?t='+Date.now())
                 '<p class="plan-desc">' + p.description + '</p>' +
                 '<div class="plan-price"><span class="amount">' + p.price.toFixed(2) + '\u20AC</span><span class="period">' + p.period + '</span>' + savings + '</div>' +
                 '<ul class="plan-features">' + featureItems + '</ul>' +
-                '<a href="#vetbot" class="plan-btn ' + btnClass + ' vetbot-trigger">Solicitar Plan</a>' +
+                '<a href="citas.html" class="plan-btn ' + btnClass + '">Solicitar Plan</a>' +
                 '</article>';
         }).join('');
-        document.querySelectorAll('.vetbot-trigger').forEach(function(btn) {
-            btn.addEventListener('click', function(e) { e.preventDefault(); openVetBot(); });
-        });
         document.querySelectorAll('.reveal').forEach(function(el) { ro.observe(el); });
     });
 </script>

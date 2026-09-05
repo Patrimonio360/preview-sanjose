@@ -75,13 +75,10 @@ fetch('_data/services.json?t='+Date.now())
                     <ul class="svc-detail-list">
                         ${s.features.map(f => `<li>${f}</li>`).join('')}
                     </ul>
-                    <a href="#vetbot" class="btn btn-forest vetbot-trigger">Solicitar cita →</a>
+                    <a href="citas.html" class="btn btn-forest">Solicitar cita →</a>
                 </div>
             </div>
         `).join('');
-        document.querySelectorAll('.vetbot-trigger').forEach(btn => {
-            btn.addEventListener('click', e => { e.preventDefault(); openVetBot(); });
-        });
     });
 </script>
 
