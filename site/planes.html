@@ -153,7 +153,8 @@ fetch('_data/plans.json?t='+Date.now())
             var btnClass = p.featured ? 'plan-btn--primary' : 'plan-btn--secondary';
             var savings = p.savings ? '<br><span class="save">' + p.savings + '</span>' : '';
             var featureItems = p.features.map(function(f) { return '<li>' + (typeof f === 'object' ? f.feature : f) + '</li>'; }).join('');
-            return '<article class="plan reveal"' + featured + '>' +
+            var bgStyle = p.image ? 'background:linear-gradient(rgba(255,255,255,.85),rgba(255,255,255,.95)),url(' + p.image + ') center/cover no-repeat' : '';
+            return '<article class="plan reveal"' + featured + (bgStyle ? ' style="' + bgStyle + '"' : '') + '>' +
                 badge +
                 '<div class="plan-icon"' + (iconStyle ? ' style="' + iconStyle + '"' : '') + '>' + p.icon + '</div>' +
                 '<h3>' + p.name + '</h3>' +
