@@ -2,9 +2,30 @@
 // Uses h() and createClass() globals provided by Decap CMS (NOT React directly)
 
 (function() {
+  // Debug: check what globals are available
+  console.log('Preview templates loading...', {
+    h: typeof h,
+    createClass: typeof createClass,
+    CMS: typeof CMS,
+    React: typeof React
+  });
+
+  // Get h from any available source
+  var hFunc = (typeof h === 'function') ? h
+    : (typeof React === 'object' && React && typeof React.createElement === 'function') ? React.createElement
+    : null;
+
+  if (!hFunc) {
+    console.error('Preview templates: h/React.createElement not available');
+    return;
+  }
+
+  var createClassFunc = (typeof createClass === 'function') ? createClass
+    : (typeof React === 'object' && React && typeof React.createClass === 'function') ? React.createClass
+    : null;
 
   function render(html) {
-    return h('div', {
+    return hFunc('div', {
       dangerouslySetInnerHTML: { __html: html },
       style: { padding: '20px' }
     });
@@ -13,7 +34,7 @@
   // ========================
   // PRODUCTS PREVIEW
   // ========================
-  CMS.registerPreviewTemplate('products', createClass({
+  CMS.registerPreviewTemplate('products', createClassFunc({
     render: function() {
       var data = this.props.entry.get('data');
       var name = data.get('name') || 'Producto';
@@ -54,7 +75,7 @@
   // ========================
   // SERVICES PREVIEW
   // ========================
-  CMS.registerPreviewTemplate('services', createClass({
+  CMS.registerPreviewTemplate('services', createClassFunc({
     render: function() {
       var data = this.props.entry.get('data');
       var name = data.get('name') || 'Servicio';
@@ -103,7 +124,7 @@
   // ========================
   // PLANS PREVIEW
   // ========================
-  CMS.registerPreviewTemplate('plans', createClass({
+  CMS.registerPreviewTemplate('plans', createClassFunc({
     render: function() {
       var data = this.props.entry.get('data');
       var name = data.get('name') || 'Plan';
@@ -161,7 +182,7 @@
   // ========================
   // REVIEWS PREVIEW
   // ========================
-  CMS.registerPreviewTemplate('reviews', createClass({
+  CMS.registerPreviewTemplate('reviews', createClassFunc({
     render: function() {
       var data = this.props.entry.get('data');
       var author = data.get('author') || 'An\u00F3nimo';
@@ -191,7 +212,7 @@
   // ========================
   // PHOTOS PREVIEW
   // ========================
-  CMS.registerPreviewTemplate('photos', createClass({
+  CMS.registerPreviewTemplate('photos', createClassFunc({
     render: function() {
       var data = this.props.entry.get('data');
       var title = data.get('title') || 'Foto';
@@ -227,7 +248,7 @@
   // ========================
   // SETTINGS PREVIEW
   // ========================
-  CMS.registerPreviewTemplate('settings', createClass({
+  CMS.registerPreviewTemplate('settings', createClassFunc({
     render: function() {
       var data = this.props.entry.get('data');
 
@@ -265,7 +286,7 @@
   // ========================
   // CHATBOT PREVIEW
   // ========================
-  CMS.registerPreviewTemplate('chatbot', createClass({
+  CMS.registerPreviewTemplate('chatbot', createClassFunc({
     render: function() {
       var data = this.props.entry.get('data');
       var keywords = data.get('keywords') || '';
@@ -291,5 +312,5 @@
     }
   }));
 
-  console.log('Preview templates loaded');
+  console.log('Preview templates loaded successfully');
 })();
