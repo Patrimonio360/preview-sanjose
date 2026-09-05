@@ -1212,7 +1212,8 @@
   }
 
   function renderProductCard(p, idx) {
-    var img = p.image ? '<img class="card-img" src="' + esc(p.image) + '" alt="" loading="lazy">' : '<div class="card-img-placeholder">&#x1F4F7;</div>';
+    var imgSrc = p.image ? (p.image.startsWith('http') ? p.image : '../' + p.image) : '';
+    var img = imgSrc ? '<img class="card-img" src="' + esc(imgSrc) + '" alt="" loading="lazy">' : '<div class="card-img-placeholder">&#x1F4F7;</div>';
     var tag = p.tag ? '<span class="card-tag">' + esc(p.tag) + '</span>' : '';
     return '<div class="card" data-index="' + idx + '">' + img
       + '<div class="card-body">' + tag
@@ -1308,7 +1309,8 @@
   }
 
   function renderPhotoCard(p, idx) {
-    var img = p.image ? '<img class="card-img" src="' + esc(p.image) + '" alt="" loading="lazy">' : '<div class="card-img-placeholder">&#x1F4F7;</div>';
+    var imgSrc = p.image ? (p.image.startsWith('http') ? p.image : '../' + p.image) : '';
+    var img = imgSrc ? '<img class="card-img" src="' + esc(imgSrc) + '" alt="" loading="lazy">' : '<div class="card-img-placeholder">&#x1F4F7;</div>';
     var usageLabels = { hero:'Portada', home:'Inicio', nosotros:'Nosotros', servicios:'Servicios', contacto:'Contacto', general:'General' };
     return '<div class="card" data-index="' + idx + '">' + img
       + '<div class="card-body">'
