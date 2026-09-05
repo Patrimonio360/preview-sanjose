@@ -848,13 +848,19 @@
     try {
       var res = await fetch('../_data/admin-config.json?t=' + Date.now());
       var config = await res.json();
+      GITHUB_REPO = config.repo;
       if (hash === config.passwordHash) {
-        GITHUB_TOKEN = config.githubToken;
-        GITHUB_REPO = config.repo;
-        $('#login-screen').style.display = 'none';
-        $('#dashboard-screen').style.display = 'block';
-        sessionStorage.setItem('admin_auth', 'true');
-        loadSection('products');
+        // Password OK - now authenticate with GitHub via OAuth proxy
+        var token = sessionStorage.getItem('github_token');
+        if (token) {
+          GITHUB_TOKEN = token;
+          $('#login-screen').style.display = 'none';
+          $('#dashboard-screen').style.display = 'block';
+          sessionStorage.setItem('admin_auth', 'true');
+          loadSection('products');
+        } else {
+          await githubOAuthLogin();
+        }
       } else {
         $('#login-error').style.display = 'block';
         $('#login-password').value = '';
@@ -866,12 +872,55 @@
     }
   }
 
+  function githubOAuthLogin() {
+    return new Promise(function(resolve, reject) {
+      var popup = window.open(
+        'https://oauth-sanjose.vercel.app/api/auth',
+        'github-oauth',
+        'width=600,height=700,left=200,top=100'
+      );
+
+      function onMessage(e) {
+        var data = e.data;
+        if (typeof data === 'string' && data.indexOf('authorization:github:success:') === 0) {
+          var json = data.substring('authorization:github:success:'.length);
+          try {
+            var parsed = JSON.parse(json);
+            GITHUB_TOKEN = parsed.token;
+            sessionStorage.setItem('github_token', parsed.token);
+            sessionStorage.setItem('admin_auth', 'true');
+            window.removeEventListener('message', onMessage);
+            if (popup) popup.close();
+            $('#login-screen').style.display = 'none';
+            $('#dashboard-screen').style.display = 'block';
+            loadSection('products');
+            resolve();
+          } catch (err) {
+            reject(err);
+          }
+        }
+      }
+
+      window.addEventListener('message', onMessage);
+
+      // Fallback: check if popup was blocked
+      setTimeout(function() {
+        if (!popup || popup.closed) {
+          window.removeEventListener('message', onMessage);
+          $('#login-error').textContent = 'Popup bloqueado. Permite popups para este sitio.';
+          $('#login-error').style.display = 'block';
+          reject(new Error('popup blocked'));
+        }
+      }, 3000);
+    });
+  }
+
   // Check existing session
-  if (sessionStorage.getItem('admin_auth') === 'true') {
+  if (sessionStorage.getItem('admin_auth') === 'true' && sessionStorage.getItem('github_token')) {
     fetch('../_data/admin-config.json?t=' + Date.now())
       .then(function(r) { return r.json(); })
       .then(function(c) {
-        GITHUB_TOKEN = c.githubToken;
+        GITHUB_TOKEN = sessionStorage.getItem('github_token');
         GITHUB_REPO = c.repo;
         $('#login-screen').style.display = 'none';
         $('#dashboard-screen').style.display = 'block';
@@ -882,6 +931,7 @@
   // Logout
   $('#logout-btn').addEventListener('click', function() {
     sessionStorage.removeItem('admin_auth');
+    sessionStorage.removeItem('github_token');
     location.reload();
   });
 
