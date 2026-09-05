@@ -1319,6 +1319,7 @@
       + (p.description ? '<div class="card-desc">' + esc(p.description) + '</div>' : '')
       + '</div>'
       + '<div class="card-actions">'
+      + '<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();window._edit(' + idx + ')">&#x270F; Editar</button>'
       + '<button class="btn btn-danger btn-sm" data-index="' + idx + '">&#x1F5D1; Eliminar</button>'
       + '</div></div>';
   }
