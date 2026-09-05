@@ -158,6 +158,16 @@ var CMS = (function() {
         if (aboutImg && nosotrosPhotos.length > 0) {
           aboutImg.src = nosotrosPhotos[0].image;
         }
+        // Nosotros gallery
+        var gallery = document.getElementById('nosotrosGallery');
+        if (gallery && nosotrosPhotos.length > 0) {
+          gallery.innerHTML = nosotrosPhotos.map(function(p) {
+            return '<div style="border-radius:12px;overflow:hidden;aspect-ratio:4/3;position:relative">' +
+              '<img src="' + p.image + '" alt="' + (p.title || '') + '" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block">' +
+              (p.title ? '<div style="position:absolute;bottom:0;left:0;right:0;padding:8px 12px;background:linear-gradient(transparent,rgba(0,0,0,.6));color:white;font-size:12px;font-weight:600">' + p.title + '</div>' : '') +
+              '</div>';
+          }).join('');
+        }
         // Services page photos (usage=servicios)
         var svcPhotos = photos.filter(function(p){return p.usage==='servicios'});
         var svcItems = document.querySelectorAll('.svc-img img');
