@@ -23,7 +23,7 @@ var CMS = (function() {
   }
 
   function loadSettings() {
-    return fetch('_data/settings.json?t=' + Date.now())
+    return fetch('_data/settings.json?v=' + Date.now())
       .then(function(r) { return r.json(); })
       .then(function(s) {
         // Nav phone
