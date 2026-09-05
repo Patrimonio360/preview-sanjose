@@ -1342,7 +1342,7 @@
     fields.forEach(function(f) {
       var val = data[f.key] || '';
       html += '<div class="field"><label>' + f.icon + ' ' + f.label + '</label>';
-      if (f.key === 'footerDesc' || f.key === 'hours') {
+      if (f.key === 'footerDesc') {
         html += '<textarea id="setting-' + f.key + '" rows="3">' + esc(val) + '</textarea>';
       } else {
         html += '<input type="text" id="setting-' + f.key + '" value="' + esc(val) + '">';
