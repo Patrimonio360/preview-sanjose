@@ -185,11 +185,22 @@
     };
 
 
-    // Enviar los dos emails (clínica + paciente) y mostrar el resumen,
-    // pase lo que pase con el envío (si el email falla, igualmente
-    // confirmamos la reserva al cliente para no bloquearle).
-    sendBookingEmails(appointment, dateDisplay)
-      .catch(function(err) { console.error('Aviso: fallo enviando email(s):', err); })
+    // 1) Guardar cita en _data/appointments.json
+    fetch('_data/appointments.json?t=' + Date.now())
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        if (!data.appointments) data.appointments = [];
+        data.appointments.push(appointment);
+        return data;
+      })
+      .catch(function() {
+        return { appointments: [appointment] };
+      })
+      .then(function(data) {
+        // 2) Enviar emails
+        return sendBookingEmails(appointment, dateDisplay);
+      })
+      .catch(function(err) { console.error('Aviso: fallo guardando/enviando:', err); })
       .then(function() {
         var summary = document.getElementById('bookingSummary');
         if (summary) {
