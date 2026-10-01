@@ -7,7 +7,7 @@
 //                         sobre preview-sanjose y sanjose-citas
 //   ADMIN_PASSWORD_HASH   SHA-256 (hex) de la contraseña del panel
 //   ADMIN_SESSION_SECRET  texto aleatorio largo para firmar las sesiones
-//   SMTP_USER, SMTP_PASS  Gmail que envía los emails a clientes (ver _mail.js)
+//   RESEND_API_KEY        envío de emails a clínica y clientes (ver _mail.js)
 //
 // Peticiones (POST, JSON):
 //   { action: 'login',  password }                      -> { token }

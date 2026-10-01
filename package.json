@@ -4,8 +4,5 @@
   "description": "Funciones de Vercel de la web de la Clínica Veterinaria San José",
   "engines": {
     "node": ">=18"
-  },
-  "dependencies": {
-    "nodemailer": "^6.10.1"
   }
 }

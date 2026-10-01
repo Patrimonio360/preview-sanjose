@@ -1,10 +1,14 @@
-// Envío de emails al cliente desde el Gmail de la clínica.
+// Envío de emails (aviso a la clínica y emails al cliente) con Resend,
+// desde el dominio de Patrimonio360. El remitente muestra el nombre de la
+// clínica y las respuestas van al email de la clínica (Ajustes del panel).
 // Variables de entorno:
-//   SMTP_USER  dirección de Gmail que envía (p. ej. la de la clínica)
-//   SMTP_PASS  "contraseña de aplicación" de esa cuenta de Gmail
+//   RESEND_API_KEY  clave de la API de Resend
+//   MAIL_FROM       dirección remitente verificada en Resend
+//                   (por defecto citas@patrimonio360.com)
 
-const nodemailer = require('nodemailer');
 const { SITE_REPO, readFile } = require('./_lib');
+
+const MAIL_FROM = process.env.MAIL_FROM || 'citas@patrimonio360.com';
 
 const DEFAULT_CLINIC = {
   name: 'Clínica Veterinaria San José',
@@ -14,7 +18,7 @@ const DEFAULT_CLINIC = {
 };
 
 function mailConfigured() {
-  return Boolean(process.env.SMTP_USER && process.env.SMTP_PASS);
+  return Boolean(process.env.RESEND_API_KEY);
 }
 
 async function clinicSettings() {
@@ -102,17 +106,21 @@ function clinicNotification(appt) {
 
 async function send(clinic, to, replyTo, message) {
   if (!mailConfigured()) throw new Error('Email no configurado');
-  const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS }
+  const res = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      Authorization: 'Bearer ' + process.env.RESEND_API_KEY,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      from: clinic.name.replace(/["<>]/g, '') + ' <' + MAIL_FROM + '>',
+      reply_to: replyTo,
+      to: [to],
+      subject: message.subject,
+      text: message.text
+    })
   });
-  await transporter.sendMail({
-    from: '"' + clinic.name + '" <' + process.env.SMTP_USER + '>',
-    replyTo: replyTo,
-    to: to,
-    subject: message.subject,
-    text: message.text
-  });
+  if (!res.ok) throw new Error('Resend ' + res.status + ': ' + (await res.text()).slice(0, 200));
 }
 
 // type: 'received' | 'confirmed' | 'cancelled'
