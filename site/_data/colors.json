@@ -1,10 +1,10 @@
 {
-  "primary": "#3D2B1F",
-  "primaryLight": "#6B4226",
-  "sage": "#A0785A",
-  "coral": "#C97B4B",
-  "coralDark": "#A86232",
-  "cream": "#FDF6EC",
-  "charcoal": "#2C1A0E",
+  "primary": "#1A3C2A",
+  "primaryLight": "#2D6B45",
+  "sage": "#6B9B7A",
+  "coral": "#D4764E",
+  "coralDark": "#B85E3A",
+  "cream": "#FBF9F5",
+  "charcoal": "#1C1C1C",
   "white": "#FFFFFF"
 }
