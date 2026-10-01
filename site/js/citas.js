@@ -185,21 +185,9 @@
     };
 
 
-    // 1) Guardar cita en _data/appointments.json
-    fetch('_data/appointments.json?t=' + Date.now())
-      .then(function(r) { return r.json(); })
-      .then(function(data) {
-        if (!data.appointments) data.appointments = [];
-        data.appointments.push(appointment);
-        return data;
-      })
-      .catch(function() {
-        return { appointments: [appointment] };
-      })
-      .then(function(data) {
-        // 2) Enviar emails
-        return sendBookingEmails(appointment, dateDisplay);
-      })
+    // Guardar la cita (función de Vercel), enviar los dos emails y mostrar
+    // el resumen pase lo que pase, para no bloquear al cliente.
+    sendBookingEmails(appointment, dateDisplay)
       .catch(function(err) { console.error('Aviso: fallo guardando/enviando:', err); })
       .then(function() {
         var summary = document.getElementById('bookingSummary');
@@ -249,7 +237,7 @@
           + 'Fecha: ' + dateDisplay + '\n'
           + 'Hora: ' + appt.time + '\n'
           + (appt.message ? 'Mensaje: ' + appt.message + '\n' : '')
-          + '\nEsta cita NO queda guardada automaticamente en el sistema: confirma directamente con el cliente.';
+          + '\nLa cita aparece como Pendiente en el panel de administracion: confirmala alli y con el cliente.';
 
 
         var patientDateDisplay = new Date(appt.date + 'T00:00:00').toLocaleDateString('es-ES', {
@@ -296,7 +284,7 @@
         });
 
 
-        var saveAppointment = fetch('https://TU-PROYECTO.vercel.app/api/book-appointment', {
+        var saveAppointment = fetch('https://preview-sanjose.vercel.app/api/book-appointment', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(appt)

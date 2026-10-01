@@ -905,9 +905,9 @@
 <script>
 (function() {
   // ===== CONFIG =====
-  var GITHUB_TOKEN = '';
-  var GITHUB_REPO = '';
-  var GITHUB_BRANCH = 'master';
+  // El panel habla con la función de Vercel, que guarda el token de GitHub.
+  var ADMIN_API = 'https://preview-sanjose.vercel.app/api/admin';
+  var SESSION_TOKEN = '';
   var currentSection = 'products';
   var currentData = {};
   var currentSHA = {};
@@ -915,15 +915,6 @@
   // ===== DOM REFS =====
   var $ = function(sel) { return document.querySelector(sel); };
   var $$ = function(sel) { return document.querySelectorAll(sel); };
-
-  // ===== SHA-256 HASH =====
-  async function hashPassword(pwd) {
-    var enc = new TextEncoder();
-    var data = enc.encode(pwd);
-    var hashBuf = await crypto.subtle.digest('SHA-256', data);
-    var arr = Array.from(new Uint8Array(hashBuf));
-    return arr.map(function(b) { return b.toString(16).padStart(2, '0'); }).join('');
-  }
 
   // ===== LOGIN =====
   $('#login-btn').addEventListener('click', doLogin);
@@ -934,89 +925,50 @@
   async function doLogin() {
     var pwd = $('#login-password').value;
     if (!pwd) return;
-    var hash = await hashPassword(pwd);
     try {
-      var res = await fetch('../_data/admin-config.json?t=' + Date.now());
-      var config = await res.json();
-      GITHUB_REPO = config.repo;
-      GITHUB_TOKEN = config.githubToken || '';
-      if (hash === config.passwordHash) {
-        if (!GITHUB_TOKEN) {
-          $('#login-error').textContent = 'Token GitHub no configurado. Contacta al desarrollador.';
-          $('#login-error').style.display = 'block';
-          return;
-        }
+      var res = await fetch(ADMIN_API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'login', password: pwd })
+      });
+      var out = await res.json().catch(function() { return {}; });
+      if (res.ok && out.token) {
+        SESSION_TOKEN = out.token;
+        sessionStorage.setItem('admin_session', out.token);
+        $('#login-error').style.display = 'none';
         $('#login-screen').style.display = 'none';
         $('#dashboard-screen').style.display = 'block';
-        sessionStorage.setItem('admin_auth', 'true');
         loadSection('products');
-      } else {
+      } else if (res.status === 401) {
+        $('#login-error').textContent = 'Contraseña incorrecta';
         $('#login-error').style.display = 'block';
         $('#login-password').value = '';
         $('#login-password').focus();
+      } else {
+        $('#login-error').textContent = out.error || 'Error del servidor';
+        $('#login-error').style.display = 'block';
       }
     } catch (e) {
       $('#login-error').textContent = 'Error de conexion';
       $('#login-error').style.display = 'block';
     }
   }
-        'width=600,height=700,left=200,top=100'
-      );
 
-      function onMessage(e) {
-        var data = e.data;
-        if (typeof data === 'string' && data.indexOf('authorization:github:success:') === 0) {
-          var json = data.substring('authorization:github:success:'.length);
-          try {
-            var parsed = JSON.parse(json);
-            GITHUB_TOKEN = parsed.token;
-            sessionStorage.setItem('github_token', parsed.token);
-            sessionStorage.setItem('admin_auth', 'true');
-            window.removeEventListener('message', onMessage);
-            if (popup) popup.close();
-            $('#login-screen').style.display = 'none';
-            $('#dashboard-screen').style.display = 'block';
-            loadSection('products');
-            resolve();
-          } catch (err) {
-            reject(err);
-          }
-        }
-      }
-
-      window.addEventListener('message', onMessage);
-
-      // Fallback: check if popup was blocked
-      setTimeout(function() {
-        if (!popup || popup.closed) {
-          window.removeEventListener('message', onMessage);
-          $('#login-error').textContent = 'Popup bloqueado. Permite popups para este sitio.';
-          $('#login-error').style.display = 'block';
-          reject(new Error('popup blocked'));
-        }
-      }, 3000);
-    });
+  function logout() {
+    sessionStorage.removeItem('admin_session');
+    location.reload();
   }
 
   // Check existing session
-  if (sessionStorage.getItem('admin_auth') === 'true' && sessionStorage.getItem('github_token')) {
-    fetch('../_data/admin-config.json?t=' + Date.now())
-      .then(function(r) { return r.json(); })
-      .then(function(c) {
-        GITHUB_TOKEN = sessionStorage.getItem('github_token');
-        GITHUB_REPO = c.repo;
-        $('#login-screen').style.display = 'none';
-        $('#dashboard-screen').style.display = 'block';
-        loadSection('products');
-      });
+  if (sessionStorage.getItem('admin_session')) {
+    SESSION_TOKEN = sessionStorage.getItem('admin_session');
+    $('#login-screen').style.display = 'none';
+    $('#dashboard-screen').style.display = 'block';
+    loadSection('products');
   }
 
   // Logout
-  $('#logout-btn').addEventListener('click', function() {
-    sessionStorage.removeItem('admin_auth');
-    sessionStorage.removeItem('github_token');
-    location.reload();
-  });
+  $('#logout-btn').addEventListener('click', logout);
 
   // Export all data as JSON
   $('#export-btn').addEventListener('click', async function() {
@@ -1055,41 +1007,34 @@
     });
   });
 
-  // ===== GITHUB API =====
-  function apiHeaders() {
-    return {
-      'Authorization': 'token ' + GITHUB_TOKEN,
-      'Accept': 'application/vnd.github.v3+json',
-      'Content-Type': 'application/json'
-    };
+  // ===== ADMIN API (Vercel) =====
+  async function adminApi(payload) {
+    var res = await fetch(ADMIN_API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + SESSION_TOKEN },
+      body: JSON.stringify(payload)
+    });
+    var out = await res.json().catch(function() { return {}; });
+    if (res.status === 401) {
+      // Sesión caducada: volver a pedir la contraseña.
+      sessionStorage.removeItem('admin_session');
+      location.reload();
+      throw new Error('Sesión caducada');
+    }
+    if (!res.ok) throw new Error(out.error || 'Error ' + res.status);
+    return out;
   }
 
   async function githubRead(path) {
-    var url = 'https://api.github.com/repos/' + GITHUB_REPO + '/contents/' + path;
-    var res = await fetch(url, { headers: apiHeaders() });
-    if (!res.ok) throw new Error('GitHub read failed: ' + res.status);
-    var data = await res.json();
-    var content = decodeURIComponent(escape(atob(data.content)));
-    currentSHA[path] = data.sha;
-    return JSON.parse(content);
+    var out = await adminApi({ action: 'read', path: path });
+    currentSHA[path] = out.sha;
+    return out.data;
   }
 
   async function githubWrite(path, obj, message) {
-    var url = 'https://api.github.com/repos/' + GITHUB_REPO + '/contents/' + path;
-    var body = {
-      message: message,
-      content: btoa(unescape(encodeURIComponent(JSON.stringify(obj, null, 2)))),
-      sha: currentSHA[path] || '',
-      branch: GITHUB_BRANCH
-    };
-    var res = await fetch(url, { method: 'PUT', headers: apiHeaders(), body: JSON.stringify(body) });
-    if (!res.ok) {
-      var err = await res.json().catch(function() { return {}; });
-      throw new Error(err.message || 'GitHub write failed: ' + res.status);
-    }
-    var data = await res.json();
-    currentSHA[path] = data.content.sha;
-    return data;
+    var out = await adminApi({ action: 'write', path: path, data: obj, sha: currentSHA[path] || '', message: message });
+    currentSHA[path] = out.sha;
+    return out;
   }
 
   function getFilePath(section) {
@@ -1101,7 +1046,7 @@
       chatbot: 'site/_data/chatbot/index.json',
       reviews: 'site/_data/reviews/index.json',
       photos: 'site/_data/photos/index.json',
-      appointments: 'site/_data/appointments.json',
+      appointments: 'appointments.json', // repositorio privado sanjose-citas
       themes: 'site/_data/colors.json'
     };
     return map[section];
@@ -2048,30 +1993,8 @@
       reader.readAsDataURL(file);
     });
 
-    var url = 'https://api.github.com/repos/' + GITHUB_REPO + '/contents/' + path;
-    var body = {
-      message: 'admin: subir imagen ' + fileName,
-      content: base64,
-      branch: GITHUB_BRANCH
-    };
-
-    // Check if file already exists to get its sha
-    try {
-      var existing = await fetch(url + '?ref=' + GITHUB_BRANCH, { headers: apiHeaders() });
-      if (existing.ok) {
-        var existingData = await existing.json();
-        body.sha = existingData.sha;
-      }
-    } catch (e) {}
-
-    var res = await fetch(url, { method: 'PUT', headers: apiHeaders(), body: JSON.stringify(body) });
-    if (!res.ok) {
-      var err = await res.json().catch(function() { return {}; });
-      throw new Error(err.message || 'Upload failed: ' + res.status);
-    }
-
-    var raw = 'https://raw.githubusercontent.com/' + GITHUB_REPO + '/' + GITHUB_BRANCH + '/' + path;
-    return raw;
+    var out = await adminApi({ action: 'upload', path: path, base64: base64, message: 'admin: subir imagen ' + fileName });
+    return out.url;
   }
 
   function createUploadField(containerId, currentUrl, folder) {

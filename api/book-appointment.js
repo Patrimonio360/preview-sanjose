@@ -2,31 +2,14 @@
 // Las citas contienen datos personales, por eso no se guardan en el
 // repositorio público de la web.
 // Requiere la variable de entorno GITHUB_TOKEN (token fine-grained con
-// "Contents: Read and write" solo sobre sanjose-citas).
+// "Contents: Read and write" sobre sanjose-citas).
 
-const OWNER = process.env.GITHUB_OWNER || 'Patrimonio360';
-const REPO = process.env.GITHUB_REPO || 'sanjose-citas';
-const BRANCH = process.env.GITHUB_BRANCH || 'main';
-const FILE_PATH = process.env.APPOINTMENTS_PATH || 'appointments.json';
-
-// Solo la web publicada (y pruebas en local) puede llamar a esta función.
-const ALLOWED_ORIGINS = [
-  'https://patrimonio360.github.io',
-  'http://localhost:8080',
-  'http://127.0.0.1:8080'
-];
+const {
+  APPOINTMENTS_REPO, APPOINTMENTS_PATH,
+  setCors, isAllowedOrigin, parseBody, readFile, writeFile
+} = require('./_lib');
 
 const MAX_LEN = { service: 100, patientName: 100, patientPhone: 30, patientEmail: 120, message: 1000 };
-
-function setCors(req, res) {
-  const origin = req.headers.origin;
-  if (ALLOWED_ORIGINS.includes(origin)) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
-    res.setHeader('Vary', 'Origin');
-  }
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-}
 
 function clean(value, max) {
   return String(value == null ? '' : value).replace(/[\u0000-\u001f\u007f]/g, ' ').trim().slice(0, max);
@@ -58,28 +41,12 @@ function validate(body) {
   return { appt };
 }
 
-async function github(path, options) {
-  const res = await fetch('https://api.github.com/repos/' + OWNER + '/' + REPO + path, {
-    ...options,
-    headers: {
-      Authorization: 'Bearer ' + process.env.GITHUB_TOKEN,
-      Accept: 'application/vnd.github+json',
-      'X-GitHub-Api-Version': '2022-11-28',
-      'User-Agent': 'sanjose-book-appointment',
-      ...(options && options.headers)
-    }
-  });
-  return res;
-}
-
 async function readAppointments() {
-  const res = await github('/contents/' + FILE_PATH + '?ref=' + BRANCH);
-  if (res.status === 404) return { data: { appointments: [] }, sha: undefined };
-  if (!res.ok) throw new Error('GitHub read ' + res.status);
-  const file = await res.json();
+  const file = await readFile(APPOINTMENTS_REPO, APPOINTMENTS_PATH);
+  if (!file) return { data: { appointments: [] }, sha: undefined };
   let data;
   try {
-    data = JSON.parse(Buffer.from(file.content, 'base64').toString('utf8'));
+    data = JSON.parse(file.content.toString('utf8'));
   } catch (e) {
     data = {};
   }
@@ -100,19 +67,16 @@ async function saveAppointment(appt) {
 
     data.appointments.push(appt);
 
-    const res = await github('/contents/' + FILE_PATH, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        message: 'Nueva cita: ' + appt.date + ' ' + appt.time,
-        content: Buffer.from(JSON.stringify(data, null, 2) + '\n', 'utf8').toString('base64'),
-        branch: BRANCH,
-        sha: sha
-      })
-    });
+    const result = await writeFile(
+      APPOINTMENTS_REPO,
+      APPOINTMENTS_PATH,
+      Buffer.from(JSON.stringify(data, null, 2) + '\n', 'utf8'),
+      'Nueva cita: ' + appt.date + ' ' + appt.time,
+      sha
+    );
 
-    if (res.ok) return { ok: true };
-    if (res.status !== 409 && res.status !== 422) throw new Error('GitHub write ' + res.status);
+    if (result.ok) return { ok: true };
+    if (result.status !== 409 && result.status !== 422) throw new Error('GitHub write ' + result.status);
   }
   throw new Error('No se pudo guardar tras varios intentos');
 }
@@ -122,14 +86,11 @@ module.exports = async function handler(req, res) {
 
   if (req.method === 'OPTIONS') return res.status(204).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Método no permitido' });
-  if (!ALLOWED_ORIGINS.includes(req.headers.origin)) return res.status(403).json({ error: 'Origen no permitido' });
+  if (!isAllowedOrigin(req)) return res.status(403).json({ error: 'Origen no permitido' });
   if (!process.env.GITHUB_TOKEN) return res.status(500).json({ error: 'Servidor sin configurar' });
 
-  let body = req.body;
-  if (typeof body === 'string') {
-    try { body = JSON.parse(body); } catch (e) { body = null; }
-  }
-  if (!body || typeof body !== 'object') return res.status(400).json({ error: 'Datos no válidos' });
+  const body = parseBody(req);
+  if (!body) return res.status(400).json({ error: 'Datos no válidos' });
 
   const result = validate(body);
   if (result.error) return res.status(400).json({ error: result.error });
