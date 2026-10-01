@@ -829,6 +829,7 @@
       </div>
       <div class="topbar-actions">
         <span class="topbar-status" id="api-status">Conectando...</span>
+        <button class="btn-logout" id="export-btn" style="background:var(--forest);color:var(--white);border:none">📥 Exportar JSON</button>
         <button class="btn-logout" id="logout-btn">Cerrar sesion</button>
       </div>
     </div>
@@ -1022,6 +1023,34 @@
     sessionStorage.removeItem('admin_auth');
     sessionStorage.removeItem('github_token');
     location.reload();
+  });
+
+  // Export all data as JSON
+  $('#export-btn').addEventListener('click', async function() {
+    try {
+      showToast('Preparando exportación...');
+      var files = ['products', 'services', 'plans', 'settings', 'chatbot', 'reviews', 'photos', 'appointments'];
+      var allData = {};
+      for (var i = 0; i < files.length; i++) {
+        var f = files[i];
+        try {
+          var path = getFilePath(f);
+          var data = await githubRead(path);
+          allData[f] = data;
+        } catch (e) {}
+      }
+      var json = JSON.stringify(allData, null, 2);
+      var blob = new Blob([json], { type: 'application/json' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'clinica-backup-' + new Date().toISOString().slice(0,10) + '.json';
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('Backup descargado');
+    } catch (e) {
+      showToast('Error al exportar: ' + e.message, true);
+    }
   });
 
   // ===== SIDEBAR =====
