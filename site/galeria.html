@@ -56,7 +56,7 @@
             <li><a href="tienda.html">Tienda</a></li>`n            <li><a href="galeria.html">Galería</a></li>
             <li><a href="resenas.html">Reseñas</a></li>
             <li><a href="contacto.html">Contacto</a></li>
-            <li><a href="tel:955321470" class="nav-cta">â˜Ž 955 321 470</a></li>
+            <li><a href="tel:955321470" class="nav-cta">☎ 955 321 470</a></li>
         </ul>
         <div class="nav-right">
             <button class="nav-toggle" id="navToggle" aria-label="Menú"><span></span><span></span><span></span></button>
@@ -77,7 +77,7 @@
         <div class="gallery-filters" id="galleryFilters"></div>
         <div class="gallery-grid" id="galleryGrid"></div>
         <div class="gallery-empty" id="galleryEmpty" style="display:none">
-            <div class="gallery-empty-icon">ðŸ“·</div>
+            <div class="gallery-empty-icon">📷</div>
             <p>No hay fotos en esta categoría.</p>
         </div>
     </div>
@@ -85,9 +85,9 @@
 
 <!-- Lightbox -->
 <div class="lightbox" id="lightbox">
-    <button class="lightbox-close" id="lightboxClose" aria-label="Cerrar">âœ•</button>
-    <button class="lightbox-nav lightbox-prev" id="lightboxPrev" aria-label="Anterior">â€¹</button>
-    <button class="lightbox-nav lightbox-next" id="lightboxNext" aria-label="Siguiente">â€º</button>
+    <button class="lightbox-close" id="lightboxClose" aria-label="Cerrar">✕</button>
+    <button class="lightbox-nav lightbox-prev" id="lightboxPrev" aria-label="Anterior">‹</button>
+    <button class="lightbox-nav lightbox-next" id="lightboxNext" aria-label="Siguiente">›</button>
     <img id="lightboxImg" src="" alt="">
     <div class="lightbox-info" id="lightboxInfo"></div>
 </div>
@@ -99,16 +99,16 @@
                 <div class="footer-brand">Clínica Veterinaria San José</div>
                 <p class="footer-desc">Más de 15 años cuidando las mascotas de San José de La Rinconada y alrededores.</p>
                 <div class="footer-contact">
-                    <div>â˜Ž <a href="tel:955321470">955 321 470</a></div>
-                    <div>âœ‰ <a href="mailto:sanjose.clinicaveterinaria@gmail.com">sanjose.clinicaveterinaria@gmail.com</a></div>
-                    <div>ðŸ“ Avda. San José, 173, La Rinconada, Sevilla</div>
+                    <div>☎ <a href="tel:955321470">955 321 470</a></div>
+                    <div>✉ <a href="mailto:sanjose.clinicaveterinaria@gmail.com">sanjose.clinicaveterinaria@gmail.com</a></div>
+                    <div>📍 Avda. San José, 173, La Rinconada, Sevilla</div>
                 </div>
             </div>
             <div class="footer-col"><h4>Servicios</h4><ul><li><a href="servicios.html">Consulta General</a></li><li><a href="servicios.html">Vacunación</a></li><li><a href="servicios.html">Cirugía</a></li><li><a href="servicios.html">Terapias Alternativas</a></li></ul></div>
             <div class="footer-col"><h4>Clínica</h4><ul><li><a href="nosotros.html">Sobre nosotros</a></li><li><a href="resenas.html">Reseñas Google</a></li><li><a href="citas.html">Pedir cita</a></li><li><a href="contacto.html">Contacto</a></li></ul></div>
         </div>
         <div class="footer-bottom">
-            <p>Â© 2026 Clínica Veterinaria San José. Todos los derechos reservados.</p>
+            <p>© 2026 Clínica Veterinaria San José. Todos los derechos reservados.</p>
             <div class="footer-links"><a href="politica-privacidad.html">Política de Privacidad</a><a href="aviso-legal.html">Aviso Legal</a></div>
         </div>
     </div>
@@ -123,7 +123,7 @@
     var lightboxIndex = 0;
 
     var usageLabels = { hero:'Portada', home:'Inicio', nosotros:'Nosotros', servicios:'Servicios', contacto:'Contacto', general:'General' };
-    var usageIcons = { hero:'ðŸ ', home:'ðŸ¡', nosotros:'ðŸ‘¥', servicios:'ðŸ©º', contacto:'ðŸ“ž', general:'ðŸ“·' };
+    var usageIcons = { hero:'🏠', home:'🏡', nosotros:'👥', servicios:'🩺', contacto:'📞', general:'📷' };
 
     function loadPhotos() {
         fetch('_data/photos/index.json?t=' + Date.now())
@@ -134,7 +134,7 @@
                 renderGallery();
             })
             .catch(function() {
-                document.getElementById('galleryGrid').innerHTML = '<div class="gallery-empty" style="grid-column:1/-1"><div class="gallery-empty-icon">ðŸ“·</div><p>Error al cargar fotos.</p></div>';
+                document.getElementById('galleryGrid').innerHTML = '<div class="gallery-empty" style="grid-column:1/-1"><div class="gallery-empty-icon">📷</div><p>Error al cargar fotos.</p></div>';
             });
     }
 
@@ -144,7 +144,7 @@
         var container = document.getElementById('galleryFilters');
         var html = '<button class="gallery-filter active" data-filter="todos">Todas</button>';
         usages.forEach(function(u) {
-            html += '<button class="gallery-filter" data-filter="' + u + '">' + (usageIcons[u] || 'ðŸ“·') + ' ' + (usageLabels[u] || u) + '</button>';
+            html += '<button class="gallery-filter" data-filter="' + u + '">' + (usageIcons[u] || '📷') + ' ' + (usageLabels[u] || u) + '</button>';
         });
         container.innerHTML = html;
 
@@ -174,7 +174,7 @@
                 + '<img src="' + p.image + '" alt="' + (p.title || '') + '" loading="lazy">'
                 + '<div class="gallery-item-overlay">'
                 + '<div class="gallery-item-title">' + (p.title || 'Sin título') + '</div>'
-                + '<div class="gallery-item-usage">' + (usageIcons[p.usage] || 'ðŸ“·') + ' ' + (usageLabels[p.usage] || p.usage || 'General') + '</div>'
+                + '<div class="gallery-item-usage">' + (usageIcons[p.usage] || '📷') + ' ' + (usageLabels[p.usage] || p.usage || 'General') + '</div>'
                 + '</div></div>';
         }).join('');
 

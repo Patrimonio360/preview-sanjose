@@ -75,7 +75,7 @@
             <li><a href="tienda.html">Tienda</a></li>`n            <li><a href="galeria.html">Galería</a></li>
             <li><a href="resenas.html">Reseñas</a></li>
             <li><a href="contacto.html">Contacto</a></li>
-            <li><a href="tel:955321470" class="nav-cta">â˜Ž 955 321 470</a></li>
+            <li><a href="tel:955321470" class="nav-cta">☎ 955 321 470</a></li>
         </ul>
         <div class="nav-right">
             <button class="nav-toggle" id="navToggle" aria-label="Menú"><span></span><span></span><span></span></button>
@@ -97,9 +97,9 @@
             <!-- Calendar -->
             <div class="calendar-card">
                 <div class="calendar-header">
-                    <button class="calendar-nav-btn" id="calPrev" aria-label="Mes anterior">â€¹</button>
+                    <button class="calendar-nav-btn" id="calPrev" aria-label="Mes anterior">‹</button>
                     <div class="calendar-month" id="calMonth"></div>
-                    <button class="calendar-nav-btn" id="calNext" aria-label="Mes siguiente">â€º</button>
+                    <button class="calendar-nav-btn" id="calNext" aria-label="Mes siguiente">›</button>
                 </div>
                 <div class="calendar-grid" id="calGrid"></div>
 
@@ -147,12 +147,15 @@
                 </form>
 
                 <div class="booking-success" id="bookingSuccess">
-                    <div class="booking-success-icon">âœ…</div>
-                    <div class="booking-success-title">Â¡Cita solicitada!</div>
+                    <div class="booking-success-icon">✅</div>
+                    <div class="booking-success-title">¡Solicitud de cita recibida!</div>
+                    <div class="booking-success-text">
+                        Tu cita está <strong>pendiente de confirmación</strong>.<br>
+                        La clínica revisará tu solicitud y te confirmará la cita por email lo antes posible.
+                    </div>
                     <div id="bookingSummary" style="background:var(--cream);border-radius:12px;padding:20px;margin:16px 0;text-align:left;font-size:14px"></div>
                     <div class="booking-success-text">
-                        Hemos enviado tu solicitud a la clínica.<br>
-                        Recibirás un email de confirmación en breve.<br><br>
+                        <span id="bookingEmailNote"></span><br><br>
                         Si tienes prisa, llámanos al <strong>955 321 470</strong>
                     </div>
                     <button class="btn-book" onclick="location.reload()">Reservar otra cita</button>
@@ -169,16 +172,16 @@
                 <div class="footer-brand">Clínica Veterinaria San José</div>
                 <p class="footer-desc">Más de 15 años cuidando las mascotas de San José de La Rinconada y alrededores.</p>
                 <div class="footer-contact">
-                    <div>â˜Ž <a href="tel:955321470">955 321 470</a></div>
-                    <div>âœ‰ <a href="mailto:sanjose.clinicaveterinaria@gmail.com">sanjose.clinicaveterinaria@gmail.com</a></div>
-                    <div>ðŸ“ Avda. San José, 173, La Rinconada, Sevilla</div>
+                    <div>☎ <a href="tel:955321470">955 321 470</a></div>
+                    <div>✉ <a href="mailto:sanjose.clinicaveterinaria@gmail.com">sanjose.clinicaveterinaria@gmail.com</a></div>
+                    <div>📍 Avda. San José, 173, La Rinconada, Sevilla</div>
                 </div>
             </div>
             <div class="footer-col"><h4>Servicios</h4><ul><li><a href="servicios.html">Consulta General</a></li><li><a href="servicios.html">Vacunación</a></li><li><a href="servicios.html">Cirugía</a></li><li><a href="servicios.html">Terapias Alternativas</a></li></ul></div>
             <div class="footer-col"><h4>Clínica</h4><ul><li><a href="nosotros.html">Sobre nosotros</a></li><li><a href="resenas.html">Reseñas Google</a></li><li><a href="citas.html">Pedir cita</a></li><li><a href="contacto.html">Contacto</a></li></ul></div>
         </div>
         <div class="footer-bottom">
-            <p>Â© 2026 Clínica Veterinaria San José. Todos los derechos reservados.</p>
+            <p>© 2026 Clínica Veterinaria San José. Todos los derechos reservados.</p>
             <div class="footer-links"><a href="politica-privacidad.html">Política de Privacidad</a><a href="aviso-legal.html">Aviso Legal</a></div>
         </div>
     </div>

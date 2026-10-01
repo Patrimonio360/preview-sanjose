@@ -185,114 +185,78 @@
     };
 
 
-    // Guardar la cita (función de Vercel), enviar los dos emails y mostrar
-    // el resumen pase lo que pase, para no bloquear al cliente.
-    sendBookingEmails(appointment, dateDisplay)
-      .catch(function(err) { console.error('Aviso: fallo guardando/enviando:', err); })
-      .then(function() {
-        var summary = document.getElementById('bookingSummary');
-        if (summary) {
-          summary.innerHTML = ''
-            + '<div style="margin-bottom:12px;font-weight:600;color:var(--forest);font-size:15px">Resumen de tu cita:</div>'
-            + '<div style="display:grid;grid-template-columns:auto 1fr;gap:6px 16px">'
-            + '<div style="font-weight:600;color:var(--gray-500)">Servicio:</div><div>' + esc(appointment.service) + '</div>'
-            + '<div style="font-weight:600;color:var(--gray-500)">Fecha:</div><div>' + dateDisplay + '</div>'
-            + '<div style="font-weight:600;color:var(--gray-500)">Hora:</div><div>' + esc(appointment.time) + '</div>'
-            + '<div style="font-weight:600;color:var(--gray-500)">Nombre:</div><div>' + esc(appointment.patientName) + '</div>'
-            + '<div style="font-weight:600;color:var(--gray-500)">Teléfono:</div><div>' + esc(appointment.patientPhone) + '</div>'
-            + '<div style="font-weight:600;color:var(--gray-500)">Email:</div><div>' + esc(appointment.patientEmail) + '</div>'
-            + '</div>'
-            + (appointment.message ? '<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--gray-200)"><div style="font-weight:600;color:var(--gray-500);margin-bottom:4px">Mensaje:</div><div style="font-style:italic;color:var(--gray-600)">' + esc(appointment.message) + '</div></div>' : '');
+    // Guardar la cita en el servidor (Vercel). El servidor avisa por email a
+    // la clínica (al email de Ajustes del panel) y al cliente.
+    saveAppointment(appointment)
+      .then(function(result) {
+        if (result.status === 409) {
+          alert('Lo sentimos, esa hora acaba de ser reservada por otra persona. Por favor, elige otra hora.');
+          resetButton();
+          return;
         }
-
-
-        // Show success
-        document.getElementById('bookingForm').style.display = 'none';
-        document.getElementById('bookingSuccess').style.display = '';
+        if (!result.ok) {
+          alert('No hemos podido registrar tu cita en este momento. Inténtalo de nuevo en unos minutos o llámanos por teléfono.');
+          resetButton();
+          return;
+        }
+        showSuccess(appointment, dateDisplay, result.emailSent);
       });
+
+    function resetButton() {
+      btn.disabled = false;
+      btn.textContent = 'Reservar cita';
+    }
   });
 
 
-  // FIX: se restaura el envío directo vía Web3Forms (funciona sin servidor,
-  // ideal para GitHub Pages) y se cargan clinicName/clinicEmail/phone desde
-  // settings.json ANTES de usarlos, evitando el "ReferenceError" que rompía
-  // toda reserva.
-  var WEB3FORMS_KEY = '6d0e9bc7-1c66-445a-ae61-3a2a232429fe';
+  var BOOKING_API = 'https://preview-sanjose.vercel.app/api/book-appointment';
 
-
-  function sendBookingEmails(appt, dateDisplay) {
-    return fetch('_data/settings.json?t=' + Date.now())
-      .then(function(r) { return r.json(); })
-      .then(function(settings) {
-        var clinicName = settings.name || 'Clínica Veterinaria San José';
-        var clinicEmail = settings.email || 'sanjose.clinicaveterinaria@gmail.com';
-        var phone = settings.phone || '955 321 470';
-
-
-        var clinicMessage = 'Nueva solicitud de cita:\n\n'
-          + 'Paciente: ' + appt.patientName + '\n'
-          + 'Telefono: ' + appt.patientPhone + '\n'
-          + 'Email: ' + appt.patientEmail + '\n'
-          + 'Servicio: ' + appt.service + '\n'
-          + 'Fecha: ' + dateDisplay + '\n'
-          + 'Hora: ' + appt.time + '\n'
-          + (appt.message ? 'Mensaje: ' + appt.message + '\n' : '')
-          + '\nLa cita aparece como Pendiente en el panel de administracion: confirmala alli y con el cliente.';
-
-
-        var patientDateDisplay = new Date(appt.date + 'T00:00:00').toLocaleDateString('es-ES', {
-          weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+  // Devuelve { ok, status, emailSent } y nunca lanza error.
+  function saveAppointment(appt) {
+    return fetch(BOOKING_API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(appt)
+    })
+      .then(function(r) {
+        return r.json().catch(function() { return {}; }).then(function(out) {
+          return { ok: r.ok, status: r.status, emailSent: !!out.emailSent };
         });
-        var patientMessage = 'Hola ' + appt.patientName + ',\n\n'
-          + 'Tu cita ha sido recibida correctamente.\n\n'
-          + 'Detalles de tu cita:\n'
-          + '  Servicio: ' + appt.service + '\n'
-          + '  Fecha: ' + patientDateDisplay + '\n'
-          + '  Hora: ' + appt.time + '\n\n'
-          + 'Te confirmaremos la cita por email en breve.\n\n'
-          + 'Si tienes cualquier duda, puedes contactarnos:\n'
-          + '  Tel: ' + phone + '\n'
-          + '  Email: ' + clinicEmail + '\n\n'
-          + 'Un saludo,\n' + clinicName;
-
-
-        var sendToClinic = fetch('https://api.web3forms.com/submit', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            access_key: WEB3FORMS_KEY,
-            subject: 'Nueva cita solicitada — ' + appt.patientName,
-            from_name: 'Cita Web - ' + clinicName,
-            email: clinicEmail,
-            message: clinicMessage,
-            botcheck: ''
-          })
-        });
-
-
-        var sendToPatient = fetch('https://api.web3forms.com/submit', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            access_key: WEB3FORMS_KEY,
-            subject: 'Confirmación de tu cita en ' + clinicName,
-            from_name: clinicName,
-            email: appt.patientEmail,
-            message: patientMessage,
-            botcheck: ''
-          })
-        });
-
-
-        var saveAppointment = fetch('https://preview-sanjose.vercel.app/api/book-appointment', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(appt)
-        });
-
-
-        return Promise.allSettled([sendToClinic, sendToPatient, saveAppointment]);
+      })
+      .catch(function(err) {
+        console.error('Error guardando la cita:', err);
+        return { ok: false, status: 0, emailSent: false };
       });
+  }
+
+
+  function showSuccess(appointment, dateDisplay, emailSent) {
+    var summary = document.getElementById('bookingSummary');
+    if (summary) {
+      summary.innerHTML = ''
+        + '<div style="margin-bottom:12px;font-weight:600;color:var(--forest);font-size:15px">Resumen de tu solicitud:</div>'
+        + '<div style="display:grid;grid-template-columns:auto 1fr;gap:6px 16px">'
+        + '<div style="font-weight:600;color:var(--gray-500)">Servicio:</div><div>' + esc(appointment.service) + '</div>'
+        + '<div style="font-weight:600;color:var(--gray-500)">Fecha:</div><div>' + dateDisplay + '</div>'
+        + '<div style="font-weight:600;color:var(--gray-500)">Hora:</div><div>' + esc(appointment.time) + '</div>'
+        + '<div style="font-weight:600;color:var(--gray-500)">Nombre:</div><div>' + esc(appointment.patientName) + '</div>'
+        + '<div style="font-weight:600;color:var(--gray-500)">Teléfono:</div><div>' + esc(appointment.patientPhone) + '</div>'
+        + '<div style="font-weight:600;color:var(--gray-500)">Email:</div><div>' + esc(appointment.patientEmail) + '</div>'
+        + '</div>'
+        + (appointment.message ? '<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--gray-200)"><div style="font-weight:600;color:var(--gray-500);margin-bottom:4px">Mensaje:</div><div style="font-style:italic;color:var(--gray-600)">' + esc(appointment.message) + '</div></div>' : '');
+    }
+
+    var emailNote = document.getElementById('bookingEmailNote');
+    if (emailNote) {
+      emailNote.innerHTML = emailSent
+        ? 'Te hemos enviado un email con el resumen a <strong>' + esc(appointment.patientEmail) + '</strong> (si no lo ves, revisa la carpeta de spam).'
+        : 'Te contactaremos lo antes posible para confirmarla.';
+    }
+
+    document.getElementById('bookingForm').style.display = 'none';
+    var success = document.getElementById('bookingSuccess');
+    success.style.display = 'block';
+    success.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 
 

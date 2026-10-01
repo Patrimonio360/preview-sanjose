@@ -1410,12 +1410,22 @@
     renderAppointments(currentData.appointments);
   };
 
+  // Envía al cliente el email de cita confirmada/cancelada y devuelve el texto del aviso.
+  async function notifyPatient(appt, type, doneText) {
+    try {
+      await adminApi({ action: 'notify', id: appt.id, type: type });
+      return doneText + ' y email enviado al cliente';
+    } catch (e) {
+      return doneText + ' (no se pudo enviar el email al cliente: ' + e.message + ')';
+    }
+  }
+
   window._confirmAppt = async function(idx) {
     var appts = currentData.appointments.appointments;
     appts[idx].status = 'confirmed';
     try {
       await githubWrite(getFilePath('appointments'), currentData.appointments, 'admin: confirmar cita de ' + (appts[idx].patientName || '') + ' - ' + new Date().toISOString());
-      showToast('Cita confirmada');
+      showToast(await notifyPatient(appts[idx], 'confirmed', 'Cita confirmada'));
       loadSection('appointments');
     } catch (e) {
       appts[idx].status = 'pending';
@@ -1430,7 +1440,7 @@
     appts[idx].status = 'cancelled';
     try {
       await githubWrite(getFilePath('appointments'), currentData.appointments, 'admin: cancelar cita de ' + (appts[idx].patientName || '') + ' - ' + new Date().toISOString());
-      showToast('Cita cancelada');
+      showToast(await notifyPatient(appts[idx], 'cancelled', 'Cita cancelada'));
       loadSection('appointments');
     } catch (e) {
       appts[idx].status = 'pending';
