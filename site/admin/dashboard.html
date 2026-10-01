@@ -939,18 +939,17 @@
       var res = await fetch('../_data/admin-config.json?t=' + Date.now());
       var config = await res.json();
       GITHUB_REPO = config.repo;
+      GITHUB_TOKEN = config.githubToken || '';
       if (hash === config.passwordHash) {
-        // Password OK - now authenticate with GitHub via OAuth proxy
-        var token = sessionStorage.getItem('github_token');
-        if (token) {
-          GITHUB_TOKEN = token;
-          $('#login-screen').style.display = 'none';
-          $('#dashboard-screen').style.display = 'block';
-          sessionStorage.setItem('admin_auth', 'true');
-          loadSection('products');
-        } else {
-          await githubOAuthLogin();
+        if (!GITHUB_TOKEN) {
+          $('#login-error').textContent = 'Token GitHub no configurado. Contacta al desarrollador.';
+          $('#login-error').style.display = 'block';
+          return;
         }
+        $('#login-screen').style.display = 'none';
+        $('#dashboard-screen').style.display = 'block';
+        sessionStorage.setItem('admin_auth', 'true');
+        loadSection('products');
       } else {
         $('#login-error').style.display = 'block';
         $('#login-password').value = '';
@@ -961,12 +960,6 @@
       $('#login-error').style.display = 'block';
     }
   }
-
-  function githubOAuthLogin() {
-    return new Promise(function(resolve, reject) {
-      var popup = window.open(
-        'https://oauth-sanjose.vercel.app/api/auth',
-        'github-oauth',
         'width=600,height=700,left=200,top=100'
       );
 
