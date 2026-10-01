@@ -210,19 +210,15 @@
   });
 
   function sendBookingEmail(appt, dateDisplay) {
-    // Load email config
-    fetch('_data/settings.json?t=' + Date.now())
-      .then(function(r) { return r.json(); })
-      .then(function(settings) {
-        var clinicEmail = settings.email || 'sanjose.clinicaveterinaria@gmail.com';
-        var phone = settings.phone || '955 321 470';
-        var clinicName = settings.name || 'Clinica Veterinaria San Jose';
-
-        var web3Key = '6d0e9bc7-1c66-445a-ae61-3a2a232429fe';
-
-        // 1) Notify clinic
-        var clinicSubject = 'Nueva cita solicitada — ' + appt.patientName;
-        var clinicMessage = 'Nueva solicitud de cita:\n\n'
+    // FIX #2: API key movida a serverless function - el cliente nunca la expone
+    fetch('/api/send-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        subject: 'Nueva cita solicitada — ' + appt.patientName,
+        from_name: 'Cita Web - ' + (clinicName || 'Clínica'),
+        email: clinicEmail || 'admin@ejemplo.com',
+        message: 'Nueva solicitud de cita:\n\n'
           + 'Paciente: ' + appt.patientName + '\n'
           + 'Telefono: ' + appt.patientPhone + '\n'
           + 'Email: ' + appt.patientEmail + '\n'
@@ -230,52 +226,37 @@
           + 'Fecha: ' + dateDisplay + '\n'
           + 'Hora: ' + appt.time + '\n'
           + (appt.message ? 'Mensaje: ' + appt.message + '\n' : '')
-          + '\nPara confirmar la cita, accede al panel de administracion.';
-
-        fetch('https://api.web3forms.com/submit', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            access_key: web3Key,
-            subject: clinicSubject,
-            from_name: 'Cita Web - ' + clinicName,
-            email: clinicEmail,
-            message: clinicMessage,
-            botcheck: ''
-          })
-        }).catch(function() {});
-
-        // 2) Send confirmation to patient
-        var patientDateDisplay = new Date(appt.date + 'T00:00:00').toLocaleDateString('es-ES', {
-          weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
-        });
-        var patientSubject = 'Confirmacion de tu cita en ' + clinicName;
-        var patientMessage = 'Hola ' + appt.patientName + ',\n\n'
-          + 'Tu cita ha sido recibida correctamente.\n\n'
-          + 'Detalles de tu cita:\n'
-          + '  Servicio: ' + appt.service + '\n'
-          + '  Fecha: ' + patientDateDisplay + '\n'
-          + '  Hora: ' + appt.time + '\n\n'
-          + 'Te confirmaremos la cita por email en breve.\n\n'
-          + 'Si tienes cualquier duda, puedes contactarnos:\n'
-          + '  Tel: ' + phone + '\n'
-          + '  Email: ' + clinicEmail + '\n\n'
-          + 'Un saludo,\n' + clinicName;
-
-        fetch('https://api.web3forms.com/submit', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            access_key: web3Key,
-            subject: patientSubject,
-            from_name: clinicName,
-            email: appt.patientEmail,
-            message: patientMessage,
-            botcheck: ''
-          })
-        }).catch(function() {});
+          + '\nPara confirmar la cita, accede al panel de administracion.'
       })
-      .catch(function() {});
+    }).catch(function() {});
+
+    // Send confirmation to patient
+    var patientDateDisplay = new Date(appt.date + 'T00:00:00').toLocaleDateString('es-ES', {
+      weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+    });
+    var patientSubject = 'Confirmacion de tu cita en ' + clinicName;
+    var patientMessage = 'Hola ' + appt.patientName + ',\n\n'
+      + 'Tu cita ha sido recibida correctamente.\n\n'
+      + 'Detalles de tu cita:\n'
+      + '  Servicio: ' + appt.service + '\n'
+      + '  Fecha: ' + patientDateDisplay + '\n'
+      + '  Hora: ' + appt.time + '\n\n'
+      + 'Te confirmaremos la cita por email en breve.\n\n'
+      + 'Si tienes cualquier duda, puedes contactarnos:\n'
+      + '  Tel: ' + phone + '\n'
+      + '  Email: ' + clinicEmail + '\n\n'
+      + 'Un saludo,\n' + clinicName;
+
+    fetch('/api/send-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        subject: patientSubject,
+        from_name: clinicName,
+        email: appt.patientEmail,
+        message: patientMessage
+      })
+    }).catch(function() {});
   }
 
   // Init
