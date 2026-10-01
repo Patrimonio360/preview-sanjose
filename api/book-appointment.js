@@ -1,11 +1,13 @@
-// Guarda una cita en site/_data/appointments.json del repositorio de GitHub.
+// Guarda una cita en appointments.json del repositorio PRIVADO sanjose-citas.
+// Las citas contienen datos personales, por eso no se guardan en el
+// repositorio público de la web.
 // Requiere la variable de entorno GITHUB_TOKEN (token fine-grained con
-// "Contents: Read and write" solo sobre este repositorio).
+// "Contents: Read and write" solo sobre sanjose-citas).
 
 const OWNER = process.env.GITHUB_OWNER || 'Patrimonio360';
-const REPO = process.env.GITHUB_REPO || 'preview-sanjose';
-const BRANCH = process.env.GITHUB_BRANCH || 'master';
-const FILE_PATH = process.env.APPOINTMENTS_PATH || 'site/_data/appointments.json';
+const REPO = process.env.GITHUB_REPO || 'sanjose-citas';
+const BRANCH = process.env.GITHUB_BRANCH || 'main';
+const FILE_PATH = process.env.APPOINTMENTS_PATH || 'appointments.json';
 
 // Solo la web publicada (y pruebas en local) puede llamar a esta función.
 const ALLOWED_ORIGINS = [
