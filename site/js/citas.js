@@ -250,7 +250,7 @@
     if (emailNote) {
       emailNote.innerHTML = emailSent
         ? 'Te hemos enviado un email con el resumen a <strong>' + esc(appointment.patientEmail) + '</strong> (si no lo ves, revisa la carpeta de spam).'
-        : 'Te contactaremos lo antes posible para confirmarla.';
+        : 'Te escribiremos al <strong>' + esc(appointment.patientPhone) + '</strong> para confirmarla.';
     }
 
     document.getElementById('bookingForm').style.display = 'none';
