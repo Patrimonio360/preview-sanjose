@@ -199,7 +199,8 @@
           resetButton();
           return;
         }
-        showSuccess(appointment, dateDisplay, result.emailSent);
+        notifyClinic(appointment, dateDisplay);
+        showSuccess(appointment, dateDisplay);
       });
 
     function resetButton() {
@@ -211,7 +212,7 @@
 
   var BOOKING_API = 'https://preview-sanjose.vercel.app/api/book-appointment';
 
-  // Devuelve { ok, status, emailSent } y nunca lanza error.
+  // Devuelve { ok, status } y nunca lanza error.
   function saveAppointment(appt) {
     return fetch(BOOKING_API, {
       method: 'POST',
@@ -219,18 +220,47 @@
       body: JSON.stringify(appt)
     })
       .then(function(r) {
-        return r.json().catch(function() { return {}; }).then(function(out) {
-          return { ok: r.ok, status: r.status, emailSent: !!out.emailSent };
-        });
+        return { ok: r.ok, status: r.status };
       })
       .catch(function(err) {
         console.error('Error guardando la cita:', err);
-        return { ok: false, status: 0, emailSent: false };
+        return { ok: false, status: 0 };
       });
   }
 
 
-  function showSuccess(appointment, dateDisplay, emailSent) {
+  // Aviso por email a la clínica con Web3Forms. Web3Forms entrega siempre al
+  // email con el que se creó la clave, así que la clave debe crearse en
+  // web3forms.com con el email de la clínica. Vacía = aviso desactivado.
+  var CLINIC_NOTIFY_KEY = '';
+
+  function notifyClinic(appt, dateDisplay) {
+    if (!CLINIC_NOTIFY_KEY) return;
+    fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({
+        access_key: CLINIC_NOTIFY_KEY,
+        subject: 'Nueva cita solicitada: ' + appt.patientName,
+        from_name: 'Web de la clínica',
+        replyto: appt.patientEmail,
+        message: 'Nueva solicitud de cita desde la web:\n\n'
+          + 'Cliente: ' + appt.patientName + '\n'
+          + 'Teléfono: ' + appt.patientPhone + '\n'
+          + 'Email: ' + appt.patientEmail + '\n'
+          + 'Servicio: ' + appt.service + '\n'
+          + 'Fecha: ' + dateDisplay + '\n'
+          + 'Hora: ' + appt.time + '\n'
+          + (appt.message ? 'Mensaje: ' + appt.message + '\n' : '')
+          + '\nLa cita está como Pendiente en el panel de administración. '
+          + 'Desde allí puedes confirmarla y avisar al cliente por WhatsApp.',
+        botcheck: ''
+      })
+    }).catch(function(err) { console.error('Aviso a la clínica no enviado:', err); });
+  }
+
+
+  function showSuccess(appointment, dateDisplay) {
     var summary = document.getElementById('bookingSummary');
     if (summary) {
       summary.innerHTML = ''
@@ -248,9 +278,7 @@
 
     var emailNote = document.getElementById('bookingEmailNote');
     if (emailNote) {
-      emailNote.innerHTML = emailSent
-        ? 'Te hemos enviado un email con el resumen a <strong>' + esc(appointment.patientEmail) + '</strong> (si no lo ves, revisa la carpeta de spam).'
-        : 'Te escribiremos al <strong>' + esc(appointment.patientPhone) + '</strong> para confirmarla.';
+      emailNote.innerHTML = 'Te escribiremos al <strong>' + esc(appointment.patientPhone) + '</strong> para confirmarla.';
     }
 
     document.getElementById('bookingForm').style.display = 'none';

@@ -8,7 +8,6 @@ const {
   APPOINTMENTS_REPO, APPOINTMENTS_PATH,
   setCors, isAllowedOrigin, parseBody, readFile, writeFile
 } = require('./_lib');
-const { sendPatientEmail, sendClinicEmail } = require('./_mail');
 
 const MAX_LEN = { service: 100, patientName: 100, patientPhone: 30, patientEmail: 120, message: 1000 };
 
@@ -112,17 +111,5 @@ module.exports = async function handler(req, res) {
     return res.status(500).json({ error: 'No se pudo guardar la cita' });
   }
 
-  // La cita ya está guardada; si algún email falla no se considera un error.
-  const emails = await Promise.allSettled([
-    sendClinicEmail(appt),
-    sendPatientEmail('received', appt)
-  ]);
-  emails.forEach(function (r) {
-    if (r.status === 'rejected') console.error('book-appointment email:', r.reason && r.reason.message);
-  });
-  return res.status(200).json({
-    success: true,
-    id: appt.id,
-    emailSent: emails[1].status === 'fulfilled'
-  });
+  return res.status(200).json({ success: true, id: appt.id });
 };

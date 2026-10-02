@@ -7,14 +7,12 @@
 //                         sobre preview-sanjose y sanjose-citas
 //   ADMIN_PASSWORD_HASH   SHA-256 (hex) de la contraseña del panel
 //   ADMIN_SESSION_SECRET  texto aleatorio largo para firmar las sesiones
-//   SMTP_USER, SMTP_PASS  Gmail que envía los emails (ver _mail.js)
 //
 // Peticiones (POST, JSON):
 //   { action: 'login',  password }                      -> { token }
 //   { action: 'read',   path }                          -> { data, sha }
 //   { action: 'write',  path, data, sha, message }      -> { sha }
 //   { action: 'upload', path, base64, message }         -> { url }
-//   { action: 'notify', id, type }  type = confirmed|cancelled -> { sent }
 // Todas salvo 'login' necesitan la cabecera "Authorization: Bearer <token>".
 
 const crypto = require('crypto');
@@ -22,7 +20,6 @@ const {
   SITE_REPO, APPOINTMENTS_REPO, APPOINTMENTS_PATH,
   setCors, isAllowedOrigin, parseBody, readFile, writeFile
 } = require('./_lib');
-const { sendPatientEmail } = require('./_mail');
 
 const SESSION_HOURS = 12;
 const MAX_UPLOAD_BASE64 = 4 * 1024 * 1024; // ~3 MB de imagen
@@ -109,23 +106,6 @@ async function handleUpload(body, res) {
   });
 }
 
-async function handleNotify(body, res) {
-  if (body.type !== 'confirmed' && body.type !== 'cancelled') return res.status(400).json({ error: 'Tipo de aviso no válido' });
-  // Los datos del cliente se leen del archivo de citas, no de la petición.
-  const file = await readFile(APPOINTMENTS_REPO, APPOINTMENTS_PATH);
-  const data = file ? JSON.parse(file.content.toString('utf8')) : {};
-  const appt = (data.appointments || []).find(function (a) { return String(a.id) === String(body.id); });
-  if (!appt) return res.status(404).json({ error: 'Cita no encontrada' });
-  if (appt.status !== body.type) return res.status(409).json({ error: 'El estado de la cita no coincide' });
-  try {
-    await sendPatientEmail(body.type, appt);
-  } catch (err) {
-    console.error('admin notify:', err.message);
-    return res.status(502).json({ error: 'No se pudo enviar el email al cliente' });
-  }
-  return res.status(200).json({ sent: true });
-}
-
 module.exports = async function handler(req, res) {
   setCors(req, res, 'Content-Type, Authorization');
 
@@ -154,7 +134,6 @@ module.exports = async function handler(req, res) {
     if (body.action === 'read') return await handleRead(body, res);
     if (body.action === 'write') return await handleWrite(body, res);
     if (body.action === 'upload') return await handleUpload(body, res);
-    if (body.action === 'notify') return await handleNotify(body, res);
     return res.status(400).json({ error: 'Acción desconocida' });
   } catch (err) {
     console.error('admin:', err.message);
