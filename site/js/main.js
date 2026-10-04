@@ -98,6 +98,8 @@ document.querySelectorAll('a[href$=".html"]').forEach(link=>{
     link.addEventListener('click',function(e){
         const href=this.getAttribute('href');
         if(!href||href===window.location.pathname.split('/').pop())return;
+        // Enlaces que abren otra pestaña (o Ctrl/Cmd+clic) no deben sacar al usuario de esta página
+        if(this.target==='_blank'||e.ctrlKey||e.metaKey||e.shiftKey||e.button!==0)return;
         e.preventDefault();
         const overlay=document.createElement('div');
         overlay.className='page-transition active';
@@ -105,6 +107,9 @@ document.querySelectorAll('a[href$=".html"]').forEach(link=>{
         setTimeout(()=>{window.location.href=href},350);
     });
 });
+
+// Al volver con el botón Atrás el navegador restaura la página tal cual: quitar la cortina
+window.addEventListener('pageshow',e=>{if(e.persisted)document.querySelectorAll('.page-transition.active').forEach(o=>o.remove())});
 
 // LAZY LOAD VIDEO ON MOBILE
 const heroVideo=document.getElementById('heroVideo');
@@ -196,7 +201,7 @@ function getVetBotResponse(msg){
     if(vetbotData.responses){
         for(var i=0;i<vetbotData.responses.length;i++){
             var r=vetbotData.responses[i];
-            var kws=r.keywords.toLowerCase().split(',').map(function(s){return s.trim()});
+            var kws=String(r.keywords||'').toLowerCase().split(',').map(function(s){return s.trim()}).filter(Boolean);
             for(var j=0;j<kws.length;j++){
                 if(lower.includes(kws[j]))return fillVetBotText(r.response);
             }
@@ -218,11 +223,19 @@ function getVetBotResponse(msg){
     return 'Gracias por tu interés. Un miembro de nuestro equipo te atenderá pronto. ¿Hay algo más en lo que pueda ayudarte?';
 }
 
+// Las respuestas del panel pueden llevar enlaces (<a href='citas.html'>Pedir cita</a>):
+// se muestran como enlaces y cualquier otra etiqueta como texto.
+function botHtml(text){
+    const d=document.createElement('div');d.textContent=text;
+    return d.innerHTML.replace(/&lt;a href=['"]((?:https?:\/\/|tel:|mailto:|[a-z0-9_-]+\.html)[^'"&<>]*)['"]&gt;(.*?)&lt;\/a&gt;/gi,
+        function(m,url,label){const ext=/^https?:/i.test(url);return '<a href="'+url+'"'+(ext?' target="_blank" rel="noopener"':'')+'>'+label+'</a>'});
+}
+
 function addVetBotMsg(text,type){
     if(!vetbotChat)return;
     const msg=document.createElement('div');
     msg.className=`vetbot-msg vetbot-msg--${type}`;
-    msg.textContent=text;
+    if(type==='bot')msg.innerHTML=botHtml(text);else msg.textContent=text;
     vetbotChat.appendChild(msg);
     vetbotChat.scrollTop=vetbotChat.scrollHeight;
 }

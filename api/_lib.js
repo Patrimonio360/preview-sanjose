@@ -58,7 +58,15 @@ async function readFile(target, path) {
   if (res.status === 404) return null;
   if (!res.ok) throw new Error('GitHub read ' + res.status);
   const file = await res.json();
-  return { content: Buffer.from(file.content, 'base64'), sha: file.sha };
+  // Por encima de 1 MB GitHub no incluye el contenido: se pide aparte en bruto.
+  if (!file.content && file.size > 0) {
+    const raw = await github(target, '/contents/' + path + '?ref=' + target.branch, {
+      headers: { Accept: 'application/vnd.github.raw' }
+    });
+    if (!raw.ok) throw new Error('GitHub read raw ' + raw.status);
+    return { content: Buffer.from(await raw.arrayBuffer()), sha: file.sha };
+  }
+  return { content: Buffer.from(file.content || '', 'base64'), sha: file.sha };
 }
 
 // Escribe un archivo. Devuelve { ok, status, sha }.
@@ -88,12 +96,9 @@ async function readSettings() {
 async function readAppointments() {
   const file = await readFile(APPOINTMENTS_REPO, APPOINTMENTS_PATH);
   if (!file) return { data: { appointments: [] }, sha: undefined };
-  let data;
-  try {
-    data = JSON.parse(file.content.toString('utf8'));
-  } catch (e) {
-    data = {};
-  }
+  // Si el archivo no se puede leer se para todo: seguir con una lista vacía
+  // haría que la siguiente cita sobrescribiera todas las anteriores.
+  const data = JSON.parse(file.content.toString('utf8'));
   if (!Array.isArray(data.appointments)) data.appointments = [];
   return { data, sha: file.sha };
 }

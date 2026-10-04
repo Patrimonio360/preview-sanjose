@@ -932,9 +932,9 @@
   <!-- ==================== TOAST ==================== -->
   <div class="toast" id="toast"></div>
 
-<script src="../js/schedule.js?v=20261004c"></script>
-<script src="../js/cms.js?v=20261004c"></script>
-<script src="legal-docs.js?v=20261004c"></script>
+<script src="../js/schedule.js?v=20261004d"></script>
+<script src="../js/cms.js?v=20261004d"></script>
+<script src="legal-docs.js?v=20261004d"></script>
 <script>
 (function() {
   // ===== CONFIG =====
@@ -1720,7 +1720,13 @@
     } catch (e) {
       Object.keys(a).forEach(function(k) { delete a[k]; });
       Object.assign(a, before);
-      showToast('Error: ' + e.message, true);
+      // Si mientras tanto ha entrado una cita nueva, se recarga la lista para trabajar con la última versión.
+      if (/Otra persona/.test(e.message)) {
+        showToast('Ha entrado una cita nueva mientras trabajabas. Lista actualizada: repite la acción.', true);
+        loadSection('appointments');
+      } else {
+        showToast('Error: ' + e.message, true);
+      }
       return null;
     }
   }
