@@ -12,6 +12,7 @@
 // la web o VetBot Pro), así el servidor no tiene que recordar nada.
 
 const ClinicSchedule = require('../site/js/schedule.js');
+const ClinicOptions = require('../site/js/clinic-options.js');
 
 const MONTHS = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
 const WEEKDAYS = ['domingo', 'lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado'];
@@ -138,10 +139,14 @@ function numbered(options) {
 
 // ===== Conversación guiada para pedir cita =====
 
+const OTHER_REASON = 'Otro motivo';
+
 function startBooking(ctx, intro) {
-  const services = ctx.services.map(function (s) { return s.name; }).concat(['Otro motivo']);
+  // Motivos de cita de Ajustes del panel (si no hay, los servicios de la web).
+  const reasons = ClinicOptions.bookingReasons(ctx.settings, ctx.services);
+  const services = reasons.some(function (r) { return /^otro/i.test(r); }) ? reasons : reasons.concat([OTHER_REASON]);
   return {
-    reply: (intro ? intro + '\n\n' : '') + '¡Claro! Te ayudo a pedir cita 🐾 ¿Para qué servicio es?\n' + numbered(services)
+    reply: (intro ? intro + '\n\n' : '') + '¡Claro! Te ayudo a pedir cita 🐾 ¿Para qué es la cita?\n' + numbered(services)
       + '\n\n(Puedes escribir "cancelar" en cualquier momento.)',
     options: services,
     state: { mode: 'booking', step: 'service', data: {}, offered: services }
@@ -225,10 +230,11 @@ async function continueBooking(ctx, state, text) {
   switch (state.step) {
     case 'service': {
       const picked = pickOption(text, state.offered || []);
-      if (picked && picked !== 'Otro motivo') d.service = picked;
-      else if (picked === 'Otro motivo' || t.length >= 3) d.service = 'Consulta general';
+      const other = picked && /^otro/i.test(picked);
+      if (picked && !other) d.service = picked;
+      else if (other || t.length >= 3) d.service = picked || OTHER_REASON;
       if (!picked && t.length >= 3) d.reason = text.trim();
-      if (!d.service) return { reply: 'Elige un servicio de la lista escribiendo su número, por favor.', options: state.offered, state };
+      if (!d.service) return { reply: 'Elige una opción de la lista escribiendo su número, por favor.', options: state.offered, state };
       return nextStep(ctx, state);
     }
     case 'date': {
@@ -397,6 +403,7 @@ function systemPrompt(ctx) {
     + '- NUNCA inventes diagnósticos, medicamentos, dosis ni tratamientos. Ante síntomas, recomienda una consulta con el veterinario.\n'
     + '- Para vacunas, di que el veterinario valorará el protocolo adecuado para cada mascota.\n'
     + '- Urgencias: la clínica no atiende urgencias fuera de su horario. Si la mascota está grave y la clínica está cerrada, recomienda acudir a una clínica de urgencias 24 horas cercana.\n'
+    + '- La clínica SOLO atiende: ' + ClinicOptions.speciesText(ctx.settings) + '. Si preguntan por otro animal, di que no lo atendéis y recomienda una clínica especializada; no ofrezcas cita para él.\n'
     + '- No inventes datos de la clínica que no estén arriba.\n'
     + '- Si hace una PREGUNTA (sobre servicios, animales que atendéis, vacunas, horarios…), respóndela; puedes terminar ofreciendo pedir cita escribiendo "cita". En ese caso NO uses la etiqueta [RESERVAR].\n'
     + '- Usa la etiqueta [RESERVAR] SOLO si la persona pide claramente una cita o que vean a su mascota (por ejemplo "quiero que vean a mi perro", "¿me dais hora?"). Entonces NO preguntes fecha ni datos: responde una frase corta y termina con la etiqueta exacta [RESERVAR] para abrir el asistente de citas.';
@@ -474,9 +481,27 @@ async function freeAnswer(ctx, text, history) {
 
 // ctx: { channel, settings, services, faq, clinic: {name, phone}, now,
 //        takenSlots(date), createAppointment(body), ai(messages), isEmail(text) }
+// Si se menciona un animal que la clínica no atiende (según Ajustes), se le
+// dice al cliente y no se sigue con la cita. No gasta IA.
+function speciesNotAttended(ctx, text) {
+  const species = ClinicOptions.detectSpecies(text);
+  if (!species) return null;
+  if (ClinicOptions.acceptedSpecies(ctx.settings).some(function (s) { return s.key === species.key; })) return null;
+  return {
+    reply: 'Lo sentimos, en ' + ctx.clinic.name + ' no atendemos ' + species.name + '. 🙏 Atendemos '
+      + ClinicOptions.speciesText(ctx.settings) + '.\n\nPara tu mascota te recomendamos acudir a una clínica veterinaria especializada'
+      + (species.group === 'Exóticos' ? ' en animales exóticos' : '') + '. Si tienes otra mascota que podamos atender, estaremos encantados de ayudarte.',
+    state: null,
+    via: 'especie'
+  };
+}
+
 async function handleMessage(ctx, text, state, history) {
   text = String(text || '').trim().slice(0, 1000);
   if (!text) return { reply: '¿En qué puedo ayudarte?', state: state || null };
+
+  const notAttended = speciesNotAttended(ctx, text);
+  if (notAttended) return notAttended;
 
   if (state && state.mode === 'booking') {
     // En WhatsApp el teléfono ya se conoce.

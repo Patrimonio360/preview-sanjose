@@ -603,6 +603,12 @@
     .theme-preview { position: sticky; top: 0; border-radius: 12px; overflow: hidden; box-shadow: var(--shadow-md); }
     @media (max-width: 760px) { .theme-editor { grid-template-columns: 1fr; } .theme-preview { position: static; order: -1; } }
 
+    /* ===== VETBOT Y CITAS ===== */
+    .species-list { display: flex; flex-direction: column; gap: 4px; max-height: 260px; overflow-y: auto; padding: 4px 2px; }
+    .species-group { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400); margin-top: 8px; }
+    .species-option { display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer; }
+    .species-option input { width: 16px; height: 16px; accent-color: var(--forest); }
+
     /* ===== SCHEDULE EDITOR ===== */
     .schedule-editor { display: grid; grid-template-columns: 140px 1fr; gap: 10px 16px; align-items: center; max-width: 520px; }
     .schedule-day { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; cursor: pointer; }
@@ -932,6 +938,7 @@
   <div class="toast" id="toast"></div>
 
 <script src="../js/schedule.js?v=20261004e"></script>
+<script src="../js/clinic-options.js?v=20261004e"></script>
 <script src="../js/cms.js?v=20261004e"></script>
 <script src="legal-docs.js?v=20261004e"></script>
 <script>
@@ -1388,6 +1395,24 @@
     html += '</div>';
     html += '<div id="schedule-preview" style="font-size:13px;color:var(--gray-600);margin:12px 0 28px"></div>';
 
+    // VetBot y citas: motivos de cita y animales que atiende la clínica
+    var reasons = ClinicOptions.bookingReasons(data, []);
+    var species = ClinicOptions.acceptedSpecies(data).map(function(s) { return s.key; });
+    html += '<h3 style="font-size:16px;margin-bottom:6px">&#x1F43E; VetBot y citas</h3>';
+    html += '<p style="font-size:13px;color:var(--gray-500);margin-bottom:16px">Lo usan el formulario de Citas de la web y VetBot (chat de la web y WhatsApp).</p>';
+    html += '<div class="settings-grid" style="margin-bottom:28px">';
+    html += '<div class="field"><label>&#x1F4CB; Motivos de cita (uno por línea)</label>'
+      + '<textarea id="booking-reasons" rows="8" placeholder="Consulta&#10;Vacunación&#10;Cirugía">' + esc(reasons.join('\n')) + '</textarea>'
+      + '<div style="font-size:12px;color:var(--gray-400);margin-top:6px">Al pedir cita se ofrecen en este orden. VetBot añade "Otro motivo" al final.</div></div>';
+    html += '<div class="field"><label>&#x1F436; Animales que atiende la clínica</label><div class="species-list">';
+    var group = '';
+    ClinicOptions.SPECIES.forEach(function(s) {
+      if (s.group !== group) { group = s.group; html += '<div class="species-group">' + group + '</div>'; }
+      html += '<label class="species-option"><input type="checkbox" class="species-cb" value="' + s.key + '"' + (species.indexOf(s.key) !== -1 ? ' checked' : '') + '> ' + s.label + '</label>';
+    });
+    html += '</div><div style="font-size:12px;color:var(--gray-400);margin-top:6px">Si un cliente menciona otro animal, VetBot le dirá que no lo atendéis y no le dará cita.</div></div>';
+    html += '</div>';
+
     html += '<h3 style="font-size:16px;margin-bottom:16px">&#x1F4C7; Datos de la clínica</h3>';
     html += '<div class="settings-grid">';
     SETTINGS_FIELDS.forEach(function(f) {
@@ -1462,9 +1487,15 @@
       showToast('Revisa el horario de: ' + r.errors.join(', '), true);
       return;
     }
+    var reasons = $('#booking-reasons').value.split('\n').map(function(r) { return r.trim(); }).filter(Boolean);
+    var species = Array.prototype.filter.call($$('.species-cb'), function(cb) { return cb.checked; }).map(function(cb) { return cb.value; });
+    if (!reasons.length) { showToast('Escribe al menos un motivo de cita', true); return; }
+    if (!species.length) { showToast('Marca al menos un animal que atienda la clínica', true); return; }
     // Se parte de los ajustes actuales para no perder ningún dato que no esté en el formulario.
     var data = Object.assign({}, currentData.settings || {});
     $$('[data-setting]').forEach(function(el) { data[el.dataset.setting] = el.value.trim(); });
+    data.bookingReasons = reasons;
+    data.species = species;
     data.schedule = r.schedule;
     data.hours = ClinicSchedule.summary(data); // texto corto que usan otras partes de la web
     try {

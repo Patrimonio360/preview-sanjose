@@ -27,24 +27,21 @@
 
 
   // Ajustes de la clínica (horario, email…) y servicios
-  fetch('_data/settings.json?t=' + Date.now())
-    .then(function(r) { return r.json(); })
-    .then(function(s) { settings = s; })
-    .catch(function() {})
-    .then(renderCalendar);
-
-  fetch('_data/services.json?t=' + Date.now())
-    .then(function(r) { return r.json(); })
-    .then(function(data) {
-      var sel = document.getElementById('bookService');
-      (data.services || []).forEach(function(s) {
-        var opt = document.createElement('option');
-        opt.value = s.name;
-        opt.textContent = (s.icon || '') + ' ' + s.name;
-        sel.appendChild(opt);
-      });
-    })
-    .catch(function() {});
+  Promise.all([
+    fetch('_data/settings.json?t=' + Date.now()).then(function(r) { return r.json(); }).catch(function() { return {}; }),
+    fetch('_data/services.json?t=' + Date.now()).then(function(r) { return r.json(); }).catch(function() { return {}; })
+  ]).then(function(res) {
+    settings = res[0];
+    // Motivos de cita de Ajustes del panel (los mismos que ofrece VetBot).
+    var sel = document.getElementById('bookService');
+    ClinicOptions.bookingReasons(settings, res[1].services || []).forEach(function(reason) {
+      var opt = document.createElement('option');
+      opt.value = reason;
+      opt.textContent = reason;
+      sel.appendChild(opt);
+    });
+    renderCalendar();
+  });
 
 
   // Calendario
