@@ -1,4 +1,8 @@
 var CMS = (function() {
+  // Agencia que desarrolla y mantiene la web (crédito del pie y canal de
+  // sugerencias del panel). Fijo a propósito: no se edita desde Ajustes.
+  var AGENCY = { name: 'Patrimonio360', email: 'patrimonio360.pro@gmail.com' };
+
   var DEFAULT_COLORS = {
     primary: '#1A3C2A',
     primaryLight: '#2D6B45',
@@ -191,11 +195,11 @@ var CMS = (function() {
   }
 
   // Crédito de la agencia en el pie, con un email para contactar o hacer
-  // peticiones. Se controla con "Email de Patrimonio360" en Ajustes; vacío = sin crédito.
+  // peticiones. Es fijo: va en el código, no en Ajustes, para que no se
+  // pueda cambiar ni quitar desde el panel.
   function showAgencyCredit(s) {
     document.querySelectorAll('.agency-credit').forEach(function(el) { el.remove(); });
-    var email = String(s.patrimonio360Email || '').trim();
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return;
+    var email = AGENCY.email;
     var subject = 'Contacto desde la web de ' + (s.name || 'la clínica');
     document.querySelectorAll('.footer-bottom').forEach(function(bar) {
       var span = document.createElement('span');
@@ -316,6 +320,7 @@ var CMS = (function() {
     resetColors: resetColors,
     shortName: shortName,
     storeEnabled: storeEnabled,
+    AGENCY: AGENCY,
     COLOR_ROLES: COLOR_ROLES,
     DEFAULT_COLORS: DEFAULT_COLORS
   };

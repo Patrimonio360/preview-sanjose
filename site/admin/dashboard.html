@@ -603,6 +603,13 @@
     .theme-preview { position: sticky; top: 0; border-radius: 12px; overflow: hidden; box-shadow: var(--shadow-md); }
     @media (max-width: 760px) { .theme-editor { grid-template-columns: 1fr; } .theme-preview { position: static; order: -1; } }
 
+    /* ===== SOPORTE PATRIMONIO360 ===== */
+    .support-box { margin-top: 24px; max-width: 800px; background: var(--cream); border: 2px solid var(--forest); border-radius: var(--radius); padding: 24px 28px; }
+    .support-head { display: flex; gap: 14px; align-items: center; }
+    .support-icon { width: 44px; height: 44px; border-radius: 12px; background: var(--forest); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+    .support-title { font-weight: 700; font-size: 15px; color: var(--forest); }
+    .support-sub { font-size: 13px; color: var(--gray-500); margin-top: 2px; }
+
     /* ===== VETBOT Y CITAS ===== */
     .species-list { display: flex; flex-direction: column; gap: 4px; max-height: 260px; overflow-y: auto; padding: 4px 2px; }
     .species-group { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400); margin-top: 8px; }
@@ -939,7 +946,7 @@
 
 <script src="../js/schedule.js?v=20261004e"></script>
 <script src="../js/clinic-options.js?v=20261004e"></script>
-<script src="../js/cms.js?v=20261004e"></script>
+<script src="../js/cms.js?v=20261004g"></script>
 <script src="legal-docs.js?v=20261004e"></script>
 <script>
 (function() {
@@ -1358,7 +1365,6 @@
     { key: 'googleRating', label: 'Nota media en Google (p. ej. 4.7)', icon: '&#x2B50;' },
     { key: 'googleMapsUrl', label: 'Enlace a la ficha de Google Maps de la clínica', icon: '&#x1F5FA;&#xFE0F;' },
     { key: 'siteUrl', label: 'Dominio de la web (p. ej. https://www.clinicasanjose.es). Mientras esté vacío, Google no la indexa', icon: '&#x1F310;' },
-    { key: 'patrimonio360Email', label: 'Email de Patrimonio360 (pie de la web: "Web desarrollada por Patrimonio360"; vacío = no se muestra)', icon: '&#x2709;&#xFE0F;' }
   ];
 
   // Textos propios de cada clínica. Si se deja uno vacío, ese bloque no se muestra.
@@ -1443,7 +1449,9 @@
     html += '<div style="margin-top:24px;display:flex;gap:12px">';
     html += '<button class="btn btn-primary" id="save-settings-btn">Guardar cambios</button>';
     html += '</div></div>';
+    html += supportBoxHtml();
     main.innerHTML = html;
+    bindSupportBox();
 
     $$('.schedule-day input').forEach(function(cb) {
       cb.addEventListener('change', function() {
@@ -1456,6 +1464,67 @@
     createUploadField('logo-upload', data.logo || '', 'site/img/uploads');
     $('#logo-upload-url').dataset.setting = 'logo';
     $('#save-settings-btn').addEventListener('click', saveSettings);
+  }
+
+  // ===== SOPORTE PATRIMONIO360 =====
+  // Canal fijo para que la clínica escriba a la agencia (sugerencias, fallos…).
+  // No es un ajuste: la dirección está en CMS.AGENCY y no se puede editar.
+  // Se envía con FormSubmit; el primer mensaje pide a la agencia "Activate".
+  function supportBoxHtml() {
+    var a = CMS.AGENCY;
+    return '<div class="support-box">'
+      + '<div class="support-head"><div class="support-icon">&#x1F4AC;</div><div>'
+      + '<div class="support-title">¿Sugerencias, dudas o algún fallo? Escribe a ' + esc(a.name) + '</div>'
+      + '<div class="support-sub">Somos quienes hemos hecho y mantenemos esta web y VetBot. Tu mensaje nos llega directamente.</div></div></div>'
+      + '<div class="settings-grid" style="margin-top:16px">'
+      + '<div class="field"><label>Tipo de mensaje</label><select id="support-type">'
+      + '<option>Sugerencia</option><option>Algo no funciona</option><option>Duda sobre el panel</option><option>Petición de cambio en la web</option><option>Otro</option>'
+      + '</select></div>'
+      + '<div class="field"><label>Tu email o teléfono (para responderte)</label><input type="text" id="support-contact" value="' + esc((currentData.settings && currentData.settings.email) || '') + '"></div>'
+      + '<div class="field field-full"><label>Mensaje</label><textarea id="support-message" rows="4" placeholder="Cuéntanos qué necesitas o qué has visto que falla. Si es un fallo, di en qué página y qué estabas haciendo."></textarea></div>'
+      + '</div>'
+      + '<div style="margin-top:16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap">'
+      + '<button class="btn btn-primary" id="support-send">Enviar a ' + esc(a.name) + '</button>'
+      + '<span style="font-size:12px;color:var(--gray-400)">o escríbenos a <a href="mailto:' + a.email + '">' + a.email + '</a></span>'
+      + '</div></div>';
+  }
+
+  function bindSupportBox() {
+    var btn = $('#support-send');
+    if (!btn) return;
+    btn.addEventListener('click', async function() {
+      var message = $('#support-message').value.trim();
+      if (message.length < 5) { showToast('Escribe tu mensaje antes de enviarlo', true); return; }
+      var clinic = (currentData.settings && currentData.settings.name) || clinicInfo.name || 'Clínica';
+      var type = $('#support-type').value;
+      btn.disabled = true;
+      btn.textContent = 'Enviando...';
+      try {
+        var res = await fetch('https://formsubmit.co/ajax/' + encodeURIComponent(CMS.AGENCY.email), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({
+            _subject: '[' + type + '] ' + clinic + ' — mensaje desde el panel',
+            _template: 'table',
+            _captcha: 'false',
+            'Clínica': clinic,
+            'Tipo': type,
+            'Contacto': $('#support-contact').value.trim() || '—',
+            'Mensaje': message,
+            'Web': location.origin + location.pathname.replace(/admin\/.*$/, ''),
+            'Navegador': navigator.userAgent
+          })
+        });
+        var out = await res.json().catch(function() { return {}; });
+        if (!res.ok || String(out.success) === 'false') throw new Error(out.message || 'Error ' + res.status);
+        $('#support-message').value = '';
+        showToast('Mensaje enviado a ' + CMS.AGENCY.name + '. ¡Gracias! Te responderemos lo antes posible.');
+      } catch (e) {
+        showToast('No se pudo enviar. Escríbenos a ' + CMS.AGENCY.email, true);
+      }
+      btn.disabled = false;
+      btn.textContent = 'Enviar a ' + CMS.AGENCY.name;
+    });
   }
 
   // Lee el editor de horario. Devuelve { schedule, errors: [nombres de días] }.
