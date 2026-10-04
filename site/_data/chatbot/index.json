@@ -3,12 +3,12 @@
     {
       "id": 1,
       "keywords": "cita,appointment,consultar",
-      "response": "Perfecto, puedes pedir tu cita online aquí: <a href='citas.html'>Pedir cita</a> o llamarnos al 955 321 470. ¿Qué tipo de consulta necesitas? (Consulta general, vacunación, cirugía, terapias alternativas...)"
+      "response": "Perfecto, puedes pedir tu cita online aquí: <a href='citas.html'>Pedir cita</a> o llamarnos al {telefono}. ¿Qué tipo de consulta necesitas? (Consulta general, vacunación, cirugía, terapias alternativas...)"
     },
     {
       "id": 2,
       "keywords": "hola,buenas,saludos",
-      "response": "¡Hola! Soy el asistente virtual de la Clínica Veterinaria San José. ¿En qué puedo ayudarte?"
+      "response": "¡Hola! Soy el asistente virtual de {clinica}. ¿En qué puedo ayudarte?"
     },
     {
       "id": 3,
@@ -28,7 +28,7 @@
     {
       "id": 6,
       "keywords": "urgencia,emergencia,24h,noche,ahora",
-      "response": "Para urgencias fuera de horario, llama al 955 321 470 y te redirigimos al servicio de guardia correspondiente."
+      "response": "Para urgencias fuera de horario, llama al {telefono} y te redirigimos al servicio de guardia correspondiente."
     }
   ]
 }

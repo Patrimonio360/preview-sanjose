@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="light">
     <title>Contacto | Clínica Veterinaria San José</title>
-    <meta name="description" content="Contacta con la Clínica Veterinaria San José. Avda. San José, 173, 41300 La Rinconada, Sevilla. Teléfono: 955 321 470.">
-    <link rel="stylesheet" href="css/fonts.css?v=20261004b">
-    <link rel="stylesheet" href="css/style.css?v=20261004b">
+    <meta name="description" content="Dirección, teléfono, horario y cómo llegar a la clínica veterinaria.">
+    <link rel="stylesheet" href="css/fonts.css?v=20261004c">
+    <link rel="stylesheet" href="css/style.css?v=20261004c">
 </head>
 <body>
 <div class="cursor-ring"></div>
@@ -15,7 +15,7 @@
 
 <nav class="nav" id="mainNav">
     <div class="container">
-        <a href="index.html" class="nav-logo"><img src="img/clinica-02.jpeg" alt="San José Logo" style="height:40px;width:40px;border-radius:50%;object-fit:cover"><div class="nav-logo-text">San José</div></a>
+        <a href="index.html" class="nav-logo"><img src="img/clinica-02.jpeg" alt="Logo" data-clinic-logo style="height:40px;width:40px;border-radius:50%;object-fit:cover"><div class="nav-logo-text" data-clinic="shortName">San José</div></a>
         <ul class="nav-links" id="navLinks">
             <li><a href="index.html">Inicio</a></li>
             <li><a href="nosotros.html">Nosotros</a></li>
@@ -48,9 +48,9 @@
             <div>
                 <h3 style="font-size:1.4rem;margin-bottom:24px;color:var(--forest)">Información de contacto</h3>
                 <div class="cl-list">
-                    <div class="cl-item"><div class="cl-icon">📍</div><div><strong>Dirección</strong><span>Avda. San José, 173<br>41300 San José de La Rinconada, Sevilla</span></div></div>
-                    <div class="cl-item"><div class="cl-icon">☎️</div><div><strong>Teléfono</strong><span><a href="tel:955321470" class="contacto-info-phone">955 321 470</a></span></div></div>
-                    <div class="cl-item"><div class="cl-icon">✉️</div><div><strong>Email</strong><span><a href="mailto:sanjose.clinicaveterinaria@gmail.com" class="contacto-info-email">sanjose.clinicaveterinaria@gmail.com</a></span></div></div>
+                    <div class="cl-item"><div class="cl-icon">📍</div><div><strong>Dirección</strong><span data-clinic="address">Avda. San José, 173, 41300 San José de La Rinconada, Sevilla</span></div></div>
+                    <div class="cl-item"><div class="cl-icon">☎️</div><div><strong>Teléfono</strong><span><a href="tel:955321470" class="contacto-info-phone" data-clinic="phone">955 321 470</a></span></div></div>
+                    <div class="cl-item"><div class="cl-icon">✉️</div><div><strong>Email</strong><span><a href="mailto:sanjose.clinicaveterinaria@gmail.com" class="contacto-info-email" data-clinic="email">sanjose.clinicaveterinaria@gmail.com</a></span></div></div>
                     <div class="cl-item"><div class="cl-icon">📅</div><div><strong>Horario</strong><span id="site-hours" class="contacto-info-hours">Cargando...</span></div></div>
                 </div>
                 <div class="contact-map contact-map--off" id="contactMap"><button type="button" class="map-load" id="mapLoad">📍 Ver mapa<small>Al abrirlo, Google Maps puede instalar sus cookies. <a href="politica-privacidad.html">Más información</a></small></button><a class="map-directions" id="mapDirections" href="https://www.google.com/maps/search/?api=1&amp;query=Avda.%20San%20Jos%C3%A9%2C%20173%2C%2041300%20San%20Jos%C3%A9%20de%20La%20Rinconada%2C%20Sevilla" target="_blank" rel="noopener">Cómo llegar ↗</a></div>
@@ -90,13 +90,13 @@
 <div class="vetbot-overlay" id="vetbotOverlay">
     <div class="vetbot-modal" id="vetbotModal">
         <div class="vetbot-header">
-            <div><h3>🤖 Asistente Virtual</h3><p>Clínica Veterinaria San José</p></div>
+            <div><h3>🤖 Asistente Virtual</h3><p data-clinic="name">Clínica Veterinaria San José</p></div>
             <button class="vetbot-close" id="vetbotClose">✕</button>
         </div>
         <div class="vetbot-body">
             <div class="vetbot-status"><div class="vetbot-status-dot"></div><span><strong>VetBot en línea</strong> · Responde al instante</span></div>
             <div class="vetbot-chat" id="vetbotChat">
-                <div class="vetbot-msg vetbot-msg--bot">¡Hola! Soy el asistente virtual de la Clínica Veterinaria San José. ¿En qué puedo ayudarte hoy?</div>
+                <div class="vetbot-msg vetbot-msg--bot">¡Hola! Soy el asistente virtual de <span data-clinic="name">Clínica Veterinaria San José</span>. ¿En qué puedo ayudarte hoy?</div>
             </div>
             <div class="vetbot-input-group">
                 <input type="text" class="vetbot-input" id="vetbotInput" placeholder="Escribe tu mensaje...">
@@ -112,16 +112,16 @@
             <div><div class="footer-brand">🏥 Clínica Veterinaria San José</div><p class="footer-desc">Más de 15 años cuidando las mascotas de San José de La Rinconada.</p></div>
             <div class="footer-col"><h4>Servicios</h4><ul><li><a href="servicios.html">Consulta General</a></li><li><a href="servicios.html">Vacunación</a></li><li><a href="servicios.html">Cirugía</a></li><li><a href="servicios.html">Terapias Alternativas</a></li></ul></div>
             <div class="footer-col"><h4>Clínica</h4><ul><li><a href="nosotros.html">Sobre nosotros</a></li><li><a href="resenas.html">Reseñas Google</a></li><li><a href="contacto.html">Contacto</a></li></ul></div>
-            <div class="footer-col"><h4>Contacto</h4><ul><li><a href="tel:955321470" class="contacto-info-phone">955 321 470</a></li></ul></div>
+            <div class="footer-col"><h4>Contacto</h4><ul><li><a href="tel:955321470" class="contacto-info-phone" data-clinic="phone">955 321 470</a></li></ul></div>
         </div>
-        <div class="footer-bottom"><span>&copy; 2026 Clínica Veterinaria San José.</span><span><a href="politica-privacidad.html">Política de Privacidad</a> · <a href="aviso-legal.html">Aviso Legal</a></span></div>
+        <div class="footer-bottom"><span>&copy; <span data-clinic="year">2026</span> <span data-clinic="name">Clínica Veterinaria San José</span>.</span><span><a href="politica-privacidad.html">Política de Privacidad</a> · <a href="aviso-legal.html">Aviso Legal</a></span></div>
     </div>
 </footer>
 
-<script src="js/schedule.js?v=20261004b"></script>
-<script src="js/cms.js?v=20261004b"></script>
+<script src="js/schedule.js?v=20261004c"></script>
+<script src="js/cms.js?v=20261004c"></script>
 <script>CMS.applyColors(); CMS.loadSettings(); CMS.loadPhotos();</script>
-<script src="js/main.js?v=20261004b"></script>
+<script src="js/main.js?v=20261004c"></script>
 </body>
 </html>
 

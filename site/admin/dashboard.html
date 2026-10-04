@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="robots" content="noindex, nofollow">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Panel de Administración — Clínica Veterinaria San José</title>
+  <title>Panel de Administración</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:wght@600;700&display=swap" rel="stylesheet">
   <style>
@@ -833,7 +833,7 @@
   <div id="login-screen">
     <div class="login-card">
       <div class="login-logo">&#x1F43E;</div>
-      <div class="login-title">Clínica Veterinaria San José</div>
+      <div class="login-title" data-clinic-name>Panel de la clínica</div>
       <div class="login-subtitle">Panel de administración</div>
       <div class="login-field">
         <input type="password" id="login-password" placeholder="Introduce la contraseña" autocomplete="current-password">
@@ -850,7 +850,7 @@
       <div class="topbar-brand">
         <div class="topbar-brand-icon">&#x1F43E;</div>
         <div>
-          <div class="topbar-brand-text">Clínica Veterinaria San José</div>
+          <div class="topbar-brand-text" data-clinic-name>Panel de la clínica</div>
           <div class="topbar-brand-sub">Panel de administración</div>
         </div>
       </div>
@@ -932,9 +932,9 @@
   <!-- ==================== TOAST ==================== -->
   <div class="toast" id="toast"></div>
 
-<script src="../js/schedule.js?v=20261004b"></script>
-<script src="../js/cms.js?v=20261004b"></script>
-<script src="legal-docs.js?v=20261004b"></script>
+<script src="../js/schedule.js?v=20261004c"></script>
+<script src="../js/cms.js?v=20261004c"></script>
+<script src="legal-docs.js?v=20261004c"></script>
 <script>
 (function() {
   // ===== CONFIG =====
@@ -1318,7 +1318,7 @@
   function renderPhotoCard(p, idx) {
     var imgSrc = p.image ? (p.image.startsWith('http') ? p.image : '../' + p.image) : '';
     var img = imgSrc ? '<img class="card-img" src="' + esc(imgSrc) + '" alt="" loading="lazy">' : '<div class="card-img-placeholder">&#x1F4F7;</div>';
-    var usageLabels = { hero:'Portada', home:'Inicio', nosotros:'Nosotros', servicios:'Servicios', contacto:'Contacto', general:'General' };
+    var usageLabels = { hero:'Portada', fondo:'Fondo de la portada', home:'Inicio', nosotros:'Nosotros', servicios:'Servicios', contacto:'Contacto', general:'General' };
     return '<div class="card" data-index="' + idx + '">' + img
       + '<div class="card-body">'
       + '<div class="card-name">' + esc(p.title || '') + '</div>'
@@ -1334,6 +1334,7 @@
   // ===== SETTINGS =====
   var SETTINGS_FIELDS = [
     { key: 'name', label: 'Nombre de la clínica', icon: '&#x1F3E5;' },
+    { key: 'shortName', label: 'Nombre corto (menú superior de la web)', icon: '&#x1F3F7;&#xFE0F;' },
     { key: 'legalName', label: 'Razón social o titular (el nombre que figura en el CIF; sale en los documentos legales)', icon: '&#x2696;&#xFE0F;' },
     { key: 'address', label: 'Dirección', icon: '&#x1F4CD;' },
     { key: 'phone', label: 'Teléfono', icon: '&#x260E;&#xFE0F;' },
@@ -1348,7 +1349,20 @@
     { key: 'trustFamilies', label: 'Familias atendidas', icon: '&#x1F46A;' },
     { key: 'trustLab', label: 'Laboratorio', icon: '&#x1F52C;' },
     { key: 'trustAccessible', label: 'Accesible', icon: '&#x267F;' },
+    { key: 'googleRating', label: 'Nota media en Google (p. ej. 4.7)', icon: '&#x2B50;' },
     { key: 'patrimonio360Email', label: 'Email Patrimonio360', icon: '&#x2709;&#xFE0F;' }
+  ];
+
+  // Textos propios de cada clínica. Si se deja uno vacío, ese bloque no se muestra.
+  var TEXT_FIELDS = [
+    { key: 'heroSub', label: 'Portada: frase bajo el título' },
+    { key: 'homeAbout', label: 'Portada: texto "Sobre nosotros"' },
+    { key: 'aboutIntro', label: 'Nosotros: frase bajo el título' },
+    { key: 'aboutText', label: 'Nosotros: "Nuestra historia" (primer párrafo)' },
+    { key: 'aboutText2', label: 'Nosotros: "Nuestra historia" (segundo párrafo)' },
+    { key: 'directorName', label: 'Director/a: nombre (p. ej. Dra. Ana López)', input: true },
+    { key: 'directorRole', label: 'Director/a: cargo corto (portada)', input: true },
+    { key: 'directorTitle', label: 'Director/a: especialidad (página Nosotros)', input: true }
   ];
 
   function renderSettings(data) {
@@ -1383,9 +1397,22 @@
         : '<input type="text" data-setting="' + f.key + '" value="' + esc(val) + '">';
       html += '</div>';
     });
+    html += '<div class="field field-full"><label>&#x1F5BC;&#xFE0F; Logo (imagen cuadrada, sale redonda en el menú)</label><div id="logo-upload"></div></div>';
     html += '<div class="field"><label>&#x1F6D2; Mostrar la tienda en la web</label>'
       + '<select data-setting="storeEnabled"><option value="true"' + (storeOn ? ' selected' : '') + '>Sí, mostrar la tienda</option>'
       + '<option value="false"' + (storeOn ? '' : ' selected') + '>No, ocultarla</option></select></div>';
+    html += '</div>';
+    html += '<h3 style="font-size:16px;margin:28px 0 6px">&#x270D;&#xFE0F; Textos de la web</h3>';
+    html += '<p style="font-size:13px;color:var(--gray-500);margin-bottom:16px">Los textos que presentan a la clínica. Si dejas uno vacío, ese bloque no aparece en la web.</p>';
+    html += '<div class="settings-grid">';
+    TEXT_FIELDS.forEach(function(f) {
+      var val = data[f.key] || '';
+      html += '<div class="field' + (f.input ? '' : ' field-full') + '"><label>' + f.label + '</label>';
+      html += f.input
+        ? '<input type="text" data-setting="' + f.key + '" value="' + esc(val) + '">'
+        : '<textarea data-setting="' + f.key + '" rows="3">' + esc(val) + '</textarea>';
+      html += '</div>';
+    });
     html += '</div>';
     html += '<div style="margin-top:24px;display:flex;gap:12px">';
     html += '<button class="btn btn-primary" id="save-settings-btn">Guardar cambios</button>';
@@ -1400,6 +1427,8 @@
     });
     $$('.schedule-hours').forEach(function(inp) { inp.addEventListener('input', updateSchedulePreview); });
     updateSchedulePreview();
+    createUploadField('logo-upload', data.logo || '', 'site/img/uploads');
+    $('#logo-upload-url').dataset.setting = 'logo';
     $('#save-settings-btn').addEventListener('click', saveSettings);
   }
 
@@ -1441,6 +1470,7 @@
       await githubWrite(getFilePath('settings'), data, 'admin: actualizar ajustes - ' + new Date().toISOString());
       currentData.settings = data;
       clinicInfo = data;
+      showClinicName();
       showToast('Ajustes guardados. La web se actualiza en 1-2 minutos.');
     } catch (e) {
       showToast('Error al guardar: ' + e.message, true);
@@ -1506,11 +1536,17 @@
   var clinicInfo = {};
   fetch('../_data/settings.json?t=' + Date.now())
     .then(function(r) { return r.json(); })
-    .then(function(s) { clinicInfo = s; })
+    .then(function(s) { clinicInfo = s; showClinicName(); })
     .catch(function() {});
 
-  function clinicName() { return clinicInfo.name || 'Clínica Veterinaria San José'; }
-  function clinicPhone() { return clinicInfo.phone || '955 321 470'; }
+  function showClinicName() {
+    if (!clinicInfo.name) return;
+    $$('[data-clinic-name]').forEach(function(el) { el.textContent = clinicInfo.name; });
+    document.title = 'Panel de Administración — ' + clinicInfo.name;
+  }
+
+  function clinicName() { return clinicInfo.name || 'la clínica'; }
+  function clinicPhone() { return clinicInfo.phone || ''; }
 
   function longDate(dateStr) {
     return new Date(dateStr + 'T00:00:00').toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' });
@@ -1921,7 +1957,7 @@
       var p = current();
       $('#theme-preview').innerHTML =
         '<div style="background:' + p.navBg + ';padding:10px 12px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(0,0,0,.06)">'
-        + '<span style="font-family:Fraunces,serif;color:' + p.navTitle + ';font-size:14px">San José</span>'
+        + '<span style="font-family:Fraunces,serif;color:' + p.navTitle + ';font-size:14px">' + esc(CMS.shortName(clinicInfo) || 'Clínica') + '</span>'
         + '<span style="font-size:10px;color:' + p.navText + '">Inicio · Servicios · Citas</span>'
         + '<span style="font-size:10px;background:' + p.coral + ';color:' + p.white + ';padding:3px 8px;border-radius:20px">☎ Llamar</span></div>'
         + '<div style="background:' + p.cream + ';padding:16px 12px">'
@@ -2224,7 +2260,8 @@
     var title = isNew ? 'Anadir respuesta VetBot' : 'Editar respuesta';
 
     var html = '<div class="field"><label>Palabras clave (separadas por coma)</label><input type="text" id="mcb-keywords" value="' + esc(c.keywords || '') + '" placeholder="hola, saludo, hey"></div>'
-      + '<div class="field"><label>Respuesta del bot</label><textarea id="mcb-response" rows="5">' + esc(c.response || '') + '</textarea></div>';
+      + '<div class="field"><label>Respuesta del bot</label><textarea id="mcb-response" rows="5">' + esc(c.response || '') + '</textarea>'
+      + '<div style="font-size:12px;color:var(--gray-500);margin-top:6px">Puedes usar {clinica}, {telefono}, {horario} y {estado}: se cambian solos por los datos de Ajustes.</div></div>';
 
     var footer = '<button class="btn btn-ghost" onclick="window._closeModal()">Cancelar</button>'
       + '<button class="btn btn-primary" id="mcb-save">Guardar</button>';
@@ -2298,6 +2335,7 @@
       + '<div id="mph-upload-container"></div>'
       + '<div class="field"><label>Donde se usa</label><select id="mph-usage">'
       + '<option value="hero"' + (p.usage === 'hero' ? ' selected' : '') + '>Portada / Hero</option>'
+      + '<option value="fondo"' + (p.usage === 'fondo' ? ' selected' : '') + '>Fondo de la portada</option>'
       + '<option value="home"' + (p.usage === 'home' ? ' selected' : '') + '>Inicio</option>'
       + '<option value="nosotros"' + (p.usage === 'nosotros' ? ' selected' : '') + '>Nosotros</option>'
       + '<option value="servicios"' + (p.usage === 'servicios' ? ' selected' : '') + '>Servicios</option>'
@@ -2498,7 +2536,8 @@
 
     function showPreview(url) {
       if (url) {
-        preview.innerHTML = '<img src="' + esc(url) + '" alt="Preview">';
+        var src = /^(https?:|data:|\/)/.test(url) ? url : '../' + url;
+        preview.innerHTML = '<img src="' + esc(src) + '" alt="Preview">';
       } else {
         preview.innerHTML = '';
       }

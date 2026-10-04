@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="light">
     <title>Sobre Nosotros | Clínica Veterinaria San José</title>
-    <meta name="description" content="Conoce a nuestro equipo. Dra. Paula Canalias, directora con más de 18 años de experiencia en pequeños animales.">
-    <link rel="stylesheet" href="css/fonts.css?v=20261004b">
-    <link rel="stylesheet" href="css/style.css?v=20261004b">
+    <meta name="description" content="Conoce a nuestro equipo veterinario y nuestras instalaciones.">
+    <link rel="stylesheet" href="css/fonts.css?v=20261004c">
+    <link rel="stylesheet" href="css/style.css?v=20261004c">
 </head>
 <body>
 <div class="cursor-ring"></div>
@@ -15,7 +15,7 @@
 
 <nav class="nav" id="mainNav">
     <div class="container">
-        <a href="index.html" class="nav-logo"><img src="img/clinica-02.jpeg" alt="San José Logo" style="height:40px;width:40px;border-radius:50%;object-fit:cover"><div class="nav-logo-text">San José</div></a>
+        <a href="index.html" class="nav-logo"><img src="img/clinica-02.jpeg" alt="Logo" data-clinic-logo style="height:40px;width:40px;border-radius:50%;object-fit:cover"><div class="nav-logo-text" data-clinic="shortName">San José</div></a>
         <ul class="nav-links" id="navLinks">
             <li><a href="index.html">Inicio</a></li>
             <li><a href="nosotros.html" class="active">Nosotros</a></li>
@@ -38,7 +38,7 @@
     <div class="container">
         <div class="section-label">Sobre Nosotros</div>
         <h1>Un equipo que de verdad<br>ama lo que hace</h1>
-        <p>Más de 15 años cuidando las mascotas de La Rinconada con profesionalidad, cercanía y los mejores medios técnicos.</p>
+        <p data-clinic="aboutIntro">Más de 15 años cuidando las mascotas de La Rinconada con profesionalidad, cercanía y los mejores medios técnicos.</p>
     </div>
 </div>
 
@@ -46,15 +46,15 @@
     <div class="container">
         <div class="about-grid">
             <div class="about-img reveal">
-                <img src="img/clinica-15.jpeg" alt="Clínica Veterinaria San José" loading="lazy">
-                <div class="about-badge"><div class="num">15+</div><div class="lbl">Años cuidando<br>mascotas</div></div>
+                <img src="img/clinica-15.jpeg" alt="Clínica Veterinaria San José" data-clinic-alt loading="lazy">
+                <div class="about-badge"><div class="num" data-trust="years">15+</div><div class="lbl">Años cuidando<br>mascotas</div></div>
             </div>
             <div>
                 <h2 style="font-size:1.8rem;margin-bottom:16px">Nuestra historia</h2>
-                <p class="about-text">No somos una clínica más. Somos el sitio al que llevan a sus mascotas las familias que valoran un trato cercano, honesto y profesional. La Dra. Paula Canalias, nuestra directora y especialista en pequeños animales con más de 18 años de experiencia, lidera un equipo con una obsesión: que tu mascota reciba exactamente lo que necesita, ni más ni menos.</p>
-                <p class="about-text">Instalaciones modernas, equipamiento de última generación y un equipo humano que se preocupa de verdad. Eso es lo que nos diferencia.</p>
+                <p class="about-text" data-clinic="aboutText">No somos una clínica más. Somos el sitio al que llevan a sus mascotas las familias que valoran un trato cercano, honesto y profesional. La Dra. Paula Canalias, nuestra directora y especialista en pequeños animales con más de 18 años de experiencia, lidera un equipo con una obsesión: que tu mascota reciba exactamente lo que necesita, ni más ni menos.</p>
+                <p class="about-text" data-clinic="aboutText2">Instalaciones modernas, equipamiento de última generación y un equipo humano que se preocupa de verdad. Eso es lo que nos diferencia.</p>
                 <div class="about-features">
-                    <div class="about-feature"><div class="about-feature-icon">👩‍⚕️</div><div><strong>Dra. Paula Canalias</strong><span>Especialista en pequeños animales · MVTC · CCRP</span></div></div>
+                    <div class="about-feature" data-clinic-box><div class="about-feature-icon">👩‍⚕️</div><div><strong data-clinic="directorName">Dra. Paula Canalias</strong><span data-clinic="directorTitle">Especialista en pequeños animales · MVTC · CCRP</span></div></div>
                     <div class="about-feature"><div class="about-feature-icon">🔬</div><div><strong>Laboratorio propio</strong><span>Análisis completos con resultados rápidos</span></div></div>
                     <div class="about-feature"><div class="about-feature-icon">🔬</div><div><strong>Diagnóstico por imagen</strong><span>Radiografía y ecografía digital</span></div></div>
                     <div class="about-feature"><div class="about-feature-icon">🩺</div><div><strong>Hospitalización</strong><span>Monitorización y cuidados continuos</span></div></div>
@@ -87,13 +87,13 @@
 <div class="vetbot-overlay" id="vetbotOverlay">
     <div class="vetbot-modal" id="vetbotModal">
         <div class="vetbot-header">
-            <div><h3>🤖 Asistente Virtual</h3><p>Clínica Veterinaria San José</p></div>
+            <div><h3>🤖 Asistente Virtual</h3><p data-clinic="name">Clínica Veterinaria San José</p></div>
             <button class="vetbot-close" id="vetbotClose">✕</button>
         </div>
         <div class="vetbot-body">
             <div class="vetbot-status"><div class="vetbot-status-dot"></div><span><strong>VetBot en línea</strong> · Responde al instante</span></div>
             <div class="vetbot-chat" id="vetbotChat">
-                <div class="vetbot-msg vetbot-msg--bot">¡Hola! Soy el asistente virtual de la Clínica Veterinaria San José. ¿En qué puedo ayudarte hoy?</div>
+                <div class="vetbot-msg vetbot-msg--bot">¡Hola! Soy el asistente virtual de <span data-clinic="name">Clínica Veterinaria San José</span>. ¿En qué puedo ayudarte hoy?</div>
             </div>
             <div class="vetbot-input-group">
                 <input type="text" class="vetbot-input" id="vetbotInput" placeholder="Escribe tu mensaje...">
@@ -109,16 +109,16 @@
             <div><div class="footer-brand">🏥 Clínica Veterinaria San José</div><p class="footer-desc">Más de 15 años cuidando las mascotas de San José de La Rinconada.</p></div>
             <div class="footer-col"><h4>Servicios</h4><ul><li><a href="servicios.html">Consulta General</a></li><li><a href="servicios.html">Vacunación</a></li><li><a href="servicios.html">Cirugía</a></li><li><a href="servicios.html">Terapias Alternativas</a></li></ul></div>
             <div class="footer-col"><h4>Clínica</h4><ul><li><a href="nosotros.html">Sobre nosotros</a></li><li><a href="resenas.html">Reseñas Google</a></li><li><a href="contacto.html">Contacto</a></li></ul></div>
-            <div class="footer-col"><h4>Contacto</h4><ul><li><a href="tel:955321470">955 321 470</a></li></ul></div>
+            <div class="footer-col"><h4>Contacto</h4><ul><li><a href="tel:955321470" data-clinic="phone">955 321 470</a></li></ul></div>
         </div>
-        <div class="footer-bottom"><span>&copy; 2026 Clínica Veterinaria San José.</span><span><a href="politica-privacidad.html">Política de Privacidad</a> · <a href="aviso-legal.html">Aviso Legal</a></span></div>
+        <div class="footer-bottom"><span>&copy; <span data-clinic="year">2026</span> <span data-clinic="name">Clínica Veterinaria San José</span>.</span><span><a href="politica-privacidad.html">Política de Privacidad</a> · <a href="aviso-legal.html">Aviso Legal</a></span></div>
     </div>
 </footer>
 
-<script src="js/schedule.js?v=20261004b"></script>
-<script src="js/cms.js?v=20261004b"></script>
+<script src="js/schedule.js?v=20261004c"></script>
+<script src="js/cms.js?v=20261004c"></script>
 <script>CMS.applyColors(); CMS.loadSettings(); CMS.loadPhotos();</script>
-<script src="js/main.js?v=20261004b"></script>
+<script src="js/main.js?v=20261004c"></script>
 </body>
 </html>
 

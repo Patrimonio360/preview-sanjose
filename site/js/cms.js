@@ -55,15 +55,13 @@ var CMS = (function() {
         // Tienda activable desde el panel
         applyStoreSetting(s);
         // Footer brand
-        var footerBrand = document.querySelector('.footer-brand');
-        if (footerBrand && s.name) {
-          footerBrand.textContent = s.name;
-        }
+        document.querySelectorAll('.footer-brand').forEach(function(el) {
+          if (s.name) el.textContent = s.name;
+        });
         // Footer description
-        var footerDesc = document.querySelector('.footer-desc');
-        if (footerDesc && s.footerDesc) {
-          footerDesc.textContent = s.footerDesc;
-        }
+        document.querySelectorAll('.footer-desc').forEach(function(el) {
+          if (s.footerDesc) el.textContent = s.footerDesc;
+        });
         // Footer phone
         var footerPhones = document.querySelectorAll('.footer-col a[href^="tel:"]');
         footerPhones.forEach(function(a) {
@@ -76,15 +74,12 @@ var CMS = (function() {
           a.href = 'mailto:' + s.email;
           a.textContent = s.email;
         });
-        // Footer social links
-        var socialLinks = document.querySelectorAll('.footer-social a');
-        socialLinks.forEach(function(a) {
-          if (s.facebook && a.href.includes('facebook.com')) {
-            a.href = s.facebook;
-          }
-          if (s.instagram && a.href.includes('instagram.com')) {
-            a.href = s.instagram;
-          }
+        // Redes sociales: el enlace de Ajustes, o se ocultan si la clínica no tiene
+        [['facebook', 'facebook.com'], ['instagram', 'instagram.com']].forEach(function(net) {
+          document.querySelectorAll('a[href*="' + net[1] + '"]').forEach(function(a) {
+            if (s[net[0]]) a.href = s[net[0]];
+            else if (net[0] in s) a.style.display = 'none';
+          });
         });
         // WhatsApp buttons
         // (se cambia el número y se conserva el texto del mensaje)
@@ -114,40 +109,74 @@ var CMS = (function() {
             return g.days + ': ' + (g.closed ? 'cerrado' : g.hours);
           }).join('<br>');
         }
-        // Datos de la clínica en las páginas legales: <span data-clinic="cif">
+        // Nombre, logo, textos y datos de contacto: <span data-clinic="name">
         fillClinicData(s);
         // Trust stats
-        var trustYears = document.querySelector('[data-trust="years"]');
-        if (trustYears && s.trustYears) trustYears.textContent = s.trustYears;
-        var trustFamilies = document.querySelector('[data-trust="families"]');
-        if (trustFamilies && s.trustFamilies) trustFamilies.textContent = s.trustFamilies;
-        var trustLab = document.querySelector('[data-trust="lab"]');
-        if (trustLab && s.trustLab) trustLab.textContent = s.trustLab;
-        var trustAccessible = document.querySelector('[data-trust="accessible"]');
-        if (trustAccessible && s.trustAccessible) trustAccessible.textContent = s.trustAccessible;
+        var trust = { years: s.trustYears, families: s.trustFamilies, lab: s.trustLab, accessible: s.trustAccessible };
+        document.querySelectorAll('[data-trust]').forEach(function(el) {
+          var val = trust[el.dataset.trust];
+          if (val) el.textContent = val;
+        });
       })
       .catch(function() {});
   }
 
-  // Rellena los elementos marcados con data-clinic con los datos de Ajustes,
-  // para que las páginas legales sirvan a cualquier clínica.
+  // Nombre corto para el menú: el de Ajustes o el nombre sin "Clínica Veterinaria".
+  function shortName(s) {
+    return s.shortName || String(s.name || '').replace(/^cl[ií]nica\s+veterinaria\s+/i, '') || s.name;
+  }
+
+  // Rellena todo lo propio de la clínica con los datos de Ajustes, para que la
+  // misma web sirva a cualquier clínica:
+  //   data-clinic="clave"      texto (en enlaces de teléfono/email, también el enlace)
+  //   data-clinic-alt[="clave"] texto alternativo de una imagen (por defecto, el nombre)
+  //   data-clinic-logo          imagen del logo
+  //   data-clinic-box           se oculta si su primer dato se ha dejado vacío en Ajustes
+  // Si una clave no existe en Ajustes se deja el texto de ejemplo del HTML.
   function fillClinicData(s) {
-    var values = {
-      name: s.name,
+    var values = Object.assign({}, s, {
       legalName: s.legalName || s.name,
-      address: s.address,
-      phone: s.phone,
-      email: s.email,
-      cif: s.cif,
-      site: location.host
-    };
+      shortName: shortName(s),
+      site: location.host,
+      year: String(new Date().getFullYear())
+    });
     document.querySelectorAll('[data-clinic]').forEach(function(el) {
-      var val = values[el.dataset.clinic];
+      var key = el.dataset.clinic;
+      if (!(key in values)) return;
+      var val = String(values[key] || '').trim();
+      el.style.display = val ? '' : 'none';
       if (!val) return;
       el.textContent = val;
-      if (el.tagName === 'A' && el.dataset.clinic === 'email') el.href = 'mailto:' + val;
-      if (el.tagName === 'A' && el.dataset.clinic === 'phone') el.href = 'tel:' + val.replace(/\s/g, '');
+      if (el.tagName === 'A' && key === 'email') el.href = 'mailto:' + val;
+      if (el.tagName === 'A' && key === 'phone') el.href = 'tel:' + val.replace(/\s/g, '');
     });
+    // Un bloque (p. ej. la tarjeta del director) se oculta si su dato principal está vacío
+    document.querySelectorAll('[data-clinic-box]').forEach(function(box) {
+      var main = box.querySelector('[data-clinic]');
+      if (main) box.style.display = main.style.display === 'none' ? 'none' : '';
+    });
+    // Cualquier otro enlace de llamar o escribir lleva a la clínica de Ajustes
+    if (s.phone) document.querySelectorAll('a[href^="tel:"]').forEach(function(a) { a.href = 'tel:' + s.phone.replace(/\s/g, ''); });
+    if (s.email) document.querySelectorAll('a[href^="mailto:"]').forEach(function(a) { a.href = 'mailto:' + s.email; });
+    document.querySelectorAll('[data-clinic-alt]').forEach(function(img) {
+      var val = values[img.dataset.clinicAlt || 'name'];
+      if (val) img.alt = val;
+    });
+    document.querySelectorAll('[data-clinic-logo]').forEach(function(img) {
+      if (s.logo) img.src = s.logo;
+      if (s.name) img.alt = 'Logo de ' + s.name;
+    });
+    // Pestaña del navegador: "Página | Nombre"; en la portada "Nombre | Localidad"
+    var title = document.querySelector('title');
+    if (title && s.name) {
+      if (title.dataset.clinicTitle === 'home') {
+        var m = /\b\d{5}\s+([^,]+)/.exec(s.address || '');
+        var city = s.city || (m ? m[1].trim() : '');
+        document.title = s.name + (city ? ' | ' + city : '');
+      } else {
+        document.title = document.title.split(' | ')[0] + ' | ' + s.name;
+      }
+    }
   }
 
   // "Abierto ahora · hasta las 21:00" / "Cerrado ahora · Te esperamos mañana…"
@@ -221,6 +250,10 @@ var CMS = (function() {
             img.src = heroPhotos[i % heroPhotos.length].image;
           }
         });
+        // Fondo de la portada (usage=fondo): imagen tras el vídeo de la portada
+        var bgPhoto = photos.filter(function(p){return p.usage==='fondo'})[0];
+        var heroVideo = document.getElementById('heroVideo');
+        if (heroVideo && bgPhoto) heroVideo.poster = bgPhoto.image;
         // About page photos (usage=nosotros)
         var nosotrosPhotos = photos.filter(function(p){return p.usage==='nosotros'});
         var aboutImg = document.querySelector('.about-img img');
@@ -267,6 +300,7 @@ var CMS = (function() {
     loadTestimonials: loadTestimonials,
     loadPhotos: loadPhotos,
     resetColors: resetColors,
+    shortName: shortName,
     storeEnabled: storeEnabled,
     COLOR_ROLES: COLOR_ROLES,
     DEFAULT_COLORS: DEFAULT_COLORS

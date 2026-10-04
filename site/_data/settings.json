@@ -23,5 +23,18 @@
     "vie": "10:00-21:00",
     "sab": "",
     "dom": ""
-  }
+  },
+  "shortName": "San José",
+  "logo": "img/clinica-02.jpeg",
+  "googleRating": "4.7",
+  "heroSub": "Clínica veterinaria de referencia en La Rinconada. Tecnología avanzada, equipo humano de calidad y un trato cercano que marca la diferencia.",
+  "aboutIntro": "Más de 15 años cuidando las mascotas de La Rinconada con profesionalidad, cercanía y los mejores medios técnicos.",
+  "aboutText": "No somos una clínica más. Somos el sitio al que llevan a sus mascotas las familias que valoran un trato cercano, honesto y profesional. La Dra. Paula Canalias, nuestra directora y especialista en pequeños animales con más de 18 años de experiencia, lidera un equipo con una obsesión: que tu mascota reciba exactamente lo que necesita, ni más ni menos.",
+  "aboutText2": "Instalaciones modernas, equipamiento de última generación y un equipo humano que se preocupa de verdad. Eso es lo que nos diferencia.",
+  "directorName": "Dra. Paula Canalias",
+  "directorTitle": "Especialista en pequeños animales · MVTC · CCRP",
+  "legalName": "",
+  "city": "",
+  "directorRole": "Directora · MVTC · CCRP",
+  "homeAbout": "La Dra. Paula Canalias, directora y especialista en pequeños animales con más de 18 años de experiencia, lidera un equipo con una obsesión: que tu mascota reciba exactamente lo que necesita."
 }

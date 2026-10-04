@@ -1,5 +1,5 @@
 // Ajustes de la clínica (WhatsApp y horario para el asistente)
-let clinicPhone='34955321470';
+let clinicPhone='';
 let clinicSettings={};
 fetch('_data/settings.json?t='+Date.now()).then(function(r){return r.json()}).then(function(s){clinicSettings=s;if(s.whatsapp)clinicPhone=s.whatsapp}).catch(function(){});
 
@@ -50,7 +50,7 @@ if(cf)cf.addEventListener('submit',function(e){
 // MAPA DE CONTACTO: Google Maps pone cookies, así que solo se carga al pulsar.
 // Se busca por la dirección de Ajustes, así vale para cualquier clínica.
 const mapBtn=document.getElementById('mapLoad');
-function clinicAddress(){return (clinicSettings&&clinicSettings.address)||'Avda. San José, 173, 41300 San José de La Rinconada, Sevilla'}
+function clinicAddress(){return (clinicSettings&&clinicSettings.address)||''}
 if(mapBtn)mapBtn.addEventListener('click',function(){
   const box=document.getElementById('contactMap');
   box.classList.remove('contact-map--off');
@@ -181,11 +181,13 @@ fetch('_data/chatbot/index.json?t='+Date.now())
     .catch(function(){vetbotData={}});
 
 // Marcas que se pueden usar en las respuestas del asistente (panel → VetBot):
-// {horario} = horario actual del panel, {estado} = abierto/cerrado ahora.
+// {horario} = horario actual del panel, {estado} = abierto/cerrado ahora,
+// {clinica} = nombre de la clínica, {telefono} = teléfono (los dos de Ajustes).
 function fillVetBotText(text){
     const hours=window.ClinicSchedule?ClinicSchedule.groups(clinicSettings).map(g=>g.days+': '+(g.closed?'cerrado':g.hours)).join('; '):'';
     const state=window.ClinicSchedule?ClinicSchedule.status(clinicSettings).text:'';
-    return String(text).replace(/{horario}/g,hours).replace(/{estado}/g,state);
+    return String(text).replace(/{horario}/g,hours).replace(/{estado}/g,state)
+        .replace(/{clinica}/g,clinicSettings.name||'la clínica').replace(/{telefono}/g,clinicSettings.phone||'');
 }
 
 function getVetBotResponse(msg){
@@ -202,7 +204,7 @@ function getVetBotResponse(msg){
     }
     // Fallback defaults
     if(lower.includes('cita')||lower.includes('appointment'))return 'Perfecto, para solicitar una cita puedo necesitar algunos datos. ¿Qué tipo de consulta necesitas?';
-    if(lower.includes('hola')||lower.includes('buenas'))return '¡Hola! Soy el asistente virtual de la Clínica Veterinaria San José. ¿En qué puedo ayudarte?';
+    if(lower.includes('hola')||lower.includes('buenas'))return fillVetBotText('¡Hola! Soy el asistente virtual de {clinica}. ¿En qué puedo ayudarte?');
     if(lower.includes('vacuna')||lower.includes('vacunación'))return 'La vacunación es esencial. Ofrecemos planes de vacunación adaptados a cada mascota. ¿Tienes perro o gato?';
     if(lower.includes('precio')||lower.includes('coste')||lower.includes('cuánto'))return 'Nuestros precios son muy competitivos. ¿Te gustaría saber el precio de algún servicio en concreto?';
     if(lower.includes('horario')||lower.includes('hora')||lower.includes('cuándo')||lower.includes('abierto')){
@@ -212,7 +214,7 @@ function getVetBotResponse(msg){
         }
         return 'Puedes consultar nuestro horario en la página de contacto.';
     }
-    if(lower.includes('urgencia')||lower.includes('emergencia')||lower.includes('24h')||lower.includes('noche'))return 'Para urgencias fuera de horario, llama al '+clinicPhone.replace(/\s/g,'')+' y te redirigimos al servicio de guardia correspondiente.';
+    if(lower.includes('urgencia')||lower.includes('emergencia')||lower.includes('24h')||lower.includes('noche'))return 'Para urgencias fuera de horario, llama al '+(clinicSettings.phone||clinicPhone)+' y te redirigimos al servicio de guardia correspondiente.';
     return 'Gracias por tu interés. Un miembro de nuestro equipo te atenderá pronto. ¿Hay algo más en lo que pueda ayudarte?';
 }
 

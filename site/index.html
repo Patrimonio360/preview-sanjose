@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="light">
-    <title>Clínica Veterinaria San José | La Rinconada, Sevilla</title>
-    <meta name="description" content="Clínica Veterinaria San José en La Rinconada, Sevilla. Cirugía, vacunas, terapias alternativas. Dra. Paula Canalias. ☎ 955 321 470">
-    <link rel="stylesheet" href="css/fonts.css?v=20261004b">
-    <link rel="stylesheet" href="css/style.css?v=20261004b">
+    <title data-clinic-title="home">Clínica Veterinaria San José | La Rinconada, Sevilla</title>
+    <meta name="description" content="Clínica veterinaria: consulta, vacunas, cirugía, laboratorio y terapias alternativas. Pide tu cita online.">
+    <link rel="stylesheet" href="css/fonts.css?v=20261004c">
+    <link rel="stylesheet" href="css/style.css?v=20261004c">
     <style>
         .hero{min-height:100vh;display:flex;align-items:center;position:relative;overflow:hidden;background:#0a120d}
         .hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.4;z-index:0}
@@ -128,8 +128,8 @@
 <nav class="nav" id="mainNav">
     <div class="container">
         <a href="index.html" class="nav-logo">
-            <img src="img/clinica-02.jpeg" alt="San José Logo" style="height:40px;width:40px;border-radius:50%;object-fit:cover">
-            <div class="nav-logo-text">San José</div>
+            <img src="img/clinica-02.jpeg" alt="Logo" data-clinic-logo style="height:40px;width:40px;border-radius:50%;object-fit:cover">
+            <div class="nav-logo-text" data-clinic="shortName">San José</div>
         </a>
         <ul class="nav-links" id="navLinks">
             <li><a href="index.html" class="active">Inicio</a></li>
@@ -162,7 +162,7 @@
                 <span>Consulta nuestro horario</span>
             </div>
             <h1>Cuidamos a quien <span class="accent">más quieres</span></h1>
-            <p class="hero-sub">Clínica veterinaria de referencia en La Rinconada. Tecnología avanzada, equipo humano de calidad y un trato cercano que marca la diferencia.</p>
+            <p class="hero-sub" data-clinic="heroSub">Clínica veterinaria de referencia en La Rinconada. Tecnología avanzada, equipo humano de calidad y un trato cercano que marca la diferencia.</p>
             <div class="hero-btns">
                 <a href="citas.html" class="hero-btn-primary">Pedir cita ahora →</a>
                 <a href="servicios.html" class="hero-btn-secondary">Ver servicios</a>
@@ -173,27 +173,27 @@
                     <div class="hero-proof-avatar"><img src="img/clinica-03.jpeg" alt="Cliente"></div>
                     <div class="hero-proof-avatar"><img src="img/clinica-10.jpeg" alt="Cliente"></div>
                 </div>
-                <div class="hero-proof-text"><strong>4.7 en Google</strong> - <span data-trust="families">186</span> opiniones verificadas</div>
+                <div class="hero-proof-text"><strong><span data-clinic="googleRating">4.7</span> en Google</strong> - <span data-trust="families">186</span> opiniones verificadas</div>
             </div>
         </div>
         <div class="hero-visual">
             <div class="hero-img-wrapper">
                 <div class="hero-img-glow"></div>
                 <div class="hero-img">
-                    <img src="img/clinica-04.jpeg" alt="Dra. Paula Canalias" width="440" height="587" loading="eager">
-                    <div class="hero-img-label">
-                        <div class="hero-img-label-avatar"><img src="img/clinica-04.jpeg" alt="Dra. Paula"></div>
+                    <img src="img/clinica-04.jpeg" alt="Dra. Paula Canalias" data-clinic-alt="directorName" width="440" height="587" loading="eager">
+                    <div class="hero-img-label" data-clinic-box>
+                        <div class="hero-img-label-avatar"><img src="img/clinica-04.jpeg" alt="Dra. Paula Canalias" data-clinic-alt="directorName"></div>
                         <div class="hero-img-label-text">
-                            <strong>Dra. Paula Canalias</strong>
-                            <span>Directora · Veterinaria</span>
+                            <strong data-clinic="directorName">Dra. Paula Canalias</strong>
+                            <span data-clinic="directorRole">Directora · Veterinaria</span>
                         </div>
                     </div>
                 </div>
                 <div class="hero-float hero-float--rating">
                     <div class="hero-float-icon" style="background:#E8F5E9">⭐</div>
                     <div class="hero-float-info">
-                        <strong>4.7 / 5</strong>
-                        <span>186 reseñas Google</span>
+                        <strong><span data-clinic="googleRating">4.7</span> / 5</strong>
+                        <span><span data-trust="families">186</span> reseñas Google</span>
                     </div>
                 </div>
                 <div class="hero-float hero-float--hours">
@@ -220,10 +220,10 @@
                 <div class="trust-card-num" data-trust="years">15+</div>
                 <div class="trust-card-label">años de experiencia</div>
             </div>
-            <div class="trust-card reveal" style="transition-delay:.1s">
+            <div class="trust-card reveal" style="transition-delay:.1s" data-clinic-box>
                 <div class="trust-card-icon">👩‍⚕️</div>
-                <div class="trust-card-name">Dra. Paula Canalias</div>
-                <div class="trust-card-label">Directora · MVTC · CCRP</div>
+                <div class="trust-card-name" data-clinic="directorName">Dra. Paula Canalias</div>
+                <div class="trust-card-label" data-clinic="directorRole">Directora · MVTC · CCRP</div>
             </div>
             <div class="trust-card reveal" style="transition-delay:.2s">
                 <div class="trust-card-icon">🔬</div>
@@ -267,11 +267,11 @@
             <div>
                 <div class="section-label">Sobre Nosotros</div>
                 <h2 class="section-title">Un equipo que de verdad ama lo que hace</h2>
-                <p class="about-text">La Dra. Paula Canalias, directora y especialista en pequeños animales con más de 18 años de experiencia, lidera un equipo con una obsesión: que tu mascota reciba exactamente lo que necesita.</p>
+                <p class="about-text" data-clinic="homeAbout">La Dra. Paula Canalias, directora y especialista en pequeños animales con más de 18 años de experiencia, lidera un equipo con una obsesión: que tu mascota reciba exactamente lo que necesita.</p>
                 <a href="nosotros.html" class="btn btn-forest">Conoce al equipo →</a>
             </div>
             <div class="about-img" style="box-shadow:var(--sh-lg);border-radius:var(--r-xl);overflow:hidden">
-                <img src="img/clinica-01.jpeg" alt="Clínica Veterinaria San José" width="500" height="625" loading="lazy">
+                <img src="img/clinica-01.jpeg" alt="Clínica Veterinaria San José" data-clinic-alt width="500" height="625" loading="lazy">
             </div>
         </div>
     </div>
@@ -360,7 +360,7 @@
         <div class="text-center" style="margin-bottom:48px">
             <div class="section-label">Reseñas</div>
             <h2 class="section-title">Lo que dicen nuestros clientes</h2>
-            <p class="section-desc mx-auto">Más de 186 familias confían en nosotros. Estas son algunas de sus opiniones.</p>
+            <p class="section-desc mx-auto">Más de <span data-trust="families">186</span> familias confían en nosotros. Estas son algunas de sus opiniones.</p>
         </div>
         <div class="reviews-home">
             <div class="review-home reveal">
@@ -386,13 +386,13 @@
 </section>
     <div class="vetbot-modal" id="vetbotModal">
         <div class="vetbot-header">
-            <div><h3>🤖 Asistente Virtual</h3><p>Clínica Veterinaria San José</p></div>
+            <div><h3>🤖 Asistente Virtual</h3><p data-clinic="name">Clínica Veterinaria San José</p></div>
             <button class="vetbot-close" id="vetbotClose">✕</button>
         </div>
         <div class="vetbot-body">
             <div class="vetbot-status"><div class="vetbot-status-dot"></div><span><strong>VetBot en línea</strong> · Responde al instante</span></div>
             <div class="vetbot-chat" id="vetbotChat">
-                <div class="vetbot-msg vetbot-msg--bot">¡Hola! Soy el asistente virtual de la Clínica Veterinaria San José. ¿En qué puedo ayudarte hoy?</div>
+                <div class="vetbot-msg vetbot-msg--bot">¡Hola! Soy el asistente virtual de <span data-clinic="name">Clínica Veterinaria San José</span>. ¿En qué puedo ayudarte hoy?</div>
             </div>
             <div class="vetbot-input-group">
                 <input type="text" class="vetbot-input" id="vetbotInput" placeholder="Escribe tu mensaje...">
@@ -415,19 +415,19 @@
             </div>
             <div class="footer-col"><h4>Servicios</h4><ul><li><a href="servicios.html">Consulta General</a></li><li><a href="servicios.html">Vacunación</a></li><li><a href="servicios.html">Cirugía</a></li><li><a href="servicios.html">Terapias Alternativas</a></li></ul></div>
             <div class="footer-col"><h4>Clínica</h4><ul><li><a href="nosotros.html">Sobre nosotros</a></li><li><a href="resenas.html">Reseñas Google</a></li><li><a href="contacto.html">Contacto</a></li></ul></div>
-            <div class="footer-col"><h4>Contacto</h4><ul><li><a href="tel:955321470">955 321 470</a></li><li><a href="mailto:sanjose.clinicaveterinaria@gmail.com">Email</a></li></ul></div>
+            <div class="footer-col"><h4>Contacto</h4><ul><li><a href="tel:955321470" data-clinic="phone">955 321 470</a></li><li><a href="mailto:sanjose.clinicaveterinaria@gmail.com">Email</a></li></ul></div>
         </div>
         <div class="footer-bottom">
-            <span>&copy; <script>document.write(new Date().getFullYear())</script> Clínica Veterinaria San José. Todos los derechos reservados.</span>
+            <span>&copy; <span data-clinic="year">2026</span> <span data-clinic="name">Clínica Veterinaria San José</span>. Todos los derechos reservados.</span>
             <span><a href="politica-privacidad.html">Política de Privacidad</a> · <a href="aviso-legal.html">Aviso Legal</a></span>
         </div>
     </div>
 </footer>
 
-<script src="js/schedule.js?v=20261004b"></script>
-<script src="js/cms.js?v=20261004b"></script>
+<script src="js/schedule.js?v=20261004c"></script>
+<script src="js/cms.js?v=20261004c"></script>
 <script>CMS.applyColors(); CMS.loadSettings(); CMS.loadPhotos();</script>
-<script src="js/main.js?v=20261004b"></script>
+<script src="js/main.js?v=20261004c"></script>
 </body>
 </html>
 

@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="light">
     <title>Galería | Clínica Veterinaria San José</title>
-    <meta name="description" content="Galería de imágenes de la Clínica Veterinaria San José. Instalaciones, equipo y ambiente.">
-    <link rel="stylesheet" href="css/fonts.css?v=20261004b">
-    <link rel="stylesheet" href="css/style.css?v=20261004b">
+    <meta name="description" content="Galería de imágenes de la clínica: instalaciones, equipo y ambiente.">
+    <link rel="stylesheet" href="css/fonts.css?v=20261004c">
+    <link rel="stylesheet" href="css/style.css?v=20261004c">
     <style>
         .gallery-hero{background:var(--forest);padding:140px 0 80px;text-align:center;color:var(--white)}
         .gallery-hero h1{font-size:clamp(2rem,4vw,3rem);margin-bottom:12px}
@@ -47,7 +47,7 @@
 
 <nav class="nav" id="mainNav">
     <div class="container">
-        <a href="index.html" class="nav-logo"><img src="img/clinica-02.jpeg" alt="San José Logo" style="height:40px;width:40px;border-radius:50%;object-fit:cover"><div class="nav-logo-text">San José</div></a>
+        <a href="index.html" class="nav-logo"><img src="img/clinica-02.jpeg" alt="Logo" data-clinic-logo style="height:40px;width:40px;border-radius:50%;object-fit:cover"><div class="nav-logo-text" data-clinic="shortName">San José</div></a>
         <ul class="nav-links" id="navLinks">
             <li><a href="index.html">Inicio</a></li>
             <li><a href="nosotros.html">Nosotros</a></li>
@@ -70,7 +70,7 @@
     <div class="container">
         <div class="section-label" style="color:var(--coral)">Galería</div>
         <h1>Nuestra clínica en imágenes</h1>
-        <p>Descubre nuestras instalaciones, equipo y el ambiente que hace única a la Clínica Veterinaria San José.</p>
+        <p>Descubre nuestras instalaciones, equipo y el ambiente que hace única a nuestra clínica.</p>
     </div>
 </div>
 
@@ -101,23 +101,23 @@
                 <div class="footer-brand">Clínica Veterinaria San José</div>
                 <p class="footer-desc">Más de 15 años cuidando las mascotas de San José de La Rinconada y alrededores.</p>
                 <div class="footer-contact">
-                    <div>☎ <a href="tel:955321470">955 321 470</a></div>
-                    <div>✉ <a href="mailto:sanjose.clinicaveterinaria@gmail.com">sanjose.clinicaveterinaria@gmail.com</a></div>
-                    <div>📍 Avda. San José, 173, La Rinconada, Sevilla</div>
+                    <div>☎ <a href="tel:955321470" data-clinic="phone">955 321 470</a></div>
+                    <div>✉ <a href="mailto:sanjose.clinicaveterinaria@gmail.com" data-clinic="email">sanjose.clinicaveterinaria@gmail.com</a></div>
+                    <div>📍 <span data-clinic="address">Avda. San José, 173, 41300 San José de La Rinconada, Sevilla</span></div>
                 </div>
             </div>
             <div class="footer-col"><h4>Servicios</h4><ul><li><a href="servicios.html">Consulta General</a></li><li><a href="servicios.html">Vacunación</a></li><li><a href="servicios.html">Cirugía</a></li><li><a href="servicios.html">Terapias Alternativas</a></li></ul></div>
             <div class="footer-col"><h4>Clínica</h4><ul><li><a href="nosotros.html">Sobre nosotros</a></li><li><a href="resenas.html">Reseñas Google</a></li><li><a href="citas.html">Pedir cita</a></li><li><a href="contacto.html">Contacto</a></li></ul></div>
         </div>
         <div class="footer-bottom">
-            <p>© 2026 Clínica Veterinaria San José. Todos los derechos reservados.</p>
+            <p>© <span data-clinic="year">2026</span> <span data-clinic="name">Clínica Veterinaria San José</span>. Todos los derechos reservados.</p>
             <div class="footer-links"><a href="politica-privacidad.html">Política de Privacidad</a><a href="aviso-legal.html">Aviso Legal</a></div>
         </div>
     </div>
 </footer>
 
-<script src="js/schedule.js?v=20261004b"></script>
-<script src="js/cms.js?v=20261004b"></script>
+<script src="js/schedule.js?v=20261004c"></script>
+<script src="js/cms.js?v=20261004c"></script>
 <script>CMS.applyColors(); CMS.loadSettings(); CMS.loadPhotos();</script>
 <script>
 (function() {
@@ -230,6 +230,6 @@
     loadPhotos();
 })();
 </script>
-<script src="js/main.js?v=20261004b"></script>
+<script src="js/main.js?v=20261004c"></script>
 </body>
 </html>
