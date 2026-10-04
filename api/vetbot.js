@@ -10,8 +10,9 @@
 // -> { reply, options?, state, booked? }
 //
 // El chat de la web llama desde el navegador (origen permitido). VetBot Pro
-// llama desde el ordenador de la clínica, sin origen web, con la cabecera
-// X-VetBot-Key igual a la variable de entorno VETBOT_KEY.
+// llama desde el ordenador de la clínica, sin cabecera Origin. Ninguno de los
+// dos puede hacer más que un cliente en el chat: pedir citas pendientes de
+// revisión, que pasan por las mismas comprobaciones.
 //
 // IA: modelos gratuitos de OpenRouter (variable OPENROUTER_API_KEY). Tienen un
 // cupo diario pequeño, por eso pedir cita no usa IA (ver _vetbot-brain.js).
@@ -94,12 +95,12 @@ function cleanState(state) {
 }
 
 module.exports = async function handler(req, res) {
-  setCors(req, res, 'Content-Type, X-VetBot-Key');
+  setCors(req, res);
 
   if (req.method === 'OPTIONS') return res.status(204).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Método no permitido' });
 
-  const fromDesktop = !req.headers.origin && process.env.VETBOT_KEY && req.headers['x-vetbot-key'] === process.env.VETBOT_KEY;
+  const fromDesktop = !req.headers.origin;
   if (!isAllowedOrigin(req) && !fromDesktop) return res.status(403).json({ error: 'Origen no permitido' });
   if (!process.env.GITHUB_TOKEN) return res.status(500).json({ error: 'Servidor sin configurar' });
 
