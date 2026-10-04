@@ -17,6 +17,7 @@
     + '.vb-fab:hover{transform:translateY(-2px)}.vb-fab-icon{font-size:22px;line-height:1}'
     + '.vb-fab-dot{width:9px;height:9px;border-radius:50%;background:#4ADE80;box-shadow:0 0 0 3px rgba(74,222,128,.3)}'
     + '.scroll-top{bottom:92px!important}'
+    + '.footer-bottom{padding-bottom:88px}' /* que el botón del chat no tape el final del pie */
     + '.vb-panel{position:fixed;right:20px;bottom:20px;z-index:320;width:380px;max-width:calc(100vw - 24px);height:600px;max-height:calc(100vh - 40px);max-height:calc(100dvh - 40px);background:var(--white,#fff);border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.3);display:none;flex-direction:column;overflow:hidden;font-family:Inter,system-ui,sans-serif}'
     + '.vb-panel.open{display:flex}'
     + '.vb-head{background:var(--forest,#1A3C2A);color:#fff;padding:16px 18px;display:flex;align-items:center;gap:12px}'

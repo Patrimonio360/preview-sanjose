@@ -54,6 +54,8 @@ var CMS = (function() {
         showOpeningStatus(s);
         // Tienda activable desde el panel
         applyStoreSetting(s);
+        // "Web desarrollada por Patrimonio360" en el pie
+        showAgencyCredit(s);
         // Footer brand
         document.querySelectorAll('.footer-brand').forEach(function(el) {
           if (s.name) el.textContent = s.name;
@@ -159,7 +161,8 @@ var CMS = (function() {
     });
     // Cualquier otro enlace de llamar o escribir lleva a la clínica de Ajustes
     if (s.phone) document.querySelectorAll('a[href^="tel:"]').forEach(function(a) { a.href = 'tel:' + s.phone.replace(/\s/g, ''); });
-    if (s.email) document.querySelectorAll('a[href^="mailto:"]').forEach(function(a) { a.href = 'mailto:' + s.email; });
+    // (el enlace del crédito de Patrimonio360 lleva su propio email)
+    if (s.email) document.querySelectorAll('a[href^="mailto:"]:not(.agency-credit a)').forEach(function(a) { a.href = 'mailto:' + s.email; });
     document.querySelectorAll('[data-clinic-alt]').forEach(function(img) {
       var val = values[img.dataset.clinicAlt || 'name'] || s.name;
       if (val) img.alt = val;
@@ -185,6 +188,26 @@ var CMS = (function() {
       card.querySelector('strong').textContent = st.todayText;
       card.querySelector('span').textContent = st.open ? 'Abierto ahora' : 'Cerrado ahora';
     }
+  }
+
+  // Crédito de la agencia en el pie, con un email para contactar o hacer
+  // peticiones. Se controla con "Email de Patrimonio360" en Ajustes; vacío = sin crédito.
+  function showAgencyCredit(s) {
+    document.querySelectorAll('.agency-credit').forEach(function(el) { el.remove(); });
+    var email = String(s.patrimonio360Email || '').trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return;
+    var subject = 'Contacto desde la web de ' + (s.name || 'la clínica');
+    document.querySelectorAll('.footer-bottom').forEach(function(bar) {
+      var span = document.createElement('span');
+      span.className = 'agency-credit';
+      span.appendChild(document.createTextNode('Web desarrollada por '));
+      var a = document.createElement('a');
+      a.href = 'mailto:' + email + '?subject=' + encodeURIComponent(subject);
+      a.textContent = 'Patrimonio360';
+      a.title = 'Contactar con Patrimonio360';
+      span.appendChild(a);
+      bar.appendChild(span);
+    });
   }
 
   function storeEnabled(s) {
