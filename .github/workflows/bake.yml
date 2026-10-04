@@ -1,0 +1,46 @@
+# Cada vez que el panel guarda los Ajustes (o cambian las páginas), escribe los
+# datos de la clínica dentro del HTML con tools/bake.js y lo publica.
+name: Datos de la clínica en las páginas
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'site/_data/settings.json'
+      - 'site/*.html'
+      - 'site/js/schedule.js'
+      - 'tools/bake.js'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: bake
+  cancel-in-progress: false
+
+jobs:
+  bake:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node tools/bake.js
+      - name: Guardar cambios
+        run: |
+          if git diff --quiet; then
+            echo "Las páginas ya estaban al día"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898299+github-actions[bot]@users.noreply.github.com"
+          git add site
+          git commit -m "auto: datos de Ajustes en las páginas"
+          # Si mientras tanto el panel ha guardado algo, se integra antes de subir.
+          for i in 1 2 3; do
+            git pull --rebase && git push && exit 0
+            sleep 5
+          done
+          exit 1
