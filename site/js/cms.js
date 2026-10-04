@@ -114,11 +114,8 @@ var CMS = (function() {
             return g.days + ': ' + (g.closed ? 'cerrado' : g.hours);
           }).join('<br>');
         }
-        // Aviso legal CIF
-        var avisoCif = document.querySelector('.aviso-cif');
-        if (avisoCif && s.cif) {
-          avisoCif.textContent = s.cif;
-        }
+        // Datos de la clínica en las páginas legales: <span data-clinic="cif">
+        fillClinicData(s);
         // Trust stats
         var trustYears = document.querySelector('[data-trust="years"]');
         if (trustYears && s.trustYears) trustYears.textContent = s.trustYears;
@@ -130,6 +127,27 @@ var CMS = (function() {
         if (trustAccessible && s.trustAccessible) trustAccessible.textContent = s.trustAccessible;
       })
       .catch(function() {});
+  }
+
+  // Rellena los elementos marcados con data-clinic con los datos de Ajustes,
+  // para que las páginas legales sirvan a cualquier clínica.
+  function fillClinicData(s) {
+    var values = {
+      name: s.name,
+      legalName: s.legalName || s.name,
+      address: s.address,
+      phone: s.phone,
+      email: s.email,
+      cif: s.cif,
+      site: location.host
+    };
+    document.querySelectorAll('[data-clinic]').forEach(function(el) {
+      var val = values[el.dataset.clinic];
+      if (!val) return;
+      el.textContent = val;
+      if (el.tagName === 'A' && el.dataset.clinic === 'email') el.href = 'mailto:' + val;
+      if (el.tagName === 'A' && el.dataset.clinic === 'phone') el.href = 'tel:' + val.replace(/\s/g, '');
+    });
   }
 
   // "Abierto ahora · hasta las 21:00" / "Cerrado ahora · Te esperamos mañana…"

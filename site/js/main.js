@@ -47,6 +47,20 @@ if(cf)cf.addEventListener('submit',function(e){
   setTimeout(()=>{b.textContent=o;b.style.background='';this.reset()},3000);
 });
 
+// MAPA DE CONTACTO: Google Maps pone cookies, así que solo se carga al pulsar.
+// Se busca por la dirección de Ajustes, así vale para cualquier clínica.
+const mapBtn=document.getElementById('mapLoad');
+function clinicAddress(){return (clinicSettings&&clinicSettings.address)||'Avda. San José, 173, 41300 San José de La Rinconada, Sevilla'}
+if(mapBtn)mapBtn.addEventListener('click',function(){
+  const box=document.getElementById('contactMap');
+  box.classList.remove('contact-map--off');
+  box.innerHTML='<iframe src="https://www.google.com/maps?q='+encodeURIComponent(clinicAddress())+'&output=embed" loading="lazy" allowfullscreen title="Ubicación"></iframe>';
+});
+const mapDir=document.getElementById('mapDirections');
+if(mapDir)mapDir.addEventListener('click',function(){
+  mapDir.href='https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(clinicAddress());
+});
+
 // ========================
 // MODERN FEATURES v2.0
 // ========================

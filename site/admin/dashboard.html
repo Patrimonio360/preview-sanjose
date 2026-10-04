@@ -819,6 +819,12 @@
       .settings-grid { grid-template-columns: 1fr; }
       .modal-panel { max-width: 100%; }
     }
+    /* Documentos legales */
+    .legal-alert{background:#FEF3C7;border:1px solid #F59E0B;color:#78350F;border-radius:var(--radius);padding:14px 16px;margin-bottom:16px;font-size:14px;line-height:1.5;display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+    .legal-data{font-size:13px;color:var(--gray-500);margin-bottom:20px;line-height:1.5}
+    .legal-card{cursor:default}
+    .legal-card .card-actions{flex-wrap:wrap}
+    .legal-help{margin-top:24px;font-size:13px;color:var(--gray-600);line-height:1.6;max-width:800px}
   </style>
 </head>
 <body>
@@ -881,6 +887,9 @@
       <div class="sidebar-item" data-section="appointments">
         <span class="icon">&#x1F4C5;</span> Citas
       </div>
+      <div class="sidebar-item" data-section="legal">
+        <span class="icon">&#x1F4C4;</span> Documentos legales
+      </div>
       <div class="sidebar-label">Contenido</div>
       <div class="sidebar-item" data-section="reviews">
         <span class="icon">&#x2B50;</span> Testimonios
@@ -923,8 +932,9 @@
   <!-- ==================== TOAST ==================== -->
   <div class="toast" id="toast"></div>
 
-<script src="../js/schedule.js?v=20261004"></script>
-<script src="../js/cms.js?v=20261004"></script>
+<script src="../js/schedule.js?v=20261004b"></script>
+<script src="../js/cms.js?v=20261004b"></script>
+<script src="legal-docs.js?v=20261004b"></script>
 <script>
 (function() {
   // ===== CONFIG =====
@@ -1073,6 +1083,7 @@
       photos: 'site/_data/photos/index.json',
       appointments: 'appointments.json', // repositorio privado sanjose-citas
       themes: 'site/_data/colors.json',
+      legal: 'site/_data/settings.json', // los documentos legales usan los datos de Ajustes
       customThemes: 'site/_data/themes.json'
     };
     return map[section];
@@ -1141,6 +1152,9 @@
         renderAppointments(data);
       } else if (section === 'themes') {
         renderThemes(data);
+      } else if (section === 'legal') {
+        currentData.settings = data;
+        renderLegalDocs(data);
       } else {
         var items = Array.isArray(data) ? data : (data[section] || []);
         currentData[section] = Array.isArray(data) ? data : data;
@@ -1320,10 +1334,12 @@
   // ===== SETTINGS =====
   var SETTINGS_FIELDS = [
     { key: 'name', label: 'Nombre de la clínica', icon: '&#x1F3E5;' },
+    { key: 'legalName', label: 'Razón social o titular (el nombre que figura en el CIF; sale en los documentos legales)', icon: '&#x2696;&#xFE0F;' },
     { key: 'address', label: 'Dirección', icon: '&#x1F4CD;' },
     { key: 'phone', label: 'Teléfono', icon: '&#x260E;&#xFE0F;' },
     { key: 'email', label: 'Email (aquí llegan los avisos de citas nuevas)', icon: '&#x2709;&#xFE0F;' },
     { key: 'cif', label: 'CIF/NIF', icon: '&#x1F4CB;' },
+    { key: 'city', label: 'Localidad (para fechar los documentos; si se deja vacía se toma de la dirección)', icon: '&#x1F3D8;&#xFE0F;' },
     { key: 'whatsapp', label: 'WhatsApp (con prefijo, sin +; p. ej. 34612345678)', icon: '&#x1F4AC;' },
     { key: 'facebook', label: 'Facebook URL', icon: '&#x1F4D8;' },
     { key: 'instagram', label: 'Instagram URL', icon: '&#x1F4F7;' },
@@ -1429,6 +1445,59 @@
     } catch (e) {
       showToast('Error al guardar: ' + e.message, true);
     }
+  }
+
+  // ===== DOCUMENTOS LEGALES =====
+  // Plantillas en legal-docs.js; los datos de la clínica salen de Ajustes.
+  function renderLegalDocs(settings) {
+    var main = $('#main-content');
+    var missing = LegalDocs.missing(settings);
+    var html = '<div class="main-header"><div><span class="main-title">Documentos legales</span>'
+      + '<span class="main-count">' + LegalDocs.DOCS.length + ' documentos</span></div></div>';
+
+    if (missing.length) {
+      html += '<div class="legal-alert">&#x26A0;&#xFE0F; Faltan datos en Ajustes: <strong>'
+        + missing.map(function(f) { return esc(f.label); }).join(', ')
+        + '</strong>. Los documentos saldrán con una línea en blanco en su lugar. '
+        + '<button class="btn btn-ghost btn-sm" id="legal-go-settings">Completar en Ajustes</button></div>';
+    }
+
+    var c = LegalDocs.info(settings);
+    html += '<div class="legal-data">Se rellenan con: <strong>' + esc(c.legalName || '—') + '</strong>'
+      + (c.tradeName && c.tradeName !== c.legalName ? ' (' + esc(c.tradeName) + ')' : '')
+      + ' · CIF ' + esc(c.cif || '—') + ' · ' + esc(c.address || '—') + ' · ' + esc(c.phone || '—') + ' · ' + esc(c.email || '—') + '</div>';
+
+    html += '<div class="cards-grid">';
+    LegalDocs.DOCS.forEach(function(d) {
+      html += '<div class="card legal-card"><div class="card-body">'
+        + '<div class="card-icon">' + d.icon + '</div>'
+        + '<div class="card-name">' + esc(d.title) + '</div>'
+        + '<div class="card-desc">' + esc(d.desc) + '</div></div>'
+        + '<div class="card-actions">'
+        + '<button class="btn btn-primary btn-sm" data-legal-print="' + d.id + '">&#x1F5A8;&#xFE0F; Imprimir / PDF</button>'
+        + '<button class="btn btn-ghost btn-sm" data-legal-word="' + d.id + '">&#x1F4DD; Descargar Word</button>'
+        + '</div></div>';
+    });
+    html += '</div>';
+
+    html += '<div class="legal-help"><strong>Cómo usarlos:</strong> imprime dos copias y fírmalas (una para la persona y otra para la clínica). '
+      + 'Guarda las copias firmadas mientras se usen las fotos y, después, al menos 3 años más. '
+      + 'Si alguien retira su permiso, quita sus fotos de la web y las redes en 30 días como máximo. '
+      + 'Son modelos basados en la normativa española: conviene que la gestoría o un abogado los revise antes de usarlos.</div>';
+
+    main.innerHTML = html;
+
+    main.querySelectorAll('[data-legal-print]').forEach(function(b) {
+      b.addEventListener('click', function() { LegalDocs.print(b.dataset.legalPrint, settings); });
+    });
+    main.querySelectorAll('[data-legal-word]').forEach(function(b) {
+      b.addEventListener('click', function() { LegalDocs.downloadWord(b.dataset.legalWord, settings); });
+    });
+    var go = $('#legal-go-settings');
+    if (go) go.addEventListener('click', function() {
+      $$('.sidebar-item').forEach(function(i) { i.classList.toggle('active', i.dataset.section === 'settings'); });
+      loadSection('settings');
+    });
   }
 
   // ===== AVISOS AL CLIENTE (email y WhatsApp) =====
