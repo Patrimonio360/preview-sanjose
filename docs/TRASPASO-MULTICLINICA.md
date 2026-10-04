@@ -43,7 +43,7 @@ Todo esto habría que convertirlo en configuración por clínica:
   dirección del servidor `https://preview-sanjose.vercel.app`.
 - `site/_data/*.json`: todos los datos y textos de San José (cada clínica los cambia en el panel).
 - Fotos de `site/img/` y algunas imágenes externas de productos (Amazon/Unsplash: sustituir).
-- `index.html` raíz: puerta con contraseña de "vista previa" + `noindex` (quitar al publicar con dominio).
+- `index.html` raíz: redirige a `site/index.html` (la contraseña de vista previa se quitó el 4/10/2026); `noindex` hasta tener dominio.
 
 ## 3. Bloqueos para vender a varias clínicas (por prioridad)
 
@@ -75,7 +75,7 @@ Todo esto habría que convertirlo en configuración por clínica:
 
 ## 5. Entrega de San José — lo que queda (no técnico)
 
-- Dominio propio y quitar la "vista previa" (puede hacerse ya o tras el punto 1 del plan).
+- Dominio propio para abrir la web a Google (la contraseña de vista previa ya está quitada).
 - La clínica cambia la contraseña del panel desde Ajustes → "Contraseña del panel".
 - Patrimonio360 añade la clave maestra: `vercel env add AGENCY_MASTER_PASSWORD production --sensitive` y volver a publicar.
 - Pulsar "Activate" en el primer email de FormSubmit (la clínica para citas, Patrimonio360 para sugerencias).
