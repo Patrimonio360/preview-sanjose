@@ -397,7 +397,8 @@ function systemPrompt(ctx) {
     + '- Para vacunas, di que el veterinario valorará el protocolo adecuado para cada mascota.\n'
     + '- Urgencias: la clínica no atiende urgencias fuera de su horario. Si la mascota está grave y la clínica está cerrada, recomienda acudir a una clínica de urgencias 24 horas cercana.\n'
     + '- No inventes datos de la clínica que no estén arriba.\n'
-    + '- Si la persona quiere pedir, reservar o cambiar una cita, NO preguntes fecha ni datos: responde solo con una frase corta y termina con la etiqueta exacta [RESERVAR] para abrir el asistente de citas.';
+    + '- Si hace una PREGUNTA (sobre servicios, animales que atendéis, vacunas, horarios…), respóndela; puedes terminar ofreciendo pedir cita escribiendo "cita". En ese caso NO uses la etiqueta [RESERVAR].\n'
+    + '- Usa la etiqueta [RESERVAR] SOLO si la persona pide claramente una cita o que vean a su mascota (por ejemplo "quiero que vean a mi perro", "¿me dais hora?"). Entonces NO preguntes fecha ni datos: responde una frase corta y termina con la etiqueta exacta [RESERVAR] para abrir el asistente de citas.';
 }
 
 // Preguntas básicas que se responden con los datos del panel, sin gastar IA.
