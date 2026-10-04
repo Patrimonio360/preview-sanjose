@@ -337,7 +337,10 @@ async function book(ctx, state) {
       reply: '¡Listo! 🎉 Tu solicitud de cita está registrada y queda *pendiente de revisión*.\n\n' + summary(d)
         + '\n\nLa clínica la revisará y te confirmará ' + via + ' lo antes posible. Si esa hora no fuera posible, te propondremos otra.',
       state: null,
-      booked: { id: result.appt.id, date: d.date, time: d.time }
+      booked: {
+        id: result.appt.id, date: d.date, time: d.time, service: d.service, patientName: d.name,
+        petName: petParts[0] || '', petType: petParts[1] || '', message: d.reason || ''
+      }
     };
   }
   if (result.status === 409 || result.status === 400) {
@@ -401,6 +404,13 @@ function systemPrompt(ctx) {
 function basicAnswer(ctx, text) {
   const t = norm(text);
   const s = ctx.settings;
+  if (/^(hola|buenas|buenos dias|buenas tardes|buenas noches|hey|holi|saludos)\b[\s!.,¡]*$/.test(t)) {
+    return '¡Hola! 👋 Soy VetBot, el asistente de ' + ctx.clinic.name + '. Puedo ayudarte a pedir cita o resolver dudas sobre la clínica (horario, dirección, servicios…). ¿Qué necesitas?'
+      + (ctx.channel === 'whatsapp' ? '\n\nSi quieres cita, escribe "cita".' : '');
+  }
+  if (/^(gracias|muchas gracias|vale gracias|ok gracias|genial|perfecto)\b[\s!.,]*$/.test(t)) {
+    return '¡A ti! 😊 Si necesitas algo más, aquí estoy.';
+  }
   if (/\b(donde|direccion|ubicacion|ubicados|como llego|como llegar|mapa)\b/.test(t) && s.address) {
     return '📍 Estamos en ' + s.address + '.\nCómo llegar: https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(ctx.clinic.name + ' ' + s.address);
   }
