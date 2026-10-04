@@ -1,2 +1,3 @@
+# Vista previa: sin dominio en Ajustes no se deja indexar.
 User-agent: *
 Disallow: /

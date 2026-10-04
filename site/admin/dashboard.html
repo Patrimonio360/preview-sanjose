@@ -5,8 +5,7 @@
   <meta name="robots" content="noindex, nofollow">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Panel de Administración</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/fonts.css?v=20261004e">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -932,9 +931,9 @@
   <!-- ==================== TOAST ==================== -->
   <div class="toast" id="toast"></div>
 
-<script src="../js/schedule.js?v=20261004d"></script>
-<script src="../js/cms.js?v=20261004d"></script>
-<script src="legal-docs.js?v=20261004d"></script>
+<script src="../js/schedule.js?v=20261004e"></script>
+<script src="../js/cms.js?v=20261004e"></script>
+<script src="legal-docs.js?v=20261004e"></script>
 <script>
 (function() {
   // ===== CONFIG =====
@@ -1350,6 +1349,8 @@
     { key: 'trustLab', label: 'Laboratorio', icon: '&#x1F52C;' },
     { key: 'trustAccessible', label: 'Accesible', icon: '&#x267F;' },
     { key: 'googleRating', label: 'Nota media en Google (p. ej. 4.7)', icon: '&#x2B50;' },
+    { key: 'googleMapsUrl', label: 'Enlace a la ficha de Google Maps de la clínica', icon: '&#x1F5FA;&#xFE0F;' },
+    { key: 'siteUrl', label: 'Dominio de la web (p. ej. https://www.clinicasanjose.es). Mientras esté vacío, Google no la indexa', icon: '&#x1F310;' },
     { key: 'patrimonio360Email', label: 'Email Patrimonio360', icon: '&#x2709;&#xFE0F;' }
   ];
 
@@ -2500,9 +2501,41 @@
   }
 
   // ===== FILE UPLOAD =====
+  // Reduce las fotos a 1600 px como máximo y las guarda en JPEG (las fotos de
+  // móvil pesan varios MB y harían la web lenta). PNG/GIF/WebP pequeños, como
+  // un logo con transparencia, se suben tal cual.
+  var MAX_IMAGE_SIDE = 1600;
+  async function shrinkImage(file) {
+    var bitmap;
+    try {
+      bitmap = await createImageBitmap(file, { imageOrientation: 'from-image' });
+    } catch (e) {
+      return file; // el navegador no sabe leerla: se sube sin tocar
+    }
+    var scale = Math.min(1, MAX_IMAGE_SIDE / Math.max(bitmap.width, bitmap.height));
+    var keepFormat = /image\/(png|gif|webp)/.test(file.type) && scale === 1;
+    if (keepFormat || (file.type === 'image/jpeg' && scale === 1 && file.size < 400 * 1024)) {
+      bitmap.close();
+      return file;
+    }
+    var canvas = document.createElement('canvas');
+    canvas.width = Math.round(bitmap.width * scale);
+    canvas.height = Math.round(bitmap.height * scale);
+    var ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#fff'; // fondo blanco donde hubiera transparencia
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+    bitmap.close();
+    var blob = await new Promise(function(resolve) { canvas.toBlob(resolve, 'image/jpeg', 0.82); });
+    if (!blob) return file;
+    var name = file.name.replace(/\.[^.]+$/, '') + '.jpg';
+    return new File([blob], name, { type: 'image/jpeg' });
+  }
+
   async function uploadImage(file, folder) {
     folder = folder || 'site/img/uploads';
-    var ext = file.name.split('.').pop().toLowerCase();
+    file = await shrinkImage(file);
+    if (file.size > 3 * 1024 * 1024) throw new Error('La imagen sigue pesando más de 3 MB');
     var safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
     var datePrefix = new Date().toISOString().slice(0,10).replace(/-/g, '');
     var fileName = datePrefix + '_' + safeName;
@@ -2570,8 +2603,8 @@
         showToast('Solo se permiten imagenes', true);
         return;
       }
-      if (file.size > 5 * 1024 * 1024) {
-        showToast('Maximo 5MB', true);
+      if (file.size > 25 * 1024 * 1024) {
+        showToast('La imagen es demasiado grande (máximo 25 MB)', true);
         return;
       }
       progress.classList.add('active');

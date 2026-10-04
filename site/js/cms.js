@@ -77,8 +77,8 @@ var CMS = (function() {
         // Redes sociales: el enlace de Ajustes, o se ocultan si la clínica no tiene
         [['facebook', 'facebook.com'], ['instagram', 'instagram.com']].forEach(function(net) {
           document.querySelectorAll('a[href*="' + net[1] + '"]').forEach(function(a) {
-            if (s[net[0]]) a.href = s[net[0]];
-            else if (net[0] in s) a.style.display = 'none';
+            if (s[net[0]]) { a.href = s[net[0]]; a.hidden = false; }
+            else if (net[0] in s) a.hidden = true;
           });
         });
         // WhatsApp buttons
@@ -133,6 +133,8 @@ var CMS = (function() {
   //   data-clinic-logo          imagen del logo
   //   data-clinic-box           se oculta si su primer dato se ha dejado vacío en Ajustes
   // Si una clave no existe en Ajustes se deja el texto de ejemplo del HTML.
+  // tools/bake.js hace lo mismo al publicar, para que los buscadores lo vean
+  // sin JavaScript; esto aplica al momento los cambios recién guardados.
   function fillClinicData(s) {
     var values = Object.assign({}, s, {
       legalName: s.legalName || s.name,
@@ -144,7 +146,7 @@ var CMS = (function() {
       var key = el.dataset.clinic;
       if (!(key in values)) return;
       var val = String(values[key] || '').trim();
-      el.style.display = val ? '' : 'none';
+      el.hidden = !val;
       if (!val) return;
       el.textContent = val;
       if (el.tagName === 'A' && key === 'email') el.href = 'mailto:' + val;
@@ -153,30 +155,19 @@ var CMS = (function() {
     // Un bloque (p. ej. la tarjeta del director) se oculta si su dato principal está vacío
     document.querySelectorAll('[data-clinic-box]').forEach(function(box) {
       var main = box.querySelector('[data-clinic]');
-      if (main) box.style.display = main.style.display === 'none' ? 'none' : '';
+      if (main) box.hidden = main.hidden;
     });
     // Cualquier otro enlace de llamar o escribir lleva a la clínica de Ajustes
     if (s.phone) document.querySelectorAll('a[href^="tel:"]').forEach(function(a) { a.href = 'tel:' + s.phone.replace(/\s/g, ''); });
     if (s.email) document.querySelectorAll('a[href^="mailto:"]').forEach(function(a) { a.href = 'mailto:' + s.email; });
     document.querySelectorAll('[data-clinic-alt]').forEach(function(img) {
-      var val = values[img.dataset.clinicAlt || 'name'];
+      var val = values[img.dataset.clinicAlt || 'name'] || s.name;
       if (val) img.alt = val;
     });
     document.querySelectorAll('[data-clinic-logo]').forEach(function(img) {
       if (s.logo) img.src = s.logo;
       if (s.name) img.alt = 'Logo de ' + s.name;
     });
-    // Pestaña del navegador: "Página | Nombre"; en la portada "Nombre | Localidad"
-    var title = document.querySelector('title');
-    if (title && s.name) {
-      if (title.dataset.clinicTitle === 'home') {
-        var m = /\b\d{5}\s+([^,]+)/.exec(s.address || '');
-        var city = s.city || (m ? m[1].trim() : '');
-        document.title = s.name + (city ? ' | ' + city : '');
-      } else {
-        document.title = document.title.split(' | ')[0] + ' | ' + s.name;
-      }
-    }
   }
 
   // "Abierto ahora · hasta las 21:00" / "Cerrado ahora · Te esperamos mañana…"

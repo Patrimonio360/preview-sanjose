@@ -1,35 +1,32 @@
-/* Fonts — Google Fonts CDN (fiable) + local TTF fallback */
-
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:wght@400;600;700&display=swap');
-
-/* Local TTF fallback (si falla CDN) */
+/* Fuentes alojadas en la propia web (WOFF2, solo caracteres latinos):
+   cargan más rápido y no envían la IP de los visitantes a Google. */
 @font-face {
     font-family: 'Inter';
     font-style: normal;
     font-weight: 400;
     font-display: swap;
-    src: url('../fonts/Inter-Regular.ttf') format('truetype');
+    src: url('../fonts/Inter-Regular.woff2') format('woff2');
 }
 @font-face {
     font-family: 'Inter';
     font-style: normal;
     font-weight: 500;
     font-display: swap;
-    src: url('../fonts/Inter-Medium.ttf') format('truetype');
+    src: url('../fonts/Inter-Medium.woff2') format('woff2');
 }
 @font-face {
     font-family: 'Inter';
     font-style: normal;
     font-weight: 600;
     font-display: swap;
-    src: url('../fonts/Inter-SemiBold.ttf') format('truetype');
+    src: url('../fonts/Inter-SemiBold.woff2') format('woff2');
 }
 @font-face {
     font-family: 'Inter';
     font-style: normal;
     font-weight: 700;
     font-display: swap;
-    src: url('../fonts/Inter-Bold.ttf') format('truetype');
+    src: url('../fonts/Inter-Bold.woff2') format('woff2');
 }
 
 @font-face {
@@ -37,21 +34,21 @@
     font-style: normal;
     font-weight: 400;
     font-display: swap;
-    src: url('../fonts/Fraunces-Regular.ttf') format('truetype');
+    src: url('../fonts/Fraunces-Regular.woff2') format('woff2');
 }
 @font-face {
     font-family: 'Fraunces';
     font-style: normal;
     font-weight: 600;
     font-display: swap;
-    src: url('../fonts/Fraunces-SemiBold.ttf') format('truetype');
+    src: url('../fonts/Fraunces-SemiBold.woff2') format('woff2');
 }
 @font-face {
     font-family: 'Fraunces';
     font-style: normal;
     font-weight: 700;
     font-display: swap;
-    src: url('../fonts/Fraunces-Bold.ttf') format('truetype');
+    src: url('../fonts/Fraunces-Bold.woff2') format('woff2');
 }
 
 /* Fallback emojis */

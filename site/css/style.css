@@ -384,3 +384,6 @@ body.menu-open{overflow:hidden}
     .emergency .container{flex-direction:column;text-align:center}
     .emergency-left{flex-direction:column}
 }
+
+/* Lo que se oculta desde Ajustes (atributo hidden) no debe volver a verse por otras reglas */
+[hidden]{display:none!important}
