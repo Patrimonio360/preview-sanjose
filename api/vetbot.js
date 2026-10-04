@@ -21,7 +21,23 @@ const { SITE_REPO, setCors, isAllowedOrigin, parseBody, readFile, readSettings }
 const { createAppointment, takenSlots, isEmail } = require('./_booking');
 const { handleMessage } = require('./_vetbot-brain');
 
-const AI_MODELS = ['openrouter/free', 'google/gemma-4-31b-it:free', 'nvidia/nemotron-3-super-120b-a12b:free'];
+// Primero modelos concretos que siguen bien las instrucciones; "openrouter/free"
+// (modelo gratuito al azar) solo como último recurso.
+const AI_MODELS = ['google/gemma-4-31b-it:free', 'nvidia/nemotron-3-super-120b-a12b:free', 'openrouter/free'];
+
+// Algunos modelos gratuitos devuelven su razonamiento interno (en inglés) en
+// lugar de la respuesta. Se quita lo que va entre <think> y se descarta la
+// respuesta si sigue pareciendo razonamiento o no está en español.
+function cleanAIReply(text) {
+  const t = String(text || '').replace(/<think>[\s\S]*?<\/think>/gi, '').replace(/^\s*<\/?think>\s*/gi, '').trim();
+  if (!t) return null;
+  if (/thinking process|analy[sz]e (the )?(user|request|input)|user (asks|is asking|wants)|\*\*(analy|draft|check|plan|step)|^(let me|here'?s|first,|the user)\b/i.test(t)) return null;
+  const words = t.toLowerCase().match(/[a-záéíóúñü]+/g) || [];
+  const es = words.filter(function (w) { return /^(el|la|los|las|de|que|y|en|un|una|para|con|por|tu|te|su|es|no|lo|al|del|se|si|más|puedes|clínica|veterinario)$/.test(w); }).length;
+  const en = words.filter(function (w) { return /^(the|and|is|to|of|you|your|it|this|that|for|with|we|i|user|should|will)$/.test(w); }).length;
+  if (en > es) return null;
+  return t;
+}
 const AI_TIMEOUT_MS = 20000;
 
 // Los datos de la web cambian poco: se guardan un minuto para no pedirlos a
@@ -64,7 +80,7 @@ async function askAI(messages) {
           'HTTP-Referer': 'https://vetbot.pro',
           'X-Title': 'VetBot Pro'
         },
-        body: JSON.stringify({ model: model, messages: messages, max_tokens: 400, temperature: 0.5 })
+        body: JSON.stringify({ model: model, messages: messages, max_tokens: 400, temperature: 0.4, reasoning: { exclude: true } })
       });
       if (!res.ok) {
         console.error('vetbot ai', model, res.status, (await res.text()).slice(0, 200));
@@ -72,7 +88,9 @@ async function askAI(messages) {
       }
       const data = await res.json();
       const text = data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
-      if (text && text.trim()) return text;
+      const clean = cleanAIReply(text);
+      if (clean) return clean;
+      console.error('vetbot ai', model, 'respuesta descartada:', String(text || '').slice(0, 80));
     } catch (e) {
       console.error('vetbot ai', model, e.message);
     } finally {

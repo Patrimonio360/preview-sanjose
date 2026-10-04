@@ -391,8 +391,9 @@ function systemPrompt(ctx) {
     + 'Servicios:\n' + services + '\n'
     + (faq ? '\nINFORMACIÓN ADICIONAL DE LA CLÍNICA\n' + faq + '\n' : '')
     + '\nREGLAS\n'
-    + '- Responde en español, breve (máximo 4-5 frases), amable y profesional. Usa emojis con moderación.\n'
-    + '- NUNCA des precios. Si preguntan, di que el precio depende de cada caso y que lo consulten con la clínica al ' + ctx.clinic.phone + '.\n'
+    + '- Tu misión principal es conseguir citas. Responde las dudas generales de forma breve y, cuando encaje, invita a pedir cita escribiendo "cita".\n'
+    + '- Responde SIEMPRE en español, breve (máximo 4-5 frases), amable y profesional. Usa emojis con moderación. Escribe solo la respuesta para el cliente, sin explicar tu razonamiento.\n'
+    + '- NUNCA hables de precios, ni aproximados ni comparativos. Para cualquier precio, di que deben llamar a la clínica al ' + ctx.clinic.phone + '.\n'
     + '- NUNCA inventes diagnósticos, medicamentos, dosis ni tratamientos. Ante síntomas, recomienda una consulta con el veterinario.\n'
     + '- Para vacunas, di que el veterinario valorará el protocolo adecuado para cada mascota.\n'
     + '- Urgencias: la clínica no atiende urgencias fuera de su horario. Si la mascota está grave y la clínica está cerrada, recomienda acudir a una clínica de urgencias 24 horas cercana.\n'
@@ -424,7 +425,23 @@ function basicAnswer(ctx, text) {
   return null;
 }
 
+// Precios: el bot nunca los da; para eso hay que llamar a la clínica. Va
+// antes que las respuestas del panel para que ninguna hable de precios.
+const PRICE_QUESTION = /\b(precio|precios|cuanto (cuesta|vale|sale|cobrais|es)|coste|costo|tarifa|presupuesto|cuanto me cobr|barato|caro)/;
+
+function priceAnswer(ctx, text) {
+  if (!PRICE_QUESTION.test(norm(text))) return null;
+  return {
+    reply: 'Los precios dependen de cada caso y de lo que necesite tu mascota, así que no los damos por aquí. 🙏 Para cualquier precio, llama a la clínica al ' + ctx.clinic.phone + ' y te informan.\n\nSi quieres, te ayudo ahora a pedir cita.',
+    options: ['Pedir cita'],
+    state: null,
+    via: 'precio'
+  };
+}
+
 async function freeAnswer(ctx, text, history) {
+  const price = priceAnswer(ctx, text);
+  if (price) return price;
   const faq = faqAnswer(ctx, text) || basicAnswer(ctx, text);
   if (faq) return { reply: faq, state: null, via: 'faq' };
 
