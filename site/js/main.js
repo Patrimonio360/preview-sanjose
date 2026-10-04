@@ -1,42 +1,7 @@
-// Cart System
-let cart=JSON.parse(localStorage.getItem('vetCart'))||[];
-const cartBtn=document.getElementById('cartBtn');
-const cartBadge=document.getElementById('cartBadge');
-const cartOverlay=document.getElementById('cartOverlay');
-const cartSidebar=document.getElementById('cartSidebar');
-const cartClose=document.getElementById('cartClose');
-const cartItems=document.getElementById('cartItems');
-const cartEmpty=document.getElementById('cartEmpty');
-const cartFooter=document.getElementById('cartFooter');
-const cartTotal=document.getElementById('cartTotal');
-const checkoutBtn=document.getElementById('checkoutBtn');
-const continueBtn=document.getElementById('continueBtn');
-
-function saveCart(){localStorage.setItem('vetCart',JSON.stringify(cart))}
-function updateBadge(){const t=cart.reduce((s,i)=>s+i.qty,0);cartBadge.textContent=t;cartBadge.classList.toggle('show',t>0)}
-function renderCart(){
-    if(cart.length===0){cartEmpty.style.display='block';cartFooter.style.display='none';cartItems.innerHTML='';cartItems.appendChild(cartEmpty);return}
-    cartEmpty.style.display='none';cartFooter.style.display='block';cartItems.innerHTML='';
-    cart.forEach(item=>{const el=document.createElement('div');el.className='cart-item';el.innerHTML=`<div class="cart-item-img"><img src="${item.img}" alt="${item.name}"></div><div class="cart-item-info"><div class="cart-item-brand">${item.brand}</div><div class="cart-item-name">${item.name}</div><div class="cart-item-price">${(item.price*item.qty).toFixed(2)}€</div><div class="cart-item-controls"><div class="cart-qty"><button onclick="changeQty(${item.id},-1)">−</button><span>${item.qty}</span><button onclick="changeQty(${item.id},1)">+</button></div><button class="cart-remove" onclick="removeItem(${item.id})">Eliminar</button></div></div>`;cartItems.appendChild(el)});
-    cartTotal.textContent=cart.reduce((s,i)=>s+i.price*i.qty,0).toFixed(2)+'€';
-}
-function addToCart(id,brand,name,price,img){const e=cart.find(i=>i.id===id);if(e)e.qty++;else cart.push({id,brand,name,price:parseFloat(price),img,qty:1});saveCart();updateBadge();renderCart();openCart()}
-function changeQty(id,d){const i=cart.find(x=>x.id===id);if(i){i.qty+=d;if(i.qty<=0)cart=cart.filter(x=>x.id!==id);saveCart();updateBadge();renderCart()}}
-function removeItem(id){cart=cart.filter(i=>i.id!==id);saveCart();updateBadge();renderCart()}
-function openCart(){cartOverlay.classList.add('active');cartSidebar.classList.add('active');document.body.style.overflow='hidden'}
-function closeCart(){cartOverlay.classList.remove('active');cartSidebar.classList.remove('active');document.body.style.overflow=''}
-
-cartBtn.addEventListener('click',openCart);
-cartOverlay.addEventListener('click',closeCart);
-cartClose.addEventListener('click',closeCart);
-if(continueBtn)continueBtn.addEventListener('click',closeCart);
-
-// WhatsApp checkout — loads phone from settings
+// Ajustes de la clínica (WhatsApp y horario para el asistente)
 let clinicPhone='34955321470';
-fetch('_data/settings.json?t='+Date.now()).then(function(r){return r.json()}).then(function(s){if(s.whatsapp)clinicPhone=s.whatsapp}).catch(function(){});
-if(checkoutBtn)checkoutBtn.addEventListener('click',()=>{const total=cart.reduce((s,i)=>s+i.price*i.qty,0).toFixed(2);window.open('https://wa.me/'+clinicPhone+'?text=Hola,%20me%20interesan%20estos%20productos%20de%20la%20tienda%20(%20'+total+'%20%E2%82%AC).%20%C2%BFPod%C3%A9is%20confirmarme%20disponibilidad?','_blank');closeCart()});
-
-document.querySelectorAll('.store-btn').forEach(btn=>{btn.addEventListener('click',function(){const i=this.closest('.store-item');const{id,brand,name,price,img}=i.dataset;addToCart(parseInt(id),brand,name,price,img);this.textContent='✓ Añadido';this.style.background='#2D6B45';setTimeout(()=>{this.textContent='Añadir al carrito';this.style.background=''},1500)})});
+let clinicSettings={};
+fetch('_data/settings.json?t='+Date.now()).then(function(r){return r.json()}).then(function(s){clinicSettings=s;if(s.whatsapp)clinicPhone=s.whatsapp}).catch(function(){});
 
 // Nav scroll effect
 window.addEventListener('scroll',()=>{document.getElementById('mainNav').classList.toggle('scrolled',window.scrollY>50)},{passive:true});
@@ -44,8 +9,17 @@ window.addEventListener('scroll',()=>{document.getElementById('mainNav').classLi
 // Mobile nav
 const navToggle=document.getElementById('navToggle');
 const navLinks=document.getElementById('navLinks');
-if(navToggle)navToggle.addEventListener('click',()=>navLinks.classList.toggle('active'));
-document.querySelectorAll('.nav-links a').forEach(a=>a.addEventListener('click',()=>navLinks.classList.remove('active')));
+function setMenu(open){
+    if(!navLinks||!navToggle)return;
+    navLinks.classList.toggle('active',open);
+    navToggle.setAttribute('aria-expanded',open?'true':'false');
+    navToggle.setAttribute('aria-label',open?'Cerrar menú':'Abrir menú');
+    document.body.classList.toggle('menu-open',open);
+}
+if(navToggle)navToggle.addEventListener('click',()=>setMenu(!navLinks.classList.contains('active')));
+document.querySelectorAll('.nav-links a').forEach(a=>a.addEventListener('click',()=>setMenu(false)));
+document.addEventListener('keydown',e=>{if(e.key==='Escape')setMenu(false)});
+window.addEventListener('resize',()=>{if(window.innerWidth>1100)setMenu(false)});
 
 // Intersection Observer
 const ro=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('visible');ro.unobserve(x.target)}})},{threshold:.12,rootMargin:'0px 0px -30px 0px'});
@@ -72,9 +46,6 @@ if(cf)cf.addEventListener('submit',function(e){
   b.textContent='✓ Abriendo WhatsApp...';b.style.background='#2D6B45';
   setTimeout(()=>{b.textContent=o;b.style.background='';this.reset()},3000);
 });
-
-// Store tabs
-document.querySelectorAll('.store-tab').forEach(t=>t.addEventListener('click',function(){document.querySelectorAll('.store-tab').forEach(b=>b.classList.remove('active'));this.classList.add('active');const c=this.dataset.cat;document.querySelectorAll('.store-item').forEach(i=>{i.style.display=(c==='todos'||i.dataset.cat===c)?'':'none'})}));
 
 // ========================
 // MODERN FEATURES v2.0
@@ -121,11 +92,6 @@ document.querySelectorAll('a[href$=".html"]').forEach(link=>{
     });
 });
 
-// DARK MODE TOGGLE (system preference)
-if(window.matchMedia('(prefers-color-scheme:dark)').matches){
-    document.documentElement.classList.add('dark');
-}
-
 // LAZY LOAD VIDEO ON MOBILE
 const heroVideo=document.getElementById('heroVideo');
 if(heroVideo&&window.innerWidth<768){
@@ -147,9 +113,10 @@ let lastScroll=0;
 window.addEventListener('scroll',()=>{
     const nav=document.getElementById('mainNav');
     const st=window.scrollY;
-    if(st>100){nav.style.background=nav.style.background||'rgba(255,255,255,.97)'}
-    if(st>lastScroll&&st>200){nav.style.transform='translateY(-100%)'}
-    else{nav.style.transform='translateY(0)'}
+    // Con el menú abierto la barra no se esconde. Sin transform cuando está visible:
+    // un transform haría que el menú (position:fixed) quedara encerrado en la barra.
+    if(st>lastScroll&&st>200&&!document.body.classList.contains('menu-open')){nav.style.transform='translateY(-100%)'}
+    else{nav.style.transform=''}
     lastScroll=st;
 },{passive:true});
 
@@ -199,6 +166,14 @@ fetch('_data/chatbot/index.json?t='+Date.now())
     .then(function(data){vetbotData=data})
     .catch(function(){vetbotData={}});
 
+// Marcas que se pueden usar en las respuestas del asistente (panel → VetBot):
+// {horario} = horario actual del panel, {estado} = abierto/cerrado ahora.
+function fillVetBotText(text){
+    const hours=window.ClinicSchedule?ClinicSchedule.groups(clinicSettings).map(g=>g.days+': '+(g.closed?'cerrado':g.hours)).join('; '):'';
+    const state=window.ClinicSchedule?ClinicSchedule.status(clinicSettings).text:'';
+    return String(text).replace(/{horario}/g,hours).replace(/{estado}/g,state);
+}
+
 function getVetBotResponse(msg){
     const lower=msg.toLowerCase();
     // Check loaded chatbot responses
@@ -207,7 +182,7 @@ function getVetBotResponse(msg){
             var r=vetbotData.responses[i];
             var kws=r.keywords.toLowerCase().split(',').map(function(s){return s.trim()});
             for(var j=0;j<kws.length;j++){
-                if(lower.includes(kws[j]))return r.response;
+                if(lower.includes(kws[j]))return fillVetBotText(r.response);
             }
         }
     }
@@ -216,7 +191,13 @@ function getVetBotResponse(msg){
     if(lower.includes('hola')||lower.includes('buenas'))return '¡Hola! Soy el asistente virtual de la Clínica Veterinaria San José. ¿En qué puedo ayudarte?';
     if(lower.includes('vacuna')||lower.includes('vacunación'))return 'La vacunación es esencial. Ofrecemos planes de vacunación adaptados a cada mascota. ¿Tienes perro o gato?';
     if(lower.includes('precio')||lower.includes('coste')||lower.includes('cuánto'))return 'Nuestros precios son muy competitivos. ¿Te gustaría saber el precio de algún servicio en concreto?';
-    if(lower.includes('horario')||lower.includes('hora')||lower.includes('cuándo'))return 'Nuestro horario es: Lunes a Viernes de 10:00 a 21:00 y Sábados de 10:00 a 13:30.';
+    if(lower.includes('horario')||lower.includes('hora')||lower.includes('cuándo')||lower.includes('abierto')){
+        if(window.ClinicSchedule){
+            const lines=ClinicSchedule.groups(clinicSettings).map(g=>g.days+': '+(g.closed?'cerrado':g.hours));
+            return 'Nuestro horario es: '+lines.join('; ')+'. '+ClinicSchedule.status(clinicSettings).text+'.';
+        }
+        return 'Puedes consultar nuestro horario en la página de contacto.';
+    }
     if(lower.includes('urgencia')||lower.includes('emergencia')||lower.includes('24h')||lower.includes('noche'))return 'Para urgencias fuera de horario, llama al '+clinicPhone.replace(/\s/g,'')+' y te redirigimos al servicio de guardia correspondiente.';
     return 'Gracias por tu interés. Un miembro de nuestro equipo te atenderá pronto. ¿Hay algo más en lo que pueda ayudarte?';
 }
@@ -261,4 +242,3 @@ function sendVetBotMsg(){
 if(vetbotSend)vetbotSend.addEventListener('click',sendVetBotMsg);
 if(vetbotInput)vetbotInput.addEventListener('keydown',function(e){if(e.key==='Enter')sendVetBotMsg()});
 
-updateBadge();renderCart();

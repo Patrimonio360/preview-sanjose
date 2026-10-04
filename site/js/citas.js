@@ -1,45 +1,43 @@
 (function() {
   function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
-  var services = [];
-  var selectedDate = null;
-  var selectedTime = null;
-  var currentMonth = new Date().getMonth();
-  var currentYear = new Date().getFullYear();
 
-
+  var API = 'https://preview-sanjose.vercel.app/api';
   var MONTHS = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
   var DAYNAMES = ['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
 
+  var settings = {};
+  var selectedDate = null;   // 'YYYY-MM-DD'
+  var selectedTime = null;
+  var takenSlots = [];
+  var slotsRequest = 0;
 
-  // Clinic hours: L-V 10-21, Sáb 10-13:30
-  function getSlotsForDay(date) {
-    var day = date.getDay(); // 0=Sun, 6=Sat
-    var slots = [];
-    if (day === 0) return slots; // Sunday closed
-    if (day === 6) {
-      // Saturday 10:00-13:30
-      for (var h = 10; h < 14; h++) {
-        slots.push(h + ':00');
-        if (h < 13) slots.push(h + ':30');
-      }
-    } else {
-      // Monday-Friday 10:00-21:00
-      for (var h = 10; h < 21; h++) {
-        slots.push(h + ':00');
-        slots.push(h + ':30');
-      }
-    }
-    return slots;
+  var today = ClinicSchedule.madridNow().date;
+  var lastDay = ClinicSchedule.addDays(today, ClinicSchedule.MAX_DAYS_AHEAD);
+  var currentYear = +today.slice(0, 4);
+  var currentMonth = +today.slice(5, 7) - 1;
+
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+  function ymd(y, m, d) { return y + '-' + pad(m + 1) + '-' + pad(d); }
+  function monthKey(dateStr) { return dateStr.slice(0, 7); }
+
+  function displayDate(dateStr) {
+    var p = dateStr.split('-');
+    return +p[2] + ' de ' + MONTHS[+p[1] - 1].toLowerCase() + ' de ' + p[0];
   }
 
 
-  // Load services
+  // Ajustes de la clínica (horario, email…) y servicios
+  fetch('_data/settings.json?t=' + Date.now())
+    .then(function(r) { return r.json(); })
+    .then(function(s) { settings = s; })
+    .catch(function() {})
+    .then(renderCalendar);
+
   fetch('_data/services.json?t=' + Date.now())
     .then(function(r) { return r.json(); })
     .then(function(data) {
-      services = data.services || [];
       var sel = document.getElementById('bookService');
-      services.forEach(function(s) {
+      (data.services || []).forEach(function(s) {
         var opt = document.createElement('option');
         opt.value = s.name;
         opt.textContent = (s.icon || '') + ' ' + s.name;
@@ -49,66 +47,64 @@
     .catch(function() {});
 
 
-  // Render calendar
+  // Calendario
   function renderCalendar() {
     var grid = document.getElementById('calGrid');
-    var monthLabel = document.getElementById('calMonth');
-    monthLabel.textContent = MONTHS[currentMonth] + ' ' + currentYear;
+    document.getElementById('calMonth').textContent = MONTHS[currentMonth] + ' ' + currentYear;
 
+    var shown = ymd(currentYear, currentMonth, 1);
+    document.getElementById('calPrev').disabled = monthKey(shown) <= monthKey(today);
+    document.getElementById('calNext').disabled = monthKey(shown) >= monthKey(lastDay);
 
-    var firstDay = new Date(currentYear, currentMonth, 1);
-    var lastDay = new Date(currentYear, currentMonth + 1, 0);
-    var startDay = (firstDay.getDay() + 6) % 7; // Monday=0
-    var today = new Date();
-    today.setHours(0,0,0,0);
-
+    var daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+    var startDay = (new Date(currentYear, currentMonth, 1).getDay() + 6) % 7; // lunes = 0
 
     var html = '';
-    DAYNAMES.forEach(function(d) {
-      html += '<div class="calendar-dayname">' + d + '</div>';
-    });
+    DAYNAMES.forEach(function(d) { html += '<div class="calendar-dayname">' + d + '</div>'; });
+    for (var i = 0; i < startDay; i++) html += '<div class="calendar-day empty"></div>';
 
-
-    // Empty cells before first day
-    for (var i = 0; i < startDay; i++) {
-      html += '<div class="calendar-day empty"></div>';
-    }
-
-
-    // Day cells
-    for (var d = 1; d <= lastDay.getDate(); d++) {
-      var date = new Date(currentYear, currentMonth, d);
-      var isPast = date < today;
-      var isSunday = date.getDay() === 0;
-      var isToday = date.getTime() === today.getTime();
-      var isSelected = selectedDate && date.getTime() === selectedDate.getTime();
+    for (var d = 1; d <= daysInMonth; d++) {
+      var date = ymd(currentYear, currentMonth, d);
       var cls = 'calendar-day';
-      if (isPast || isSunday) cls += ' disabled';
-      if (isToday) cls += ' today';
-      if (isSelected) cls += ' selected';
-      html += '<div class="' + cls + '" data-date="' + currentYear + '-' + String(currentMonth+1).padStart(2,'0') + '-' + String(d).padStart(2,'0') + '">' + d + '</div>';
+      if (!ClinicSchedule.isBookableDay(date, settings)) cls += ' disabled';
+      if (date === today) cls += ' today';
+      if (date === selectedDate) cls += ' selected';
+      html += '<div class="' + cls + '" data-date="' + date + '">' + d + '</div>';
     }
-
-
     grid.innerHTML = html;
 
-
-    // Bind clicks
     grid.querySelectorAll('.calendar-day:not(.disabled):not(.empty)').forEach(function(el) {
       el.addEventListener('click', function() {
-        var parts = el.dataset.date.split('-');
-        selectedDate = new Date(parseInt(parts[0]), parseInt(parts[1])-1, parseInt(parts[2]));
+        selectedDate = el.dataset.date;
         selectedTime = null;
-        document.getElementById('bookDate').value = el.dataset.date;
+        document.getElementById('bookDate').value = displayDate(selectedDate);
         document.getElementById('bookTime').value = '';
         renderCalendar();
-        renderTimeSlots();
+        loadTakenSlots();
       });
     });
   }
 
+  // Horas ya reservadas del día elegido (solo horas, sin datos de clientes)
+  function loadTakenSlots() {
+    var request = ++slotsRequest;
+    takenSlots = [];
+    renderTimeSlots(true);
+    fetch(API + '/availability', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ date: selectedDate })
+    })
+      .then(function(r) { return r.ok ? r.json() : { taken: [] }; })
+      .catch(function() { return { taken: [] }; })
+      .then(function(out) {
+        if (request !== slotsRequest) return; // el usuario ya eligió otro día
+        takenSlots = out.taken || [];
+        renderTimeSlots(false);
+      });
+  }
 
-  function renderTimeSlots() {
+  function renderTimeSlots(loading) {
     var title = document.getElementById('timeslotsTitle');
     var grid = document.getElementById('timeslotsGrid');
     if (!selectedDate) {
@@ -117,30 +113,33 @@
       return;
     }
     title.style.display = '';
-    var slots = getSlotsForDay(selectedDate);
-    var html = '';
-    slots.forEach(function(s) {
-      var cls = 'timeslot';
-      if (s === selectedTime) cls += ' selected';
-      html += '<div class="' + cls + '" data-time="' + s + '">' + s + '</div>';
-    });
-    if (slots.length === 0) {
-      html = '<div style="grid-column:1/-1;text-align:center;color:var(--gray-400);padding:20px">Cerrado este día</div>';
+    if (loading) {
+      grid.innerHTML = '<div class="timeslots-note">Consultando horas libres…</div>';
+      return;
     }
-    grid.innerHTML = html;
 
+    var slots = ClinicSchedule.slotsFor(selectedDate, settings);
+    var free = slots.filter(function(s) { return takenSlots.indexOf(s) === -1; });
+    if (!free.length) {
+      grid.innerHTML = '<div class="timeslots-note">No quedan horas libres este día. Elige otra fecha.</div>';
+      return;
+    }
+    grid.innerHTML = slots.map(function(s) {
+      var cls = 'timeslot';
+      if (takenSlots.indexOf(s) !== -1) cls += ' taken';
+      if (s === selectedTime) cls += ' selected';
+      return '<div class="' + cls + '" data-time="' + s + '">' + s + '</div>';
+    }).join('');
 
-    grid.querySelectorAll('.timeslot').forEach(function(el) {
+    grid.querySelectorAll('.timeslot:not(.taken)').forEach(function(el) {
       el.addEventListener('click', function() {
         selectedTime = el.dataset.time;
         document.getElementById('bookTime').value = selectedTime;
-        renderTimeSlots();
+        renderTimeSlots(false);
       });
     });
   }
 
-
-  // Navigation
   document.getElementById('calPrev').addEventListener('click', function() {
     currentMonth--;
     if (currentMonth < 0) { currentMonth = 11; currentYear--; }
@@ -153,74 +152,64 @@
   });
 
 
-  // Form submit
+  // Envío del formulario
   document.getElementById('bookingForm').addEventListener('submit', function(e) {
     e.preventDefault();
     if (!selectedDate || !selectedTime) {
-      alert('Por favor, selecciona una fecha y hora.');
+      alert('Por favor, selecciona una fecha y una hora en el calendario.');
       return;
     }
 
-
     var btn = document.getElementById('bookSubmit');
     btn.disabled = true;
-    btn.textContent = 'Reservando...';
-
-
-    var dateStr = selectedDate.getFullYear() + '-' + String(selectedDate.getMonth()+1).padStart(2,'0') + '-' + String(selectedDate.getDate()).padStart(2,'0');
-    var dateDisplay = selectedDate.getDate() + ' de ' + MONTHS[selectedDate.getMonth()] + ' ' + selectedDate.getFullYear();
-
+    btn.textContent = 'Enviando...';
 
     var appointment = {
-      id: Date.now(),
       service: document.getElementById('bookService').value,
-      date: dateStr,
+      date: selectedDate,
       time: selectedTime,
-      patientName: document.getElementById('bookName').value,
-      patientPhone: document.getElementById('bookPhone').value,
-      patientEmail: document.getElementById('bookEmail').value,
-      message: document.getElementById('bookMessage').value,
-      status: 'pending',
-      createdAt: new Date().toISOString()
+      patientName: document.getElementById('bookName').value.trim(),
+      patientPhone: document.getElementById('bookPhone').value.trim(),
+      patientEmail: document.getElementById('bookEmail').value.trim(),
+      message: document.getElementById('bookMessage').value.trim(),
+      website: document.getElementById('bookWebsite').value // campo trampa para robots
     };
 
-
-    // Guardar la cita en el servidor (Vercel). El servidor avisa por email a
-    // la clínica (al email de Ajustes del panel) y al cliente.
-    saveAppointment(appointment)
-      .then(function(result) {
-        if (result.status === 409) {
-          alert('Lo sentimos, esa hora acaba de ser reservada por otra persona. Por favor, elige otra hora.');
-          resetButton();
-          return;
-        }
-        if (!result.ok) {
-          alert('No hemos podido registrar tu cita en este momento. Inténtalo de nuevo en unos minutos o llámanos por teléfono.');
-          resetButton();
-          return;
-        }
-        notifyClinic(appointment, dateDisplay);
-        showSuccess(appointment, dateDisplay);
-      });
+    saveAppointment(appointment).then(function(result) {
+      if (result.status === 409) {
+        alert('Lo sentimos, esa hora acaba de ser reservada por otra persona. Por favor, elige otra hora.');
+        resetButton();
+        selectedTime = null;
+        document.getElementById('bookTime').value = '';
+        loadTakenSlots();
+        return;
+      }
+      if (!result.ok) {
+        alert(result.error || 'No hemos podido registrar tu cita en este momento. Inténtalo de nuevo en unos minutos o llámanos por teléfono.');
+        resetButton();
+        return;
+      }
+      notifyClinic(appointment);
+      showSuccess(appointment);
+    });
 
     function resetButton() {
       btn.disabled = false;
-      btn.textContent = 'Reservar cita';
+      btn.textContent = 'Solicitar cita';
     }
   });
 
-
-  var BOOKING_API = 'https://preview-sanjose.vercel.app/api/book-appointment';
-
-  // Devuelve { ok, status } y nunca lanza error.
+  // Devuelve { ok, status, error } y nunca lanza error.
   function saveAppointment(appt) {
-    return fetch(BOOKING_API, {
+    return fetch(API + '/book-appointment', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(appt)
     })
       .then(function(r) {
-        return { ok: r.ok, status: r.status };
+        return r.json().catch(function() { return {}; }).then(function(out) {
+          return { ok: r.ok, status: r.status, error: out.error };
+        });
       })
       .catch(function(err) {
         console.error('Error guardando la cita:', err);
@@ -229,45 +218,40 @@
   }
 
 
-  // Aviso por email a la clínica con Web3Forms. Web3Forms entrega siempre al
-  // email con el que se creó la clave, así que la clave debe crearse en
-  // web3forms.com con el email de la clínica. Vacía = aviso desactivado.
-  var CLINIC_NOTIFY_KEY = '';
-
-  function notifyClinic(appt, dateDisplay) {
-    if (!CLINIC_NOTIFY_KEY) return;
-    fetch('https://api.web3forms.com/submit', {
+  // Aviso por email a la clínica (al email de Ajustes del panel) con
+  // FormSubmit. La primera vez FormSubmit envía a ese email un mensaje para
+  // activar el aviso; tras pulsar "Activate" llegan todas las reservas.
+  function notifyClinic(appt) {
+    var to = settings.email;
+    if (!to) return;
+    fetch('https://formsubmit.co/ajax/' + encodeURIComponent(to), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
       body: JSON.stringify({
-        access_key: CLINIC_NOTIFY_KEY,
-        subject: 'Nueva cita solicitada: ' + appt.patientName,
-        from_name: 'Web de la clínica',
-        replyto: appt.patientEmail,
-        message: 'Nueva solicitud de cita desde la web:\n\n'
-          + 'Cliente: ' + appt.patientName + '\n'
-          + 'Teléfono: ' + appt.patientPhone + '\n'
-          + 'Email: ' + appt.patientEmail + '\n'
-          + 'Servicio: ' + appt.service + '\n'
-          + 'Fecha: ' + dateDisplay + '\n'
-          + 'Hora: ' + appt.time + '\n'
-          + (appt.message ? 'Mensaje: ' + appt.message + '\n' : '')
-          + '\nLa cita está como Pendiente en el panel de administración. '
-          + 'Desde allí puedes confirmarla y avisar al cliente por WhatsApp.',
-        botcheck: ''
+        _subject: 'Nueva solicitud de cita: ' + appt.patientName + ' — ' + displayDate(appt.date) + ' ' + appt.time,
+        _template: 'table',
+        _replyto: appt.patientEmail,
+        Cliente: appt.patientName,
+        'Teléfono': appt.patientPhone,
+        Email: appt.patientEmail,
+        Servicio: appt.service,
+        Fecha: displayDate(appt.date),
+        Hora: appt.time,
+        Mensaje: appt.message || '—',
+        'Qué hacer': 'Entra en el panel de administración, apartado Citas, para confirmarla o proponer otra hora.'
       })
     }).catch(function(err) { console.error('Aviso a la clínica no enviado:', err); });
   }
 
 
-  function showSuccess(appointment, dateDisplay) {
+  function showSuccess(appointment) {
     var summary = document.getElementById('bookingSummary');
     if (summary) {
       summary.innerHTML = ''
         + '<div style="margin-bottom:12px;font-weight:600;color:var(--forest);font-size:15px">Resumen de tu solicitud:</div>'
         + '<div style="display:grid;grid-template-columns:auto 1fr;gap:6px 16px">'
         + '<div style="font-weight:600;color:var(--gray-500)">Servicio:</div><div>' + esc(appointment.service) + '</div>'
-        + '<div style="font-weight:600;color:var(--gray-500)">Fecha:</div><div>' + dateDisplay + '</div>'
+        + '<div style="font-weight:600;color:var(--gray-500)">Fecha:</div><div>' + displayDate(appointment.date) + '</div>'
         + '<div style="font-weight:600;color:var(--gray-500)">Hora:</div><div>' + esc(appointment.time) + '</div>'
         + '<div style="font-weight:600;color:var(--gray-500)">Nombre:</div><div>' + esc(appointment.patientName) + '</div>'
         + '<div style="font-weight:600;color:var(--gray-500)">Teléfono:</div><div>' + esc(appointment.patientPhone) + '</div>'
@@ -276,9 +260,9 @@
         + (appointment.message ? '<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--gray-200)"><div style="font-weight:600;color:var(--gray-500);margin-bottom:4px">Mensaje:</div><div style="font-style:italic;color:var(--gray-600)">' + esc(appointment.message) + '</div></div>' : '');
     }
 
-    var emailNote = document.getElementById('bookingEmailNote');
-    if (emailNote) {
-      emailNote.innerHTML = 'Te escribiremos al <strong>' + esc(appointment.patientPhone) + '</strong> para confirmarla.';
+    var note = document.getElementById('bookingEmailNote');
+    if (note) {
+      note.innerHTML = 'Te escribiremos a <strong>' + esc(appointment.patientEmail) + '</strong> o al <strong>' + esc(appointment.patientPhone) + '</strong> (revisa también la carpeta de spam).';
     }
 
     document.getElementById('bookingForm').style.display = 'none';
@@ -288,7 +272,6 @@
   }
 
 
-  // Init
   renderCalendar();
-  renderTimeSlots();
+  renderTimeSlots(false);
 })();

@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light">
     <title>Política de Privacidad | Clínica Veterinaria San José</title>
     <meta name="robots" content="noindex">
     <link rel="stylesheet" href="css/fonts.css">
@@ -16,9 +17,17 @@
             <li><a href="index.html">Inicio</a></li>
             <li><a href="nosotros.html">Nosotros</a></li>
             <li><a href="servicios.html">Servicios</a></li>
+            <li><a href="planes.html">Planes</a></li>
+            <li><a href="citas.html">Citas</a></li>
+            <li data-store-link><a href="tienda.html">Tienda</a></li>
+            <li><a href="galeria.html">Galería</a></li>
+            <li><a href="resenas.html">Reseñas</a></li>
             <li><a href="contacto.html">Contacto</a></li>
+            <li><a href="tel:955321470" class="nav-cta">☎ 955 321 470</a></li>
         </ul>
-        <div class="nav-right"><button class="nav-toggle" id="navToggle" aria-label="Menú"><span></span><span></span><span></span></button></div>
+        <div class="nav-right">
+            <button class="nav-toggle" id="navToggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="navLinks"><span></span><span></span><span></span></button>
+        </div>
     </div>
 </nav>
 
@@ -35,7 +44,7 @@
         <p style="margin-bottom:24px;color:var(--gray700);line-height:1.8">Clínica Veterinaria San José (en adelante, "la Clínica"), con domicilio en Avda. San José, 173, 41300 San José de La Rinconada, Sevilla, es la responsable del tratamiento de los datos personales de los usuarios.</p>
 
         <h2 style="margin-bottom:16px">2. Datos que recogemos</h2>
-        <p style="margin-bottom:24px;color:var(--gray700);line-height:1.8">A través de nuestro formulario de contacto, recogemos los siguientes datos: nombre, dirección de correo electrónico, número de teléfono y cualquier otra información que el usuario proporcione voluntariamente en el mensaje.</p>
+        <p style="margin-bottom:24px;color:var(--gray700);line-height:1.8">A través de nuestros formularios de contacto y de solicitud de cita, recogemos los siguientes datos: nombre, dirección de correo electrónico, número de teléfono y cualquier otra información que el usuario proporcione voluntariamente en el mensaje.</p>
 
         <h2 style="margin-bottom:16px">3. Finalidad del tratamiento</h2>
         <p style="margin-bottom:24px;color:var(--gray700);line-height:1.8">Los datos personales se utilizan exclusivamente para: atender las consultas y solicitudes de citas formuladas por el usuario, gestionar la relación comercial y prestar los servicios veterinarios contratados.</p>
@@ -47,7 +56,7 @@
         <p style="margin-bottom:24px;color:var(--gray700);line-height:1.8">Los datos se conservarán durante el tiempo necesario para atender la solicitud y, posteriormente, durante los plazos legales aplicables (máximo 5 años para obligaciones contables y fiscales).</p>
 
         <h2 style="margin-bottom:16px">6. Cesión de datos</h2>
-        <p style="margin-bottom:24px;color:var(--gray700);line-height:1.8">No se cederán datos a terceros, salvo obligación legal. Los datos podrán ser compartidos con proveedores de servicios tecnológicos que actúen como encargados del tratamiento (hosting, email, CRM).</p>
+        <p style="margin-bottom:24px;color:var(--gray700);line-height:1.8">No se cederán datos a terceros, salvo obligación legal. Los datos podrán ser compartidos con proveedores de servicios tecnológicos que actúen como encargados del tratamiento (hosting, email, CRM). En concreto: Vercel Inc. y GitHub Inc. (alojamiento de la web y almacenamiento privado de las solicitudes de cita) y FormSubmit (envío a la Clínica del aviso de nueva cita por email). Si el usuario contacta por WhatsApp, se aplica además la política de privacidad de WhatsApp (Meta).</p>
 
         <h2 style="margin-bottom:16px">7. Derechos del usuario</h2>
         <p style="margin-bottom:24px;color:var(--gray700);line-height:1.8">El usuario puede ejercer sus derechos de acceso, rectificación, supresión, limitación, portabilidad y oposición enviando un email a <a href="mailto:sanjose.clinicaveterinaria@gmail.com" style="color:var(--forest)">sanjose.clinicaveterinaria@gmail.com</a> o por escrito a nuestra dirección postal, adjuntando copia de documento acreditativo.</p>
@@ -56,7 +65,7 @@
         <p style="margin-bottom:24px;color:var(--gray700);line-height:1.8">La Clínica ha implementado las medidas técnicas y organizativas necesarias para garantizar la seguridad de los datos personales y evitar su alteración, pérdida, tratamiento o acceso no autorizado.</p>
 
         <h2 style="margin-bottom:16px">9. Cookies</h2>
-        <p style="margin-bottom:24px;color:var(--gray700);line-height:1.8">Este sitio web no utiliza cookies de rastreo. Se utilizan únicamente cookies técnicas necesarias para el funcionamiento del carrito de compras y la preferencia de modo oscuro del navegador.</p>
+        <p style="margin-bottom:24px;color:var(--gray700);line-height:1.8">Este sitio web no utiliza cookies de rastreo ni de publicidad. Solo se usan elementos técnicos imprescindibles para su funcionamiento, como mantener abierta la sesión del panel de administración de la Clínica.</p>
 
         <h2 style="margin-bottom:16px">10. Contacto</h2>
         <p style="color:var(--gray700);line-height:1.8">Para cualquier consulta sobre esta política de privacidad, puede contactarnos en <a href="mailto:sanjose.clinicaveterinaria@gmail.com" style="color:var(--forest)">sanjose.clinicaveterinaria@gmail.com</a> o llamando al <a href="tel:955321470" style="color:var(--forest)">955 321 470</a>.</p>
@@ -71,6 +80,7 @@
         </div>
     </div>
 </footer>
+<script src="js/schedule.js"></script>
 <script src="js/cms.js"></script>
 <script>CMS.applyColors(); CMS.loadSettings();</script>
 <script src="js/main.js"></script>

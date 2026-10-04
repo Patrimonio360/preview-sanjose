@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light">
     <title>Servicios | Clínica Veterinaria San José</title>
     <meta name="description" content="Consulta, vacunación, cirugía, laboratorio, terapias alternativas y más. Todo lo que tu mascota necesita bajo un mismo techo.">
     <link rel="stylesheet" href="css/fonts.css">
@@ -34,14 +35,14 @@
             <li><a href="servicios.html" class="active">Servicios</a></li>
             <li><a href="planes.html">Planes</a></li>
             <li><a href="citas.html">Citas</a></li>
-            <li><a href="tienda.html">Tienda</a></li>`n            <li><a href="galeria.html">Galería</a></li>
+            <li data-store-link><a href="tienda.html">Tienda</a></li>
+            <li><a href="galeria.html">Galería</a></li>
             <li><a href="resenas.html">Reseñas</a></li>
             <li><a href="contacto.html">Contacto</a></li>
             <li><a href="tel:955321470" class="nav-cta">☎ 955 321 470</a></li>
         </ul>
         <div class="nav-right">
-            <button class="cart-btn" id="cartBtn" aria-label="Carrito"><span class="cart-btn-icon">🛒</span><span class="cart-btn-text">Carrito</span><span class="cart-badge" id="cartBadge">0</span></button>
-            <button class="nav-toggle" id="navToggle" aria-label="Menú"><span></span><span></span><span></span></button>
+            <button class="nav-toggle" id="navToggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="navLinks"><span></span><span></span><span></span></button>
         </div>
     </div>
 </nav>
@@ -58,6 +59,7 @@
     <div class="container" id="svcDetailContainer"></div>
 </section>
 
+<script src="js/schedule.js"></script>
 <script src="js/cms.js"></script>
 <script>CMS.applyColors(); CMS.loadSettings(); CMS.loadPhotos();</script>
 <script>
@@ -75,25 +77,13 @@ fetch('_data/services.json?t='+Date.now())
                     <ul class="svc-detail-list">
                         ${s.features.map(f => `<li>${f}</li>`).join('')}
                     </ul>
-                    <a href="citas.html" class="btn btn-forest">Solicitar cita →’</a>
+                    <a href="citas.html" class="btn btn-forest">Solicitar cita →</a>
                 </div>
             </div>
         `).join('');
     });
 </script>
 
-
-<div class="cart-overlay" id="cartOverlay"></div>
-<div class="cart-sidebar" id="cartSidebar">
-    <div class="cart-header"><h3>🛒 Tu Carrito</h3><button class="cart-close" id="cartClose">✕</button></div>
-    <div class="cart-items" id="cartItems"><div class="cart-empty" id="cartEmpty"><div class="cart-empty-icon">🛒</div><p>Tu carrito está vacío</p></div></div>
-    <div class="cart-footer" id="cartFooter" style="display:none">
-        <div class="cart-subtotal"><span>Subtotal</span><strong id="cartTotal">0.00€</strong></div>
-        <div class="cart-shipping">Envío gratuito en pedidos superiores a 40€</div>
-        <button class="cart-checkout" id="checkoutBtn">Finalizar Compra →’</button>
-        <button class="cart-continue" id="continueBtn">→ Seguir comprando</button>
-    </div>
-</div>
 
 <div class="vetbot-overlay" id="vetbotOverlay">
     <div class="vetbot-modal" id="vetbotModal">
@@ -108,7 +98,7 @@ fetch('_data/services.json?t='+Date.now())
             </div>
             <div class="vetbot-input-group">
                 <input type="text" class="vetbot-input" id="vetbotInput" placeholder="Escribe tu mensaje...">
-                <button class="vetbot-send" id="vetbotSend">→’</button>
+                <button class="vetbot-send" id="vetbotSend">→</button>
             </div>
         </div>
     </div>

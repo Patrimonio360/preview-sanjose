@@ -10,13 +10,31 @@ var CMS = (function() {
     white: '#FFF'
   };
 
+  // Colores de un tema: clave en colors.json, variable CSS, nombre en el panel
+  // y valor por defecto (el del tema original).
+  var COLOR_ROLES = [
+    { key: 'navBg',        css: '--nav-bg',       group: 'Barra de menú',   label: 'Fondo de la barra de menú',               def: '#FFFFFF' },
+    { key: 'navTitle',     css: '--nav-title',    group: 'Barra de menú',   label: 'Nombre de la clínica en la barra',        def: '#1A3C2A' },
+    { key: 'navText',      css: '--nav-text',     group: 'Barra de menú',   label: 'Enlaces del menú',                        def: '#3A3A3A' },
+    { key: 'heading',      css: '--heading',      group: 'Textos',          label: 'Títulos de sección',                      def: '#1C1C1C' },
+    { key: 'charcoal',     css: '--charcoal',     group: 'Textos',          label: 'Texto general',                           def: '#1C1C1C' },
+    { key: 'primary',      css: '--forest',       group: 'Marca y botones', label: 'Color principal (marca, botones, iconos)', def: '#1A3C2A' },
+    { key: 'primaryLight', css: '--forest-light', group: 'Marca y botones', label: 'Color principal al pasar el ratón',       def: '#2D6B45' },
+    { key: 'coral',        css: '--coral',        group: 'Marca y botones', label: 'Botones destacados (Pedir cita, teléfono)', def: '#D4764E' },
+    { key: 'coralDark',    css: '--coral-dark',   group: 'Marca y botones', label: 'Botones destacados al pasar el ratón',    def: '#B85E3A' },
+    { key: 'sage',         css: '--sage',         group: 'Marca y botones', label: 'Detalles y etiquetas',                    def: '#6B9B7A' },
+    { key: 'cream',        css: '--cream',        group: 'Fondos',          label: 'Fondo de la página',                      def: '#FBF9F5' },
+    { key: 'white',        css: '--white',        group: 'Fondos',          label: 'Fondo de tarjetas y recuadros',           def: '#FFFFFF' },
+    { key: 'footerBg',     css: '--footer-bg',    group: 'Pie de página',   label: 'Fondo del pie de página',                 def: '#1C1C1C' },
+    { key: 'footerText',   css: '--footer-text',  group: 'Pie de página',   label: 'Texto del pie de página',                 def: '#FFFFFF' }
+  ];
+
   function applyColors() {
     return fetch('_data/colors.json?t=' + Date.now())
       .then(function(r) { return r.json(); })
       .then(function(c) {
         var root = document.documentElement;
-        var map = {primary:'--forest',primaryLight:'--forest-light',sage:'--sage',coral:'--coral',coralDark:'--coral-dark',cream:'--cream',charcoal:'--charcoal',white:'--white'};
-        Object.keys(map).forEach(function(k){if(c[k])root.style.setProperty(map[k],c[k]);});
+        COLOR_ROLES.forEach(function(role) { if (c[role.key]) root.style.setProperty(role.css, c[role.key]); });
         document.body.classList.add('colors-loaded');
       })
       .catch(function() {});
@@ -32,11 +50,10 @@ var CMS = (function() {
           navPhone.href = 'tel:' + s.phone.replace(/\s/g, '');
           navPhone.innerHTML = '\u260E ' + s.phone;
         }
-        // Hero badge hours
-        var heroBadge = document.querySelector('.hero-badge span');
-        if (heroBadge && s.hours) {
-          heroBadge.textContent = 'Abierto ahora \u00B7 ' + s.hours;
-        }
+        // Abierto / cerrado seg\u00FAn el horario del panel
+        showOpeningStatus(s);
+        // Tienda activable desde el panel
+        applyStoreSetting(s);
         // Footer brand
         var footerBrand = document.querySelector('.footer-brand');
         if (footerBrand && s.name) {
@@ -70,10 +87,12 @@ var CMS = (function() {
           }
         });
         // WhatsApp buttons
-        var whatsappBtns = document.querySelectorAll('[href*="wa.me/"]');
-        whatsappBtns.forEach(function(a) {
-          a.href = 'https://wa.me/' + s.whatsapp;
-        });
+        // (se cambia el número y se conserva el texto del mensaje)
+        if (s.whatsapp) {
+          document.querySelectorAll('[href*="wa.me/"]').forEach(function(a) {
+            a.href = a.href.replace(/wa\.me\/\d*/, 'wa.me/' + s.whatsapp);
+          });
+        }
         // Contacto page info
         var contactoInfo = document.querySelector('.contacto-info-phone');
         if (contactoInfo) {
@@ -90,8 +109,10 @@ var CMS = (function() {
           contactoAddress.textContent = s.address;
         }
         var contactoHours = document.querySelector('.contacto-info-hours');
-        if (contactoHours && s.hours) {
-          contactoHours.innerHTML = s.hours.replace(/\n/g, '<br>');
+        if (contactoHours && window.ClinicSchedule) {
+          contactoHours.innerHTML = ClinicSchedule.groups(s).map(function(g) {
+            return g.days + ': ' + (g.closed ? 'cerrado' : g.hours);
+          }).join('<br>');
         }
         // Aviso legal CIF
         var avisoCif = document.querySelector('.aviso-cif');
@@ -109,6 +130,36 @@ var CMS = (function() {
         if (trustAccessible && s.trustAccessible) trustAccessible.textContent = s.trustAccessible;
       })
       .catch(function() {});
+  }
+
+  // "Abierto ahora · hasta las 21:00" / "Cerrado ahora · Te esperamos mañana…"
+  function showOpeningStatus(s) {
+    if (!window.ClinicSchedule) return;
+    var st = ClinicSchedule.status(s);
+    var badge = document.querySelector('.hero-badge');
+    if (badge) {
+      badge.classList.toggle('is-closed', !st.open);
+      var span = badge.querySelector('span');
+      if (span) span.textContent = st.text;
+    }
+    var card = document.querySelector('.hero-float--hours .hero-float-info');
+    if (card) {
+      card.querySelector('strong').textContent = st.todayText;
+      card.querySelector('span').textContent = st.open ? 'Abierto ahora' : 'Cerrado ahora';
+    }
+  }
+
+  function storeEnabled(s) {
+    return ['false', 'no', '0', 'off'].indexOf(String(s.storeEnabled).trim().toLowerCase()) === -1;
+  }
+
+  // Con la tienda desactivada en el panel se ocultan sus enlaces y su sección.
+  function applyStoreSetting(s) {
+    var on = storeEnabled(s);
+    document.querySelectorAll('[data-store-link], [data-store-section]').forEach(function(el) {
+      el.style.display = on ? '' : 'none';
+    });
+    document.documentElement.classList.toggle('store-off', !on);
   }
 
   function loadTestimonials() {
@@ -198,6 +249,8 @@ var CMS = (function() {
     loadTestimonials: loadTestimonials,
     loadPhotos: loadPhotos,
     resetColors: resetColors,
+    storeEnabled: storeEnabled,
+    COLOR_ROLES: COLOR_ROLES,
     DEFAULT_COLORS: DEFAULT_COLORS
   };
 })();

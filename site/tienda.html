@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tienda Online | Clínica Veterinaria San José</title>
-    <meta name="description" content="Productos de calidad para mascotas. Alimentación, juguetes, accesorios y más. Envío gratuito en pedidos superiores a 40€.">
+    <meta name="color-scheme" content="light">
+    <title>Tienda | Clínica Veterinaria San José</title>
+    <meta name="description" content="Productos para mascotas disponibles en la Clínica Veterinaria San José: alimentación, juguetes, accesorios e higiene de las marcas que recomendamos. Consúltanos por WhatsApp.">
     <link rel="stylesheet" href="css/fonts.css">
     <link rel="stylesheet" href="css/style.css">
     <style>
@@ -27,6 +28,8 @@
         .store-price .original{font-size:.82rem;color:var(--gray400);text-decoration:line-through}
         .store-btn{display:block;width:100%;text-align:center;padding:12px;border-radius:50px;background:var(--forest);color:var(--white);text-decoration:none;font-size:.82rem;font-weight:600;transition:all .3s;border:none;cursor:pointer;font-family:'Inter',sans-serif}
         .store-btn:hover{background:var(--forest-light);transform:translateY(-1px)}
+        .store-btn--wa{background:#25D366}
+        .store-btn--wa:hover{background:#1EBE5A}
         .store-tabs{display:flex;justify-content:center;gap:8px;margin-top:24px;flex-wrap:wrap}
         .store-tab{background:var(--white);border:none;padding:10px 22px;border-radius:50px;font-family:'Inter',sans-serif;font-size:.82rem;font-weight:600;color:var(--gray500);cursor:pointer;transition:all .3s}
         .store-tab.active,.store-tab:hover{background:var(--forest);color:var(--white)}
@@ -35,17 +38,6 @@
         .store-info-bar strong{color:var(--white)}
         .store-empty{text-align:center;padding:80px 20px;color:var(--gray400);display:none}
         .store-empty-icon{font-size:48px;margin-bottom:12px;opacity:.5}
-        .store-exhibit-bar{background:var(--forest);color:var(--white);padding:14px 0;text-align:center}
-        .store-exhibit-bar p{font-size:.88rem;color:rgba(255,255,255,.9)}
-        .store-exhibit-bar strong{color:var(--white)}
-        .ecommerce-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:10000;align-items:center;justify-content:center;padding:20px}
-        .ecommerce-overlay.show{display:flex}
-        .ecommerce-modal{background:var(--white);border-radius:20px;padding:40px;max-width:440px;width:100%;text-align:center;position:relative}
-        .ecommerce-modal h3{font-family:'Fraunces',serif;font-size:22px;color:var(--forest);margin-bottom:12px}
-        .ecommerce-modal p{font-size:14px;color:var(--gray500);line-height:1.6;margin-bottom:24px}
-        .ecommerce-modal .btn-primary{display:inline-block;padding:12px 28px;background:var(--forest);color:var(--white);border-radius:50px;text-decoration:none;font-weight:600;font-size:14px;transition:all .2s}
-        .ecommerce-modal .btn-primary:hover{background:var(--forest-light)}
-        .ecommerce-close{position:absolute;top:16px;right:16px;width:32px;height:32px;border-radius:50%;border:none;background:var(--gray-100);font-size:16px;cursor:pointer}
         @media(max-width:1024px){.store-grid-full{grid-template-columns:repeat(2,1fr)}}
         @media(max-width:768px){.store-grid-full{grid-template-columns:1fr}}
     </style>
@@ -54,14 +46,7 @@
 <div class="cursor-ring"></div>
 <div class="page-transition"></div>
 
-<div class="store-info-bar" id="storeBar" style="display:none">
-    <p>Envío gratuito en pedidos superiores a <strong>40€</strong> · Atención telefónica: <strong>955 321 470</strong></p>
-</div>
-<div class="store-exhibit-bar" id="storeExhibitBar" style="display:none">
-    <p>🚧 Tienda online en preparación · Para información sobre productos, <a href="contacto.html" style="color:var(--white);font-weight:700;text-decoration:underline">contacta con nosotros</a></p>
-</div>
-
-<nav class="nav" id="mainNav" style="top:44px">
+<nav class="nav" id="mainNav">
     <div class="container">
         <a href="index.html" class="nav-logo"><img src="img/clinica-02.jpeg" alt="San José Logo" style="height:40px;width:40px;border-radius:50%;object-fit:cover"><div class="nav-logo-text">San José</div></a>
         <ul class="nav-links" id="navLinks">
@@ -70,23 +55,23 @@
             <li><a href="servicios.html">Servicios</a></li>
             <li><a href="planes.html">Planes</a></li>
             <li><a href="citas.html">Citas</a></li>
-            <li><a href="tienda.html" class="active">Tienda</a></li>
+            <li data-store-link><a href="tienda.html" class="active">Tienda</a></li>
+            <li><a href="galeria.html">Galería</a></li>
             <li><a href="resenas.html">Reseñas</a></li>
             <li><a href="contacto.html">Contacto</a></li>
             <li><a href="tel:955321470" class="nav-cta">☎ 955 321 470</a></li>
         </ul>
         <div class="nav-right">
-            <button class="cart-btn" id="cartBtn" aria-label="Carrito" style="display:none"><span class="cart-btn-icon">🛒</span><span class="cart-btn-text">Carrito</span><span class="cart-badge" id="cartBadge">0</span></button>
-            <button class="nav-toggle" id="navToggle" aria-label="Menú"><span></span><span></span><span></span></button>
+            <button class="nav-toggle" id="navToggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="navLinks"><span></span><span></span><span></span></button>
         </div>
     </div>
 </nav>
 
 <div class="store-hero">
     <div class="container">
-        <div class="section-label">Tienda Online</div>
+        <div class="section-label">Tienda</div>
         <h1>Productos de calidad para<br>tu mejor amigo</h1>
-        <p>Solo vendemos marcas que nosotros mismos recomendamos. Envío gratuito en pedidos superiores a 40€.</p>
+        <p>Solo trabajamos con marcas que nosotros mismos recomendamos. Todos los productos están disponibles en la clínica: escríbenos por WhatsApp y te confirmamos disponibilidad y precio.</p>
         <div class="store-tabs">
             <button class="store-tab active" data-cat="todos">Todos</button>
             <button class="store-tab" data-cat="alimento">Alimentación</button>
@@ -107,102 +92,58 @@
     </div>
 </section>
 
+<script src="js/schedule.js"></script>
 <script src="js/cms.js"></script>
 <script>CMS.applyColors(); CMS.loadSettings(); CMS.loadPhotos();</script>
 <script>
 (function() {
-    var storeEnabled = false;
+    function esc(t) { var d = document.createElement('div'); d.textContent = t == null ? '' : t; return d.innerHTML; }
+    var grid = document.getElementById('storeGrid');
 
-    // Load store setting
-    fetch('_data/settings.json?t=' + Date.now())
-        .then(r => r.json())
-        .then(settings => {
-            storeEnabled = settings.storeEnabled === true;
-            if (storeEnabled) {
-                document.getElementById('storeBar').style.display = '';
-                document.getElementById('storeExhibitBar').style.display = 'none';
-                document.getElementById('cartBtn').style.display = '';
-            } else {
-                document.getElementById('storeBar').style.display = 'none';
-                document.getElementById('storeExhibitBar').style.display = '';
-                document.getElementById('cartBtn').style.display = 'none';
-            }
-        })
-        .catch(() => {
-            document.getElementById('storeExhibitBar').style.display = '';
-        });
-
-    fetch('_data/products.json?t='+Date.now())
-        .then(r => r.json())
-        .then(data => {
-            const products = data.products;
-            const grid = document.getElementById('storeGrid');
-            grid.innerHTML = products.map(p => `
-                <article class="store-item reveal" data-cat="${p.category}" data-id="${p.id}">
-                    <div class="store-img"><img src="${p.image}" alt="${p.name}" loading="lazy">${p.tag ? `<div class="store-tag">${p.tag}</div>` : ''}</div>
-                    <div class="store-info"><div class="store-brand">${p.brand}</div><div class="store-name">${p.name}</div><div class="store-price"><span class="current">${p.price.toFixed(2)}\u20AC</span></div><button class="store-btn" data-product="${p.name}" data-price="${p.price.toFixed(2)}">Consultar disponibilidad</button></div>
-                </article>
-            `).join('');
-
-            document.querySelectorAll('.store-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    if (storeEnabled) {
-                        window.location.href = 'contacto.html';
-                    } else {
-                        showEcommerceModal();
-                    }
-                });
-            });
-            document.querySelectorAll('.reveal').forEach(el => ro.observe(el));
-        });
-
-    // Category tabs
-    document.querySelectorAll('.store-tab').forEach(tab => {
-        tab.addEventListener('click', function() {
-            document.querySelectorAll('.store-tab').forEach(t => t.classList.remove('active'));
-            this.classList.add('active');
-            const cat = this.dataset.cat;
-            document.querySelectorAll('.store-item').forEach(item => {
-                if (cat === 'todos' || item.dataset.cat === cat) {
-                    item.style.display = '';
-                } else {
-                    item.style.display = 'none';
-                }
-            });
-        });
+    Promise.all([
+        fetch('_data/settings.json?t=' + Date.now()).then(function(r) { return r.json(); }).catch(function() { return {}; }),
+        fetch('_data/products.json?t=' + Date.now()).then(function(r) { return r.json(); })
+    ]).then(function(res) {
+        var settings = res[0], products = res[1].products || [];
+        if (!CMS.storeEnabled(settings)) {
+            grid.innerHTML = '';
+            var empty = document.getElementById('storeEmpty');
+            empty.querySelector('p').textContent = 'La tienda no está disponible en este momento. Para cualquier producto, pregúntanos en la clínica.';
+            empty.style.display = 'block';
+            return;
+        }
+        var phone = settings.whatsapp || '34955321470';
+        grid.innerHTML = products.map(function(p) {
+            var price = Number(p.price).toFixed(2).replace('.', ',') + ' €';
+            var text = 'Hola, me interesa este producto que he visto en vuestra web: ' + p.brand + ' ' + p.name + ' (' + price + '). ¿Lo tenéis disponible?';
+            return '<article class="store-item reveal" data-cat="' + esc(p.category) + '">'
+                + '<div class="store-img"><img src="' + esc(p.image) + '" alt="' + esc(p.brand + ' ' + p.name) + '" loading="lazy">' + (p.tag ? '<div class="store-tag">' + esc(p.tag) + '</div>' : '') + '</div>'
+                + '<div class="store-info"><div class="store-brand">' + esc(p.brand) + '</div><div class="store-name">' + esc(p.name) + '</div>'
+                + '<div class="store-price"><span class="current">' + price + '</span></div>'
+                + '<a class="store-btn store-btn--wa" target="_blank" rel="noopener" href="https://wa.me/' + phone + '?text=' + encodeURIComponent(text) + '">💬 Consultar por WhatsApp</a></div>'
+                + '</article>';
+        }).join('');
+        document.querySelectorAll('.store-item.reveal').forEach(function(el) { ro.observe(el); });
+    }).catch(function() {
+        grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--gray500)">No se han podido cargar los productos. Inténtalo de nuevo más tarde.</p>';
     });
 
-    function showEcommerceModal() {
-        document.getElementById('ecommerceModal').classList.add('show');
-    }
-    window.hideEcommerceModal = function() {
-        document.getElementById('ecommerceModal').classList.remove('show');
-    };
+    // Filtro por categorías
+    document.querySelectorAll('.store-tab').forEach(function(tab) {
+        tab.addEventListener('click', function() {
+            document.querySelectorAll('.store-tab').forEach(function(t) { t.classList.remove('active'); });
+            this.classList.add('active');
+            var cat = this.dataset.cat, shown = 0;
+            document.querySelectorAll('.store-item').forEach(function(item) {
+                var show = cat === 'todos' || item.dataset.cat === cat;
+                item.style.display = show ? '' : 'none';
+                if (show) shown++;
+            });
+            document.getElementById('storeEmpty').style.display = shown ? 'none' : 'block';
+        });
+    });
 })();
 </script>
-
-<!-- E-commerce modal -->
-<div class="ecommerce-overlay" id="ecommerceModal">
-    <div class="ecommerce-modal">
-        <button class="ecommerce-close" onclick="hideEcommerceModal()">✕</button>
-        <h3>🛒 Tienda en preparación</h3>
-        <p>Esta tienda está en fase de desarrollo.<br><br>Si estás interesado en alguno de nuestros productos, puedes contactarnos directamente:</p>
-        <a href="contacto.html" class="btn-primary">Contactar con la clínica →’</a>
-        <p style="margin-top:16px;font-size:12px;color:var(--gray-400)">También puedes llamar al <strong>955 321 470</strong></p>
-    </div>
-</div>
-
-<div class="cart-overlay" id="cartOverlay"></div>
-<div class="cart-sidebar" id="cartSidebar">
-    <div class="cart-header"><h3>🛒 Tu Carrito</h3><button class="cart-close" id="cartClose">✕</button></div>
-    <div class="cart-items" id="cartItems"><div class="cart-empty" id="cartEmpty"><div class="cart-empty-icon">🛒</div><p>Tu carrito está vacío</p></div></div>
-    <div class="cart-footer" id="cartFooter" style="display:none">
-        <div class="cart-subtotal"><span>Subtotal</span><strong id="cartTotal">0.00€</strong></div>
-        <div class="cart-shipping">Envío gratuito en pedidos superiores a 40€</div>
-        <button class="cart-checkout" id="checkoutBtn">Finalizar Compra →’</button>
-        <button class="cart-continue" id="continueBtn">→ Seguir comprando</button>
-    </div>
-</div>
 
 <div class="vetbot-overlay" id="vetbotOverlay">
     <div class="vetbot-modal" id="vetbotModal">
@@ -217,7 +158,7 @@
             </div>
             <div class="vetbot-input-group">
                 <input type="text" class="vetbot-input" id="vetbotInput" placeholder="Escribe tu mensaje...">
-                <button class="vetbot-send" id="vetbotSend">→’</button>
+                <button class="vetbot-send" id="vetbotSend">→</button>
             </div>
         </div>
     </div>

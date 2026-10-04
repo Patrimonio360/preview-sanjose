@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light">
     <title>Galería | Clínica Veterinaria San José</title>
     <meta name="description" content="Galería de imágenes de la Clínica Veterinaria San José. Instalaciones, equipo y ambiente.">
     <link rel="stylesheet" href="css/fonts.css">
@@ -53,13 +54,14 @@
             <li><a href="servicios.html">Servicios</a></li>
             <li><a href="planes.html">Planes</a></li>
             <li><a href="citas.html">Citas</a></li>
-            <li><a href="tienda.html">Tienda</a></li>`n            <li><a href="galeria.html">Galería</a></li>
+            <li data-store-link><a href="tienda.html">Tienda</a></li>
+            <li><a href="galeria.html" class="active">Galería</a></li>
             <li><a href="resenas.html">Reseñas</a></li>
             <li><a href="contacto.html">Contacto</a></li>
             <li><a href="tel:955321470" class="nav-cta">☎ 955 321 470</a></li>
         </ul>
         <div class="nav-right">
-            <button class="nav-toggle" id="navToggle" aria-label="Menú"><span></span><span></span><span></span></button>
+            <button class="nav-toggle" id="navToggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="navLinks"><span></span><span></span><span></span></button>
         </div>
     </div>
 </nav>
@@ -114,6 +116,7 @@
     </div>
 </footer>
 
+<script src="js/schedule.js"></script>
 <script src="js/cms.js"></script>
 <script>CMS.applyColors(); CMS.loadSettings(); CMS.loadPhotos();</script>
 <script>
@@ -227,5 +230,6 @@
     loadPhotos();
 })();
 </script>
+<script src="js/main.js"></script>
 </body>
 </html>

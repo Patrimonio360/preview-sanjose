@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light">
     <title>Contacto | Clínica Veterinaria San José</title>
     <meta name="description" content="Contacta con la Clínica Veterinaria San José. Avda. San José, 173, 41300 La Rinconada, Sevilla. Teléfono: 955 321 470.">
     <link rel="stylesheet" href="css/fonts.css">
@@ -21,14 +22,14 @@
             <li><a href="servicios.html">Servicios</a></li>
             <li><a href="planes.html">Planes</a></li>
             <li><a href="citas.html">Citas</a></li>
-            <li><a href="tienda.html">Tienda</a></li>`n            <li><a href="galeria.html">Galería</a></li>
+            <li data-store-link><a href="tienda.html">Tienda</a></li>
+            <li><a href="galeria.html">Galería</a></li>
             <li><a href="resenas.html">Reseñas</a></li>
             <li><a href="contacto.html" class="active">Contacto</a></li>
             <li><a href="tel:955321470" class="nav-cta">☎ 955 321 470</a></li>
         </ul>
         <div class="nav-right">
-            <button class="cart-btn" id="cartBtn" aria-label="Carrito"><span class="cart-btn-icon">🛒</span><span class="cart-btn-text">Carrito</span><span class="cart-badge" id="cartBadge">0</span></button>
-            <button class="nav-toggle" id="navToggle" aria-label="Menú"><span></span><span></span><span></span></button>
+            <button class="nav-toggle" id="navToggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="navLinks"><span></span><span></span><span></span></button>
         </div>
     </div>
 </nav>
@@ -75,24 +76,12 @@
                         </select>
                     </div>
                     <div class="form-group"><label for="mensaje">Mensaje</label><textarea id="mensaje" placeholder="Cuéntanos en qué podemos ayudarte..." required></textarea></div>
-                    <button type="submit" class="btn-submit">Enviar Mensaje →’</button>
+                    <button type="submit" class="btn-submit">Enviar Mensaje →</button>
                 </form>
             </div>
         </div>
     </div>
 </section>
-
-<div class="cart-overlay" id="cartOverlay"></div>
-<div class="cart-sidebar" id="cartSidebar">
-    <div class="cart-header"><h3>🛒 Tu Carrito</h3><button class="cart-close" id="cartClose">✕</button></div>
-    <div class="cart-items" id="cartItems"><div class="cart-empty" id="cartEmpty"><div class="cart-empty-icon">🛒</div><p>Tu carrito está vacío</p></div></div>
-    <div class="cart-footer" id="cartFooter" style="display:none">
-        <div class="cart-subtotal"><span>Subtotal</span><strong id="cartTotal">0.00€</strong></div>
-        <div class="cart-shipping">Envío gratuito en pedidos superiores a 40€</div>
-        <button class="cart-checkout" id="checkoutBtn">Finalizar Compra →’</button>
-        <button class="cart-continue" id="continueBtn">→ Seguir comprando</button>
-    </div>
-</div>
 
 <div class="vetbot-overlay" id="vetbotOverlay">
     <div class="vetbot-modal" id="vetbotModal">
@@ -107,7 +96,7 @@
             </div>
             <div class="vetbot-input-group">
                 <input type="text" class="vetbot-input" id="vetbotInput" placeholder="Escribe tu mensaje...">
-                <button class="vetbot-send" id="vetbotSend">→’</button>
+                <button class="vetbot-send" id="vetbotSend">→</button>
             </div>
         </div>
     </div>
@@ -125,6 +114,7 @@
     </div>
 </footer>
 
+<script src="js/schedule.js"></script>
 <script src="js/cms.js"></script>
 <script>CMS.applyColors(); CMS.loadSettings(); CMS.loadPhotos();</script>
 <script src="js/main.js"></script>

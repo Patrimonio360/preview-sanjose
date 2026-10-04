@@ -2,8 +2,9 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
+  <meta name="robots" content="noindex, nofollow">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Panel de Administracion — Clinica Veterinaria San Jose</title>
+  <title>Panel de Administración — Clínica Veterinaria San José</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:wght@600;700&display=swap" rel="stylesheet">
   <style>
@@ -591,6 +592,26 @@
       grid-column: 1 / -1;
     }
 
+    /* ===== THEME EDITOR ===== */
+    .modal-panel:has(.theme-editor) { max-width: 900px; }
+    .theme-editor { display: grid; grid-template-columns: 1fr 300px; gap: 20px; margin-top: 16px; align-items: start; }
+    .theme-fields { display: flex; flex-direction: column; gap: 6px; }
+    .theme-group { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400); margin-top: 10px; }
+    .theme-color { display: grid; grid-template-columns: 36px 1fr 86px; gap: 10px; align-items: center; font-size: 13px; cursor: pointer; }
+    .theme-color input[type=color] { width: 36px; height: 30px; padding: 0; border: 1px solid var(--gray-200); border-radius: 6px; background: none; cursor: pointer; }
+    .theme-hex { padding: 6px 8px; border: 2px solid var(--gray-200); border-radius: 6px; font-family: monospace; font-size: 13px; text-transform: uppercase; }
+    .theme-hex.invalid { border-color: #DC2626; }
+    .theme-preview { position: sticky; top: 0; border-radius: 12px; overflow: hidden; box-shadow: var(--shadow-md); }
+    @media (max-width: 760px) { .theme-editor { grid-template-columns: 1fr; } .theme-preview { position: static; order: -1; } }
+
+    /* ===== SCHEDULE EDITOR ===== */
+    .schedule-editor { display: grid; grid-template-columns: 140px 1fr; gap: 10px 16px; align-items: center; max-width: 520px; }
+    .schedule-day { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; cursor: pointer; }
+    .schedule-day input { width: 16px; height: 16px; accent-color: var(--forest); }
+    .schedule-hours { padding: 9px 12px; border: 2px solid var(--gray-200); border-radius: var(--radius-sm); font-size: 14px; font-family: inherit; }
+    .schedule-hours:disabled { background: var(--gray-50); color: var(--gray-400); }
+    .schedule-hours.invalid { border-color: #DC2626; }
+
     /* ===== REVIEW/PHOTO CARDS ===== */
     .review-stars {
       color: #F4B400;
@@ -805,11 +826,11 @@
   <!-- ==================== LOGIN ==================== -->
   <div id="login-screen">
     <div class="login-card">
-      <div class="login-logo">&#x1F41E;</div>
-      <div class="login-title">Clinica Veterinaria San Jose</div>
-      <div class="login-subtitle">Panel de administracion</div>
+      <div class="login-logo">&#x1F43E;</div>
+      <div class="login-title">Clínica Veterinaria San José</div>
+      <div class="login-subtitle">Panel de administración</div>
       <div class="login-field">
-        <input type="password" id="login-password" placeholder="Introduce la contrasena" autocomplete="current-password">
+        <input type="password" id="login-password" placeholder="Introduce la contraseña" autocomplete="current-password">
       </div>
       <div class="login-error" id="login-error">Contrasena incorrecta</div>
       <button class="login-btn" id="login-btn">Entrar</button>
@@ -821,16 +842,16 @@
     <!-- Topbar -->
     <div class="topbar">
       <div class="topbar-brand">
-        <div class="topbar-brand-icon">&#x1F41E;</div>
+        <div class="topbar-brand-icon">&#x1F43E;</div>
         <div>
-          <div class="topbar-brand-text">Clinica Veterinaria San Jose</div>
-          <div class="topbar-brand-sub">Panel de administracion</div>
+          <div class="topbar-brand-text">Clínica Veterinaria San José</div>
+          <div class="topbar-brand-sub">Panel de administración</div>
         </div>
       </div>
       <div class="topbar-actions">
         <span class="topbar-status" id="api-status">Conectando...</span>
         <button class="btn-logout" id="export-btn" style="background:var(--forest);color:var(--white);border:none">📥 Exportar JSON</button>
-        <button class="btn-logout" id="logout-btn">Cerrar sesion</button>
+        <button class="btn-logout" id="logout-btn">Cerrar sesión</button>
       </div>
     </div>
 
@@ -902,6 +923,8 @@
   <!-- ==================== TOAST ==================== -->
   <div class="toast" id="toast"></div>
 
+<script src="../js/schedule.js"></script>
+<script src="../js/cms.js"></script>
 <script>
 (function() {
   // ===== CONFIG =====
@@ -1049,7 +1072,8 @@
       reviews: 'site/_data/reviews/index.json',
       photos: 'site/_data/photos/index.json',
       appointments: 'appointments.json', // repositorio privado sanjose-citas
-      themes: 'site/_data/colors.json'
+      themes: 'site/_data/colors.json',
+      customThemes: 'site/_data/themes.json'
     };
     return map[section];
   }
@@ -1294,72 +1318,134 @@
   }
 
   // ===== SETTINGS =====
+  var SETTINGS_FIELDS = [
+    { key: 'name', label: 'Nombre de la clínica', icon: '&#x1F3E5;' },
+    { key: 'address', label: 'Dirección', icon: '&#x1F4CD;' },
+    { key: 'phone', label: 'Teléfono', icon: '&#x260E;&#xFE0F;' },
+    { key: 'email', label: 'Email (aquí llegan los avisos de citas nuevas)', icon: '&#x2709;&#xFE0F;' },
+    { key: 'cif', label: 'CIF/NIF', icon: '&#x1F4CB;' },
+    { key: 'whatsapp', label: 'WhatsApp (con prefijo, sin +; p. ej. 34612345678)', icon: '&#x1F4AC;' },
+    { key: 'facebook', label: 'Facebook URL', icon: '&#x1F4D8;' },
+    { key: 'instagram', label: 'Instagram URL', icon: '&#x1F4F7;' },
+    { key: 'footerDesc', label: 'Texto del pie de página', icon: '&#x1F4DD;', textarea: true },
+    { key: 'trustYears', label: 'Años de experiencia', icon: '&#x1F31F;' },
+    { key: 'trustFamilies', label: 'Familias atendidas', icon: '&#x1F46A;' },
+    { key: 'trustLab', label: 'Laboratorio', icon: '&#x1F52C;' },
+    { key: 'trustAccessible', label: 'Accesible', icon: '&#x267F;' },
+    { key: 'patrimonio360Email', label: 'Email Patrimonio360', icon: '&#x2709;&#xFE0F;' }
+  ];
+
   function renderSettings(data) {
     var main = $('#main-content');
-    var fields = [
-      { key: 'name', label: 'Nombre de la clinica', icon: '&#x1F3E5;' },
-      { key: 'address', label: 'Direccion', icon: '&#x1F4CD;' },
-      { key: 'phone', label: 'Telefono', icon: '&#x260E;&#xFE0F;' },
-      { key: 'email', label: 'Email', icon: '&#x2709;&#xFE0F;' },
-      { key: 'hours', label: 'Horario', icon: '&#x1F4C5;' },
-      { key: 'cif', label: 'CIF/NIF', icon: '&#x1F4CB;' },
-      { key: 'whatsapp', label: 'WhatsApp (sin +)', icon: '&#x1F4AC;' },
-      { key: 'facebook', label: 'Facebook URL', icon: '&#x1F4D8;' },
-      { key: 'instagram', label: 'Instagram URL', icon: '&#x1F4F7;' },
-      { key: 'footerDesc', label: 'Texto del footer', icon: '&#x1F4DD;' },
-      { key: 'trustYears', label: 'Anos de experiencia', icon: '&#x1F31F;' },
-      { key: 'trustFamilies', label: 'Familias atendidas', icon: '&#x1F46A;' },
-      { key: 'trustLab', label: 'Laboratorio', icon: '&#x1F52C;' },
-      { key: 'trustAccessible', label: 'Accesible', icon: '&#x267F;' },
-      { key: 'storeEnabled', label: 'Tienda activada (true/false)', icon: '&#x1F6D2;' },
-      { key: 'patrimonio360Email', label: 'Email Patrimonio360', icon: '&#x2709;&#xFE0F;' }
-    ];
+    var schedule = data.schedule || ClinicSchedule.DEFAULT_SCHEDULE;
+    var storeOn = ['false', 'no', '0', 'off'].indexOf(String(data.storeEnabled).trim().toLowerCase()) === -1;
 
-    var html = '<div class="main-header"><span class="main-title">Ajustes de la clinica</span></div>';
+    var html = '<div class="main-header"><span class="main-title">Ajustes de la clínica</span></div>';
     html += '<div style="background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:32px;max-width:800px">';
+
+    // Horario: manda en la web, el calendario de citas y el aviso "Abierto/Cerrado"
+    html += '<h3 style="font-size:16px;margin-bottom:6px">&#x1F552; Horario de apertura</h3>';
+    html += '<p style="font-size:13px;color:var(--gray-500);margin-bottom:16px">Marca los días que abre la clínica y escribe el horario. Para turno partido, sepáralo con una coma: <strong>10:00-14:00, 17:00-21:00</strong>. Las citas online solo se ofrecen dentro de este horario.</p>';
+    html += '<div class="schedule-editor">';
+    ClinicSchedule.WEEK_ORDER.forEach(function(d) {
+      var key = ClinicSchedule.DAY_KEYS[d];
+      var val = schedule[key] || '';
+      var name = ClinicSchedule.DAY_NAMES[d];
+      html += '<label class="schedule-day"><input type="checkbox" data-day="' + key + '"' + (val ? ' checked' : '') + '> <span>' + name.charAt(0).toUpperCase() + name.slice(1) + '</span></label>'
+        + '<input type="text" class="schedule-hours" id="schedule-' + key + '" value="' + esc(val || '10:00-21:00') + '"' + (val ? '' : ' disabled') + ' placeholder="10:00-21:00">';
+    });
+    html += '</div>';
+    html += '<div id="schedule-preview" style="font-size:13px;color:var(--gray-600);margin:12px 0 28px"></div>';
+
+    html += '<h3 style="font-size:16px;margin-bottom:16px">&#x1F4C7; Datos de la clínica</h3>';
     html += '<div class="settings-grid">';
-    fields.forEach(function(f) {
+    SETTINGS_FIELDS.forEach(function(f) {
       var val = data[f.key] || '';
       html += '<div class="field"><label>' + f.icon + ' ' + f.label + '</label>';
-      if (f.key === 'footerDesc') {
-        html += '<textarea id="setting-' + f.key + '" rows="3">' + esc(val) + '</textarea>';
-      } else {
-        html += '<input type="text" id="setting-' + f.key + '" value="' + esc(val) + '">';
-      }
+      html += f.textarea
+        ? '<textarea data-setting="' + f.key + '" rows="3">' + esc(val) + '</textarea>'
+        : '<input type="text" data-setting="' + f.key + '" value="' + esc(val) + '">';
       html += '</div>';
     });
+    html += '<div class="field"><label>&#x1F6D2; Mostrar la tienda en la web</label>'
+      + '<select data-setting="storeEnabled"><option value="true"' + (storeOn ? ' selected' : '') + '>Sí, mostrar la tienda</option>'
+      + '<option value="false"' + (storeOn ? '' : ' selected') + '>No, ocultarla</option></select></div>';
     html += '</div>';
     html += '<div style="margin-top:24px;display:flex;gap:12px">';
     html += '<button class="btn btn-primary" id="save-settings-btn">Guardar cambios</button>';
     html += '</div></div>';
     main.innerHTML = html;
 
+    $$('.schedule-day input').forEach(function(cb) {
+      cb.addEventListener('change', function() {
+        $('#schedule-' + cb.dataset.day).disabled = !cb.checked;
+        updateSchedulePreview();
+      });
+    });
+    $$('.schedule-hours').forEach(function(inp) { inp.addEventListener('input', updateSchedulePreview); });
+    updateSchedulePreview();
     $('#save-settings-btn').addEventListener('click', saveSettings);
   }
 
-  async function saveSettings() {
-    var data = {};
-    $$('.settings-grid .field').forEach(function(field) {
-      var key = field.querySelector('input, textarea').id.replace('setting-', '');
-      data[key] = field.querySelector('input, textarea').value;
+  // Lee el editor de horario. Devuelve { schedule, errors: [nombres de días] }.
+  function readScheduleEditor() {
+    var schedule = {}, errors = [];
+    ClinicSchedule.DAY_KEYS.forEach(function(key, d) {
+      var on = $('.schedule-day input[data-day="' + key + '"]').checked;
+      var input = $('#schedule-' + key);
+      var text = input.value.trim();
+      var ranges = on ? ClinicSchedule.parseRanges(text) : [];
+      var bad = on && (!ranges || !ranges.length);
+      input.classList.toggle('invalid', bad);
+      if (bad) errors.push(ClinicSchedule.DAY_NAMES[d]);
+      schedule[key] = on && !bad ? text : '';
     });
+    return { schedule: schedule, errors: errors };
+  }
+
+  function updateSchedulePreview() {
+    var r = readScheduleEditor();
+    $('#schedule-preview').innerHTML = r.errors.length
+      ? '<span style="color:#DC2626">Revisa el horario de: ' + r.errors.join(', ') + '. Formato: 10:00-21:00</span>'
+      : 'Así se verá en la web: <strong>' + esc(ClinicSchedule.summary({ schedule: r.schedule })) + '</strong>';
+  }
+
+  async function saveSettings() {
+    var r = readScheduleEditor();
+    if (r.errors.length) {
+      showToast('Revisa el horario de: ' + r.errors.join(', '), true);
+      return;
+    }
+    // Se parte de los ajustes actuales para no perder ningún dato que no esté en el formulario.
+    var data = Object.assign({}, currentData.settings || {});
+    $$('[data-setting]').forEach(function(el) { data[el.dataset.setting] = el.value.trim(); });
+    data.schedule = r.schedule;
+    data.hours = ClinicSchedule.summary(data); // texto corto que usan otras partes de la web
     try {
       await githubWrite(getFilePath('settings'), data, 'admin: actualizar ajustes - ' + new Date().toISOString());
-      showToast('Ajustes guardados correctamente');
+      currentData.settings = data;
+      clinicInfo = data;
+      showToast('Ajustes guardados. La web se actualiza en 1-2 minutos.');
     } catch (e) {
       showToast('Error al guardar: ' + e.message, true);
     }
   }
 
-  // ===== WHATSAPP =====
-  var clinicInfo = { name: 'Clínica Veterinaria San José', phone: '955 321 470' };
+  // ===== AVISOS AL CLIENTE (email y WhatsApp) =====
+  // Los mensajes salen del Gmail/WhatsApp de la propia clínica: el botón abre
+  // el mensaje ya escrito y la clínica solo tiene que pulsar Enviar.
+  var clinicInfo = {};
   fetch('../_data/settings.json?t=' + Date.now())
     .then(function(r) { return r.json(); })
-    .then(function(s) {
-      if (s.name) clinicInfo.name = s.name;
-      if (s.phone) clinicInfo.phone = s.phone;
-    })
+    .then(function(s) { clinicInfo = s; })
     .catch(function() {});
+
+  function clinicName() { return clinicInfo.name || 'Clínica Veterinaria San José'; }
+  function clinicPhone() { return clinicInfo.phone || '955 321 470'; }
+
+  function longDate(dateStr) {
+    return new Date(dateStr + 'T00:00:00').toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' });
+  }
 
   // Pasa un teléfono escrito por el cliente al formato internacional de WhatsApp.
   function waPhone(phone) {
@@ -1369,26 +1455,66 @@
     return digits.length >= 10 ? digits : '';
   }
 
-  function waMessage(a) {
-    var date = new Date(a.date + 'T00:00:00').toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' });
-    var when = 'el ' + date + ' a las ' + a.time;
+  // Asunto y texto del mensaje al cliente según el estado de la cita.
+  function clientMessage(a) {
+    var when = longDate(a.date) + ' a las ' + a.time;
+    var hello = 'Hola ' + a.patientName + ',\n\n';
+    var bye = '\n\nUn saludo,\n' + clinicName() + '\nTel. ' + clinicPhone();
     if (a.status === 'confirmed') {
-      return 'Hola ' + a.patientName + ', te escribimos de ' + clinicInfo.name + '. Tu cita de ' + a.service + ' ' + when + ' está confirmada. ¡Te esperamos! Si no puedes venir, avísanos por aquí o al ' + clinicInfo.phone + '.';
+      return {
+        subject: 'Cita confirmada — ' + clinicName(),
+        text: hello + 'Te confirmamos tu cita de ' + a.service + ' el ' + when + '. ¡Te esperamos!\n\nSi no puedes venir, avísanos respondiendo a este mensaje o llamando al ' + clinicPhone() + '.' + bye
+      };
+    }
+    if (a.status === 'proposed') {
+      var before = a.originalDate ? 'el ' + longDate(a.originalDate) + ' a las ' + a.originalTime : 'en la hora que solicitaste';
+      return {
+        subject: 'Propuesta de nueva hora para tu cita — ' + clinicName(),
+        text: hello + 'Hemos recibido tu solicitud de cita de ' + a.service + ', pero no podemos atenderte ' + before + '.\n\nTe proponemos el ' + when + '. ¿Te viene bien? Responde a este mensaje para confirmarlo o, si prefieres otro momento, dinos cuándo te vendría mejor.' + bye
+      };
     }
     if (a.status === 'cancelled') {
-      return 'Hola ' + a.patientName + ', te escribimos de ' + clinicInfo.name + '. Lamentamos informarte de que tu cita de ' + a.service + ' ' + when + ' ha sido cancelada. Puedes responder a este mensaje o llamarnos al ' + clinicInfo.phone + ' para buscar otra fecha.';
+      return {
+        subject: 'Tu cita ha sido cancelada — ' + clinicName(),
+        text: hello + 'Lamentamos informarte de que tu cita de ' + a.service + ' del ' + when + ' ha sido cancelada.\n\nPuedes responder a este mensaje o llamarnos al ' + clinicPhone() + ' para buscar otra fecha.' + bye
+      };
     }
-    return 'Hola ' + a.patientName + ', te escribimos de ' + clinicInfo.name + ' sobre tu solicitud de cita de ' + a.service + ' ' + when + '.';
+    return {
+      subject: 'Tu solicitud de cita — ' + clinicName(),
+      text: hello + 'Te escribimos sobre tu solicitud de cita de ' + a.service + ' para el ' + when + '.' + bye
+    };
   }
 
-  function waButton(a) {
-    var phone = waPhone(a.patientPhone);
-    if (!phone) return '';
-    var label = a.status === 'confirmed' ? 'Avisar confirmación' : a.status === 'cancelled' ? 'Avisar cancelación' : 'WhatsApp';
-    return '<a class="btn btn-sm" style="background:#25D366;color:#fff;text-decoration:none" target="_blank" rel="noopener"'
-      + ' onclick="event.stopPropagation()" href="https://wa.me/' + phone + '?text=' + encodeURIComponent(waMessage(a)) + '">'
-      + '&#x1F4AC; ' + label + '</a>';
+  function emailLink(a) {
+    if (!a.patientEmail) return '';
+    var m = clientMessage(a);
+    return 'https://mail.google.com/mail/?view=cm&fs=1&to=' + encodeURIComponent(a.patientEmail)
+      + '&su=' + encodeURIComponent(m.subject) + '&body=' + encodeURIComponent(m.text);
   }
+
+  function whatsappLink(a) {
+    var phone = waPhone(a.patientPhone);
+    return phone ? 'https://wa.me/' + phone + '?text=' + encodeURIComponent(clientMessage(a).text) : '';
+  }
+
+  function notifyButtons(a, size) {
+    var cls = 'btn ' + (size || 'btn-sm');
+    var html = '';
+    var mail = emailLink(a), wa = whatsappLink(a);
+    if (mail) html += '<a class="' + cls + '" style="background:#EA4335;color:#fff;text-decoration:none" target="_blank" rel="noopener" onclick="event.stopPropagation()" href="' + mail + '">&#x2709;&#xFE0F; Email</a>';
+    if (wa) html += '<a class="' + cls + '" style="background:#25D366;color:#fff;text-decoration:none" target="_blank" rel="noopener" onclick="event.stopPropagation()" href="' + wa + '">&#x1F4AC; WhatsApp</a>';
+    return html;
+  }
+
+  // Ventana que aparece tras confirmar, proponer o cancelar, para avisar al cliente en el momento.
+  function askToNotify(a, title, explanation) {
+    openModal(title,
+      '<p style="font-size:14px;color:var(--gray-600);line-height:1.6;margin-bottom:16px">' + explanation + '</p>'
+      + '<div style="background:var(--gray-50);border-radius:12px;padding:14px;font-size:13px;white-space:pre-wrap;color:var(--gray-700)">' + esc(clientMessage(a).text) + '</div>',
+      '<div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end">' + notifyButtons(a, '')
+      + '<button class="btn btn-ghost" onclick="window._closeModal()">Ahora no</button></div>');
+  }
+  window._closeModal = closeModal;
 
   // Número de citas pendientes junto a "Citas" en el menú.
   function updatePendingBadge(data) {
@@ -1413,8 +1539,8 @@
   }
 
   // ===== APPOINTMENTS =====
-  var APPT_STATUS = { pending: 'Pendiente', confirmed: 'Confirmada', cancelled: 'Cancelada' };
-  var APPT_STATUS_COLOR = { pending: '#F59E0B', confirmed: '#10B981', cancelled: '#EF4444' };
+  var APPT_STATUS = { pending: 'Pendiente', proposed: 'Propuesta enviada', confirmed: 'Confirmada', cancelled: 'Cancelada' };
+  var APPT_STATUS_COLOR = { pending: '#F59E0B', proposed: '#3B82F6', confirmed: '#10B981', cancelled: '#EF4444' };
   var apptFilter = 'all';
 
   function renderAppointments(data) {
@@ -1424,26 +1550,26 @@
 
     var html = '<div class="main-header"><div><span class="main-title">Citas</span><span class="main-count">' + appts.length + ' cita' + (appts.length !== 1 ? 's' : '') + '</span></div></div>';
 
-    // Filters
     html += '<div style="display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap">';
-    html += '<button class="btn ' + (apptFilter === 'all' ? 'btn-primary' : 'btn-ghost') + '" onclick="window._apptFilter(\'all\')">Todas</button>';
-    html += '<button class="btn ' + (apptFilter === 'pending' ? 'btn-primary' : 'btn-ghost') + '" onclick="window._apptFilter(\'pending\')">Pendientes</button>';
-    html += '<button class="btn ' + (apptFilter === 'confirmed' ? 'btn-primary' : 'btn-ghost') + '" onclick="window._apptFilter(\'confirmed\')">Confirmadas</button>';
-    html += '<button class="btn ' + (apptFilter === 'cancelled' ? 'btn-primary' : 'btn-ghost') + '" onclick="window._apptFilter(\'cancelled\')">Canceladas</button>';
+    [['all', 'Todas'], ['pending', 'Pendientes'], ['proposed', 'Propuestas'], ['confirmed', 'Confirmadas'], ['cancelled', 'Canceladas']].forEach(function(f) {
+      html += '<button class="btn ' + (apptFilter === f[0] ? 'btn-primary' : 'btn-ghost') + '" onclick="window._apptFilter(\'' + f[0] + '\')">' + f[1] + '</button>';
+    });
     html += '</div>';
 
-    var filtered = apptFilter === 'all' ? appts : appts.filter(function(a) { return a.status === apptFilter; });
+    // Primero las próximas, en orden de fecha y hora.
+    var filtered = (apptFilter === 'all' ? appts : appts.filter(function(a) { return a.status === apptFilter; }))
+      .slice().sort(function(a, b) { return (a.date + a.time).localeCompare(b.date + b.time); });
 
     if (filtered.length === 0) {
       html += '<div class="empty-state"><div class="empty-state-icon">&#x1F4C5;</div><div class="empty-state-text">No hay citas ' + (apptFilter === 'all' ? '' : 'con estado "' + APPT_STATUS[apptFilter] + '"') + '</div></div>';
     } else {
       html += '<div class="cards-grid">';
-      filtered.forEach(function(a, i) {
-        var realIdx = appts.indexOf(a);
+      filtered.forEach(function(a) {
+        var idx = appts.indexOf(a);
         var statusColor = APPT_STATUS_COLOR[a.status] || '#9CA3AF';
         var statusLabel = APPT_STATUS[a.status] || a.status;
         var dateDisplay = a.date ? new Date(a.date + 'T00:00:00').toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric', month: 'short' }) : '';
-        html += '<div class="card" data-index="' + realIdx + '">'
+        html += '<div class="card" data-index="' + idx + '">'
           + '<div class="card-body">'
           + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">'
           + '<span style="font-size:13px;font-weight:600;color:var(--forest)">' + esc(a.service || '') + '</span>'
@@ -1451,17 +1577,19 @@
           + '</div>'
           + '<div class="card-name">' + esc(a.patientName || '') + '</div>'
           + '<div class="card-brand">' + esc(a.patientPhone || '') + ' · ' + esc(a.patientEmail || '') + '</div>'
-          + '<div style="font-size:13px;color:var(--gray-500);margin-top:8px">' + dateDisplay + ' · ' + esc(a.time || '') + '</div>'
+          + '<div style="font-size:13px;color:var(--gray-500);margin-top:8px">&#x1F4C5; ' + dateDisplay + ' · ' + esc(a.time || '') + '</div>'
+          + (a.status === 'proposed' && a.originalDate ? '<div style="font-size:12px;color:var(--gray-400);margin-top:4px">Pedía: ' + esc(a.originalDate) + ' ' + esc(a.originalTime) + '</div>' : '')
           + (a.message ? '<div style="font-size:12px;color:var(--gray-400);margin-top:6px;font-style:italic">"' + esc(a.message) + '"</div>' : '')
           + '</div>'
-          + '<div class="card-actions">';
-        html += waButton(a);
-        if (a.status === 'pending') {
-          html += '<button class="btn btn-sm btn-primary" onclick="event.stopPropagation();window._confirmAppt(' + realIdx + ')">Confirmar</button>';
-          html += '<button class="btn btn-sm btn-danger" onclick="event.stopPropagation();window._cancelAppt(' + realIdx + ')">Cancelar</button>';
+          + '<div class="card-actions" style="flex-wrap:wrap">';
+        if (a.status === 'pending' || a.status === 'proposed') {
+          html += '<button class="btn btn-sm btn-primary" onclick="event.stopPropagation();window._confirmAppt(' + idx + ')">Confirmar</button>';
+          html += '<button class="btn btn-sm btn-ghost" onclick="event.stopPropagation();window._proposeAppt(' + idx + ')">Proponer otra hora</button>';
+          html += '<button class="btn btn-sm btn-danger" onclick="event.stopPropagation();window._cancelAppt(' + idx + ')">Cancelar</button>';
         } else {
-          html += '<button class="btn btn-sm btn-danger" onclick="event.stopPropagation();window._deleteAppt(' + realIdx + ')">Eliminar</button>';
+          html += '<button class="btn btn-sm btn-danger" onclick="event.stopPropagation();window._deleteAppt(' + idx + ')">Eliminar</button>';
         }
+        html += '<div style="display:flex;gap:6px;width:100%;margin-top:6px"><span style="font-size:11px;color:var(--gray-400);align-self:center">Avisar al cliente:</span>' + notifyButtons(a) + '</div>';
         html += '</div></div>';
       });
       html += '</div>';
@@ -1475,111 +1603,327 @@
     renderAppointments(currentData.appointments);
   };
 
-  window._confirmAppt = async function(idx) {
-    var appts = currentData.appointments.appointments;
-    appts[idx].status = 'confirmed';
+  // Guarda el cambio de una cita; si falla, deshace el cambio en pantalla.
+  async function saveAppt(idx, changes, message) {
+    var a = currentData.appointments.appointments[idx];
+    var before = Object.assign({}, a);
+    Object.assign(a, changes);
     try {
-      await githubWrite(getFilePath('appointments'), currentData.appointments, 'admin: confirmar cita de ' + (appts[idx].patientName || '') + ' - ' + new Date().toISOString());
-      showToast('Cita confirmada. Pulsa "Avisar confirmación" para enviarle un WhatsApp al cliente');
-      loadSection('appointments');
+      await githubWrite(getFilePath('appointments'), currentData.appointments, 'admin: ' + message + ' - ' + new Date().toISOString());
+      renderAppointments(currentData.appointments);
+      return a;
     } catch (e) {
-      appts[idx].status = 'pending';
+      Object.keys(a).forEach(function(k) { delete a[k]; });
+      Object.assign(a, before);
       showToast('Error: ' + e.message, true);
+      return null;
     }
+  }
+
+  window._confirmAppt = async function(idx) {
+    var a = await saveAppt(idx, { status: 'confirmed' }, 'confirmar cita');
+    if (a) askToNotify(a, 'Cita confirmada', 'Envía ahora la confirmación al cliente. Se abrirá tu Gmail o WhatsApp con el mensaje ya escrito: solo tienes que pulsar Enviar.');
   };
 
   window._cancelAppt = async function(idx) {
     var appts = currentData.appointments.appointments;
-    var ok = await showConfirm('Cancelar la cita de ' + (appts[idx].patientName || '') + '?');
+    var ok = await showConfirm('¿Cancelar la cita de ' + (appts[idx].patientName || '') + '?');
     if (!ok) return;
-    appts[idx].status = 'cancelled';
-    try {
-      await githubWrite(getFilePath('appointments'), currentData.appointments, 'admin: cancelar cita de ' + (appts[idx].patientName || '') + ' - ' + new Date().toISOString());
-      showToast('Cita cancelada. Pulsa "Avisar cancelación" para enviarle un WhatsApp al cliente');
-      loadSection('appointments');
-    } catch (e) {
-      appts[idx].status = 'pending';
-      showToast('Error: ' + e.message, true);
+    var a = await saveAppt(idx, { status: 'cancelled' }, 'cancelar cita');
+    if (a) askToNotify(a, 'Cita cancelada', 'Avisa al cliente de la cancelación:');
+  };
+
+  // Proponer otra fecha/hora libre dentro del horario.
+  window._proposeAppt = function(idx) {
+    var a = currentData.appointments.appointments[idx];
+    var today = ClinicSchedule.madridNow().date;
+    var max = ClinicSchedule.addDays(today, ClinicSchedule.MAX_DAYS_AHEAD);
+    openModal('Proponer otra hora',
+      '<p style="font-size:14px;color:var(--gray-600);margin-bottom:16px">' + esc(a.patientName) + ' pidió el <strong>' + esc(longDate(a.date)) + ' a las ' + esc(a.time) + '</strong>. Elige la fecha y hora que le propones:</p>'
+      + '<div class="field"><label>Fecha</label><input type="date" id="propose-date" min="' + today + '" max="' + max + '" value="' + (a.date >= today ? a.date : today) + '"></div>'
+      + '<div class="field" style="margin-top:12px"><label>Hora libre</label><select id="propose-time"></select></div>',
+      '<button class="btn btn-ghost" onclick="window._closeModal()">Cancelar</button><button class="btn btn-primary" id="propose-save">Guardar y avisar al cliente</button>');
+
+    function fillTimes() {
+      var date = $('#propose-date').value;
+      var taken = currentData.appointments.appointments
+        .filter(function(o) { return o !== a && o.date === date && o.status !== 'cancelled'; })
+        .map(function(o) { return o.time; });
+      var free = date ? ClinicSchedule.slotsFor(date, clinicInfo).filter(function(t) { return taken.indexOf(t) === -1; }) : [];
+      $('#propose-time').innerHTML = free.length
+        ? free.map(function(t) { return '<option>' + t + '</option>'; }).join('')
+        : '<option value="">Ese día no hay horas libres</option>';
     }
+    $('#propose-date').addEventListener('change', fillTimes);
+    fillTimes();
+
+    $('#propose-save').addEventListener('click', async function() {
+      var date = $('#propose-date').value, time = $('#propose-time').value;
+      if (!date || !time) { showToast('Elige una fecha y una hora libres', true); return; }
+      var changes = { status: 'proposed', date: date, time: time };
+      if (!a.originalDate) { changes.originalDate = a.date; changes.originalTime = a.time; }
+      var saved = await saveAppt(idx, changes, 'proponer otra hora');
+      if (saved) askToNotify(saved, 'Propuesta guardada', 'Envía la propuesta al cliente. Cuando te conteste que le viene bien, pulsa "Confirmar" en la cita.');
+    });
   };
 
   window._deleteAppt = async function(idx) {
     var appts = currentData.appointments.appointments;
     var name = appts[idx].patientName || 'esta cita';
-    var ok = await showConfirm('Eliminar cita de "' + name + '"?');
+    var ok = await showConfirm('¿Eliminar la cita de "' + name + '"?');
     if (!ok) return;
     appts.splice(idx, 1);
     try {
-      await githubWrite(getFilePath('appointments'), currentData.appointments, 'admin: eliminar cita de ' + name + ' - ' + new Date().toISOString());
+      await githubWrite(getFilePath('appointments'), currentData.appointments, 'admin: eliminar cita - ' + new Date().toISOString());
       showToast('Cita eliminada');
-      loadSection('appointments');
+      renderAppointments(currentData.appointments);
     } catch (e) {
       showToast('Error: ' + e.message, true);
+      loadSection('appointments');
     }
   };
 
   // ===== THEMES =====
-  var THEMES = [
+  // Temas incluidos. Los colores que no indican (barra de menú, títulos, pie…)
+  // toman el valor por defecto de CMS.COLOR_ROLES.
+  var BUILTIN_THEMES = [
     { name: 'Forest (Original)', id: 'forest', primary: '#1A3C2A', primaryLight: '#2D6B45', sage: '#6B9B7A', coral: '#D4764E', coralDark: '#B85E3A', cream: '#FBF9F5', charcoal: '#1C1C1C' },
-    { name: 'Oceano', id: 'ocean', primary: '#0D3B66', primaryLight: '#1D6FA5', sage: '#5B9BD5', coral: '#FF8C42', coralDark: '#D97328', cream: '#F0F7FF', charcoal: '#1A1A2E' },
-    { name: 'Atardecer', id: 'sunset', primary: '#8B2500', primaryLight: '#C44536', sage: '#E8985E', coral: '#D4764E', coralDark: '#B85E3A', cream: '#FFF5EE', charcoal: '#2C1810' },
-    { name: 'Real', id: 'royal', primary: '#2E1065', primaryLight: '#5B21B6', sage: '#8B5CF6', coral: '#F59E0B', coralDark: '#D97706', cream: '#FAF5FF', charcoal: '#1E1B4B' },
-    { name: 'Morena', id: 'moorish', primary: '#3D2B1F', primaryLight: '#6B4226', sage: '#A0785A', coral: '#C97B4B', coralDark: '#A86232', cream: '#FDF6EC', charcoal: '#2C1A0E' },
-    { name: 'Rosa Pastel', id: 'rose', primary: '#9D4C6E', primaryLight: '#C4728E', sage: '#E8A0B5', coral: '#F472B6', coralDark: '#DB2777', cream: '#FFF1F5', charcoal: '#4A1942' },
-    { name: 'Lavanda', id: 'lavender', primary: '#4C1D95', primaryLight: '#6D28D9', sage: '#A78BFA', coral: '#F472B6', coralDark: '#DB2777', cream: '#F5F3FF', charcoal: '#2E1065' },
-    { name: 'Tropical', id: 'tropical', primary: '#065F46', primaryLight: '#059669', sage: '#34D399', coral: '#F97316', coralDark: '#EA580C', cream: '#ECFDF5', charcoal: '#064E3B' }
+    { name: 'Océano', id: 'ocean', primary: '#0D3B66', primaryLight: '#1D6FA5', sage: '#5B9BD5', coral: '#FF8C42', coralDark: '#D97328', cream: '#F0F7FF', charcoal: '#1A1A2E', navTitle: '#0D3B66' },
+    { name: 'Atardecer', id: 'sunset', primary: '#8B2500', primaryLight: '#C44536', sage: '#E8985E', coral: '#D4764E', coralDark: '#B85E3A', cream: '#FFF5EE', charcoal: '#2C1810', navTitle: '#8B2500' },
+    { name: 'Real', id: 'royal', primary: '#2E1065', primaryLight: '#5B21B6', sage: '#8B5CF6', coral: '#F59E0B', coralDark: '#D97706', cream: '#FAF5FF', charcoal: '#1E1B4B', navTitle: '#2E1065' },
+    { name: 'Morena', id: 'moorish', primary: '#3D2B1F', primaryLight: '#6B4226', sage: '#A0785A', coral: '#C97B4B', coralDark: '#A86232', cream: '#FDF6EC', charcoal: '#2C1A0E', navTitle: '#3D2B1F' },
+    { name: 'Rosa Pastel', id: 'rose', primary: '#9D4C6E', primaryLight: '#C4728E', sage: '#E8A0B5', coral: '#F472B6', coralDark: '#DB2777', cream: '#FFF1F5', charcoal: '#4A1942', navTitle: '#9D4C6E' },
+    { name: 'Lavanda', id: 'lavender', primary: '#4C1D95', primaryLight: '#6D28D9', sage: '#A78BFA', coral: '#F472B6', coralDark: '#DB2777', cream: '#F5F3FF', charcoal: '#2E1065', navTitle: '#4C1D95' },
+    { name: 'Tropical', id: 'tropical', primary: '#065F46', primaryLight: '#059669', sage: '#34D399', coral: '#F97316', coralDark: '#EA580C', cream: '#ECFDF5', charcoal: '#064E3B', navTitle: '#065F46' }
+  ];
+  var customThemes = [];
+  var activeColors = {};
+
+  // Paleta completa (todas las claves) a partir de un tema que puede tener solo algunas.
+  function fullPalette(src) {
+    var out = {};
+    CMS.COLOR_ROLES.forEach(function(r) { out[r.key] = normalizeHex((src && src[r.key]) || r.def) || r.def; });
+    return out;
+  }
+
+  function normalizeHex(v) {
+    var m = /^#?([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(String(v || '').trim());
+    if (!m) return null;
+    var h = m[1].length === 3 ? m[1].split('').map(function(c) { return c + c; }).join('') : m[1];
+    return '#' + h.toUpperCase();
+  }
+
+  function samePalette(a, b) {
+    return CMS.COLOR_ROLES.every(function(r) { return a[r.key] === b[r.key]; });
+  }
+
+  // Contraste WCAG entre dos colores (1 = ninguno, 21 = máximo).
+  function contrast(a, b) {
+    function lum(hex) {
+      var c = [1, 3, 5].map(function(i) {
+        var v = parseInt(hex.substr(i, 2), 16) / 255;
+        return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+      });
+      return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+    }
+    var l1 = lum(a), l2 = lum(b);
+    return (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
+  }
+
+  // Parejas texto/fondo que deben leerse bien.
+  var CONTRAST_CHECKS = [
+    ['navText', 'navBg', 'Enlaces del menú sobre su barra'],
+    ['navTitle', 'navBg', 'Nombre de la clínica sobre la barra'],
+    ['heading', 'cream', 'Títulos sobre el fondo de la página'],
+    ['charcoal', 'cream', 'Texto general sobre el fondo de la página'],
+    ['charcoal', 'white', 'Texto general sobre las tarjetas'],
+    ['footerText', 'footerBg', 'Texto del pie de página'],
+    ['white', 'primary', 'Texto de los botones principales'],
+    ['white', 'coral', 'Texto de los botones destacados']
   ];
 
-  function renderThemes(data) {
+  function contrastWarnings(p) {
+    return CONTRAST_CHECKS.filter(function(c) { return contrast(p[c[0]], p[c[1]]) < 3; }).map(function(c) { return c[2]; });
+  }
+
+  function themeSwatches(p) {
+    return '<div style="display:flex;border-radius:var(--radius) var(--radius) 0 0;overflow:hidden;height:48px">'
+      + ['navBg', 'primary', 'coral', 'sage', 'cream', 'footerBg'].map(function(k, i) {
+        return '<div style="flex:' + (i === 1 ? 3 : 1) + ';background:' + p[k] + '"></div>';
+      }).join('') + '</div>';
+  }
+
+  async function renderThemes(data) {
     var main = $('#main-content');
-    var currentPrimary = data.primary || '#1A3C2A';
-    var activeTheme = THEMES.find(function(t) { return t.primary === currentPrimary; });
+    activeColors = fullPalette(data);
+    try {
+      var stored = await githubRead(getFilePath('customThemes'));
+      customThemes = (stored && stored.themes) || [];
+    } catch (e) {
+      customThemes = []; // aún no hay temas propios
+    }
 
-    var html = '<div class="main-header"><span class="main-title">Temas de color</span></div>';
-    html += '<p style="color:var(--gray-500);margin-bottom:24px;font-size:14px">Selecciona un tema para cambiar todos los colores de la web de una vez.</p>';
-    html += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px">';
+    var html = '<div class="main-header"><span class="main-title">Temas de color</span>'
+      + '<button class="btn btn-primary" onclick="window._editTheme()">+ Crear tema</button></div>';
+    html += '<p style="color:var(--gray-500);margin-bottom:24px;font-size:14px">Pulsa un tema para aplicarlo a toda la web. Puedes crear los tuyos eligiendo cada color.</p>';
 
-    THEMES.forEach(function(theme) {
-      var isActive = activeTheme && activeTheme.id === theme.id;
-      var border = isActive ? 'border:3px solid var(--forest)' : 'border:3px solid transparent';
-      html += '<div class="theme-card" data-theme="' + theme.id + '" style="background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);cursor:pointer;transition:all .2s;' + border + '" onclick="window._applyTheme(\'' + theme.id + '\')">';
-      html += '<div style="display:flex;gap:0;border-radius:var(--radius) var(--radius) 0 0;overflow:hidden;height:48px">';
-      html += '<div style="flex:3;background:' + theme.primary + '"></div>';
-      html += '<div style="flex:2;background:' + theme.primaryLight + '"></div>';
-      html += '<div style="flex:1;background:' + theme.sage + '"></div>';
-      html += '<div style="flex:1;background:' + theme.coral + '"></div>';
-      html += '</div>';
-      html += '<div style="padding:14px 16px">';
-      html += '<div style="font-weight:600;font-size:14px;color:var(--charcoal)">' + theme.name + '</div>';
-      if (isActive) html += '<div style="font-size:11px;color:var(--forest);font-weight:600;margin-top:4px">Tema activo</div>';
-      html += '</div></div>';
-    });
+    function card(theme, custom) {
+      var p = fullPalette(custom ? theme.colors : theme);
+      var isActive = samePalette(p, activeColors);
+      var out = '<div class="theme-card" style="background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);cursor:pointer;border:3px solid ' + (isActive ? 'var(--forest)' : 'transparent') + '" onclick="window._applyTheme(\'' + theme.id + '\')">';
+      out += themeSwatches(p);
+      out += '<div style="padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:8px"><div>';
+      out += '<div style="font-weight:600;font-size:14px;color:var(--charcoal)">' + esc(theme.name) + '</div>';
+      out += '<div style="font-size:11px;margin-top:4px;color:' + (isActive ? 'var(--forest);font-weight:600' : 'var(--gray-400)') + '">' + (isActive ? 'Tema activo' : (custom ? 'Tema propio' : 'Tema incluido')) + '</div></div>';
+      out += '<div style="display:flex;gap:4px">';
+      out += '<button class="btn btn-sm btn-ghost" title="' + (custom ? 'Editar' : 'Crear uno a partir de este') + '" onclick="event.stopPropagation();window._editTheme(\'' + theme.id + '\')">&#x270F;&#xFE0F;</button>';
+      if (custom) out += '<button class="btn btn-sm btn-ghost" title="Eliminar" onclick="event.stopPropagation();window._deleteTheme(\'' + theme.id + '\')">&#x1F5D1;&#xFE0F;</button>';
+      out += '</div></div></div>';
+      return out;
+    }
 
+    var grid = 'display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px';
+    if (customThemes.length) {
+      html += '<h3 style="font-size:15px;margin:8px 0 12px">Mis temas</h3><div style="' + grid + ';margin-bottom:28px">';
+      customThemes.forEach(function(t) { html += card(t, true); });
+      html += '</div><h3 style="font-size:15px;margin:8px 0 12px">Temas incluidos</h3>';
+    }
+    html += '<div style="' + grid + '">';
+    BUILTIN_THEMES.forEach(function(t) { html += card(t, false); });
     html += '</div>';
     main.innerHTML = html;
   }
 
-  window._applyTheme = async function(themeId) {
-    var theme = THEMES.find(function(t) { return t.id === themeId; });
-    if (!theme) return;
+  function findTheme(id) {
+    var custom = customThemes.filter(function(t) { return t.id === id; })[0];
+    if (custom) return { theme: custom, custom: true, palette: fullPalette(custom.colors) };
+    var builtin = BUILTIN_THEMES.filter(function(t) { return t.id === id; })[0];
+    return builtin ? { theme: builtin, custom: false, palette: fullPalette(builtin) } : null;
+  }
 
-    var colors = {
-      primary: theme.primary,
-      primaryLight: theme.primaryLight,
-      sage: theme.sage,
-      coral: theme.coral,
-      coralDark: theme.coralDark,
-      cream: theme.cream,
-      charcoal: theme.charcoal,
-      white: '#FFFFFF'
-    };
+  async function applyPalette(palette, name) {
+    await githubWrite(getFilePath('themes'), palette, 'admin: aplicar tema "' + name + '" - ' + new Date().toISOString());
+    showToast('Tema "' + name + '" aplicado. La web se actualiza en 1-2 minutos.');
+    loadSection('themes');
+  }
 
+  window._applyTheme = async function(id) {
+    var found = findTheme(id);
+    if (!found) return;
     try {
-      await githubWrite(getFilePath('themes'), colors, 'admin: aplicar tema "' + theme.name + '" - ' + new Date().toISOString());
-      showToast('Tema "' + theme.name + '" aplicado');
-      loadSection('themes');
+      await applyPalette(found.palette, found.theme.name);
     } catch (e) {
       showToast('Error al aplicar tema: ' + e.message, true);
+    }
+  };
+
+  // Crear o editar un tema. Sin id: parte del tema activo. Con id de un tema
+  // incluido: crea uno nuevo a partir de él.
+  window._editTheme = function(id) {
+    var found = id ? findTheme(id) : null;
+    var editing = found && found.custom ? found.theme : null;
+    var palette = found ? found.palette : Object.assign({}, activeColors);
+    var name = editing ? editing.name : (found ? found.theme.name + ' (mi versión)' : 'Mi tema');
+
+    var body = '<div class="field"><label>Nombre del tema</label><input type="text" id="theme-name" value="' + esc(name) + '"></div>';
+    body += '<div class="theme-editor"><div class="theme-fields">';
+    var group = '';
+    CMS.COLOR_ROLES.forEach(function(r) {
+      if (r.group !== group) { group = r.group; body += '<div class="theme-group">' + group + '</div>'; }
+      body += '<label class="theme-color"><input type="color" data-color="' + r.key + '" value="' + palette[r.key] + '">'
+        + '<span>' + r.label + '</span>'
+        + '<input type="text" class="theme-hex" data-hex="' + r.key + '" value="' + palette[r.key] + '" maxlength="7"></label>';
+    });
+    body += '</div><div class="theme-preview" id="theme-preview"></div></div>';
+    body += '<div id="theme-warnings" style="font-size:12px;margin-top:12px"></div>';
+
+    openModal(editing ? 'Editar tema' : 'Crear tema', body,
+      '<button class="btn btn-ghost" onclick="window._closeModal()">Cancelar</button>'
+      + '<button class="btn btn-ghost" id="theme-save">Guardar</button>'
+      + '<button class="btn btn-primary" id="theme-save-apply">Guardar y aplicar</button>');
+
+    function current() {
+      var p = {};
+      CMS.COLOR_ROLES.forEach(function(r) { p[r.key] = $('[data-color="' + r.key + '"]').value.toUpperCase(); });
+      return p;
+    }
+
+    function preview() {
+      var p = current();
+      $('#theme-preview').innerHTML =
+        '<div style="background:' + p.navBg + ';padding:10px 12px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(0,0,0,.06)">'
+        + '<span style="font-family:Fraunces,serif;color:' + p.navTitle + ';font-size:14px">San José</span>'
+        + '<span style="font-size:10px;color:' + p.navText + '">Inicio · Servicios · Citas</span>'
+        + '<span style="font-size:10px;background:' + p.coral + ';color:' + p.white + ';padding:3px 8px;border-radius:20px">☎ Llamar</span></div>'
+        + '<div style="background:' + p.cream + ';padding:16px 12px">'
+        + '<div style="font-size:9px;color:' + p.coral + ';font-weight:700;letter-spacing:1px">SERVICIOS</div>'
+        + '<div style="font-family:Fraunces,serif;font-size:17px;color:' + p.heading + ';margin:4px 0 6px">Título de sección</div>'
+        + '<div style="font-size:11px;color:' + p.charcoal + ';margin-bottom:10px">Texto general de la web, para que veas cómo se lee.</div>'
+        + '<div style="background:' + p.white + ';border-radius:10px;padding:10px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,.08)">'
+        + '<span style="font-size:10px;background:' + p.sage + '33;color:' + p.primary + ';padding:2px 8px;border-radius:20px">Etiqueta</span>'
+        + '<div style="font-size:11px;color:' + p.charcoal + ';margin-top:6px">Tarjeta de un servicio</div></div>'
+        + '<span style="font-size:11px;background:' + p.primary + ';color:' + p.white + ';padding:6px 12px;border-radius:20px;display:inline-block;margin-right:6px">Botón</span>'
+        + '<span style="font-size:11px;background:' + p.coral + ';color:' + p.white + ';padding:6px 12px;border-radius:20px;display:inline-block">Pedir cita</span></div>'
+        + '<div style="background:' + p.footerBg + ';padding:12px;font-size:10px;color:' + p.footerText + '"><strong>Pie de página</strong><br><span style="opacity:.6">Enlaces · Contacto · Aviso legal</span></div>';
+      var warn = contrastWarnings(p);
+      $('#theme-warnings').innerHTML = warn.length
+        ? '<span style="color:#B45309">&#x26A0;&#xFE0F; Puede costar leer: ' + warn.join('; ') + '. Prueba con colores más distintos entre sí.</span>'
+        : '<span style="color:#059669">&#x2714;&#xFE0F; Todos los textos se leen bien con estos colores.</span>';
+    }
+
+    $$('[data-color]').forEach(function(inp) {
+      inp.addEventListener('input', function() {
+        $('[data-hex="' + inp.dataset.color + '"]').value = inp.value.toUpperCase();
+        $('[data-hex="' + inp.dataset.color + '"]').classList.remove('invalid');
+        preview();
+      });
+    });
+    $$('[data-hex]').forEach(function(inp) {
+      inp.addEventListener('input', function() {
+        var hex = normalizeHex(inp.value);
+        inp.classList.toggle('invalid', !hex);
+        if (hex) { $('[data-color="' + inp.dataset.hex + '"]').value = hex; preview(); }
+      });
+      inp.addEventListener('blur', function() { inp.value = $('[data-color="' + inp.dataset.hex + '"]').value.toUpperCase(); inp.classList.remove('invalid'); });
+    });
+    preview();
+
+    async function save(apply) {
+      var themeName = $('#theme-name').value.trim();
+      if (!themeName) { showToast('Ponle un nombre al tema', true); return; }
+      var colors = current();
+      var list = customThemes.slice();
+      var themeId = editing ? editing.id : 'propio-' + Date.now();
+      var entry = { id: themeId, name: themeName, colors: colors };
+      var pos = list.map(function(t) { return t.id; }).indexOf(themeId);
+      if (pos === -1) list.push(entry); else list[pos] = entry;
+      try {
+        await githubWrite(getFilePath('customThemes'), { themes: list }, 'admin: guardar tema "' + themeName + '" - ' + new Date().toISOString());
+        customThemes = list;
+        closeModal();
+        if (apply) await applyPalette(colors, themeName);
+        else { showToast('Tema "' + themeName + '" guardado'); loadSection('themes'); }
+      } catch (e) {
+        showToast('Error al guardar el tema: ' + e.message, true);
+      }
+    }
+    $('#theme-save').addEventListener('click', function() { save(false); });
+    $('#theme-save-apply').addEventListener('click', function() { save(true); });
+  };
+
+  window._deleteTheme = async function(id) {
+    var found = findTheme(id);
+    if (!found || !found.custom) return;
+    var ok = await showConfirm('¿Eliminar el tema "' + found.theme.name + '"? Si está aplicado, la web conserva sus colores hasta que elijas otro.');
+    if (!ok) return;
+    var list = customThemes.filter(function(t) { return t.id !== id; });
+    try {
+      await githubWrite(getFilePath('customThemes'), { themes: list }, 'admin: eliminar tema "' + found.theme.name + '" - ' + new Date().toISOString());
+      customThemes = list;
+      showToast('Tema eliminado');
+      loadSection('themes');
+    } catch (e) {
+      showToast('Error: ' + e.message, true);
     }
   };
 

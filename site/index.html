@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light">
     <title>Clínica Veterinaria San José | La Rinconada, Sevilla</title>
     <meta name="description" content="Clínica Veterinaria San José en La Rinconada, Sevilla. Cirugía, vacunas, terapias alternativas. Dra. Paula Canalias. ☎ 955 321 470">
     <link rel="stylesheet" href="css/fonts.css">
@@ -22,6 +23,7 @@
         .hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.08);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding:8px 20px;border-radius:50px;border:1px solid rgba(255,255,255,.1);margin-bottom:32px}
         .hero-badge-dot{width:7px;height:7px;background:#4ADE80;border-radius:50%;animation:pulse-dot 2s infinite}
         @keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:.3}}
+        .hero-badge.is-closed .hero-badge-dot{background:#F87171;animation:none}
         .hero-badge span{font-size:.75rem;font-weight:600;color:rgba(255,255,255,.85);letter-spacing:.3px}
         .hero h1{font-size:clamp(2.8rem,5.5vw,4.5rem);color:var(--white);margin-bottom:24px;line-height:1.05;letter-spacing:-1px}
         .hero h1 .accent{color:var(--coral-light);position:relative}
@@ -75,8 +77,8 @@
         .hero-scroll{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);z-index:3;display:flex;flex-direction:column;align-items:center;gap:8px;color:rgba(255,255,255,.4);font-size:.7rem;letter-spacing:1px;text-transform:uppercase;animation:scroll-hint 2s ease-in-out infinite}
         .hero-scroll-line{width:1px;height:30px;background:linear-gradient(to bottom,rgba(255,255,255,.4),transparent)}
         @keyframes scroll-hint{0%,100%{opacity:.4;transform:translateX(-50%) translateY(0)}50%{opacity:.8;transform:translateX(-50%) translateY(5px)}}
-        @media(max-width:1024px){.hero .container{grid-template-columns:1fr;gap:48px;text-align:center}.hero-content{max-width:100%}.hero-sub{margin:0 auto 40px}.hero-btns{justify-content:center}.hero-proof{justify-content:center}.hero-visual{order:-1}.hero-img-wrapper{max-width:360px;margin:0 auto}.hero-float--rating{left:10px;bottom:20px}.hero-float--hours{right:10px;top:30px}}
-        @media(max-width:768px){.hero{min-height:auto;padding:120px 0 80px}.hero h1{font-size:2.4rem}.hero-btns{flex-direction:column;align-items:stretch}.hero-btn-primary,.hero-btn-secondary{justify-content:center}.hero-float{display:none}.hero-scroll{display:none}}
+        @media(max-width:1024px){.hero .container{grid-template-columns:1fr;gap:48px;text-align:center}.hero-content{max-width:100%}.hero-sub{margin:0 auto 40px}.hero-btns{justify-content:center}.hero-proof{justify-content:center}.hero-img-wrapper{max-width:340px;margin:0 auto}.hero-float{display:none}}
+        @media(max-width:768px){.hero{min-height:auto;padding:100px 0 64px}.hero .container{gap:36px}.hero-img-wrapper{max-width:280px}.hero h1{font-size:2.4rem}.hero-btns{flex-direction:column;align-items:stretch}.hero-btn-primary,.hero-btn-secondary{justify-content:center}.hero-float{display:none}.hero-scroll{display:none}}
         .plans-home-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
         .plan-home-card{background:var(--white);border-radius:20px;padding:32px 24px;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,.06);transition:all .4s var(--transition-smooth);position:relative;border:2px solid transparent}
         .plan-home-card:hover{transform:translateY(-6px);box-shadow:0 12px 40px rgba(0,0,0,.1)}
@@ -135,18 +137,14 @@
             <li><a href="servicios.html">Servicios</a></li>
             <li><a href="planes.html">Planes</a></li>
             <li><a href="citas.html">Citas</a></li>
-            <li><a href="tienda.html">Tienda</a></li>`n            <li><a href="galeria.html">Galería</a></li>
+            <li data-store-link><a href="tienda.html">Tienda</a></li>
+            <li><a href="galeria.html">Galería</a></li>
             <li><a href="resenas.html">Reseñas</a></li>
             <li><a href="contacto.html">Contacto</a></li>
             <li><a href="tel:955321470" class="nav-cta">☎ 955 321 470</a></li>
         </ul>
         <div class="nav-right">
-            <button class="cart-btn" id="cartBtn" aria-label="Carrito">
-                <span class="cart-btn-icon">🛒</span>
-                <span class="cart-btn-text">Carrito</span>
-                <span class="cart-badge" id="cartBadge">0</span>
-            </button>
-            <button class="nav-toggle" id="navToggle" aria-label="Menú"><span></span><span></span><span></span></button>
+            <button class="nav-toggle" id="navToggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="navLinks"><span></span><span></span><span></span></button>
         </div>
     </div>
 </nav>
@@ -161,12 +159,12 @@
         <div class="hero-content">
             <div class="hero-badge">
                 <div class="hero-badge-dot"></div>
-                <span>Abierto ahora · L-V 10:00-21:00</span>
+                <span>Consulta nuestro horario</span>
             </div>
             <h1>Cuidamos a quien <span class="accent">más quieres</span></h1>
             <p class="hero-sub">Clínica veterinaria de referencia en La Rinconada. Tecnología avanzada, equipo humano de calidad y un trato cercano que marca la diferencia.</p>
             <div class="hero-btns">
-                <a href="citas.html" class="hero-btn-primary">Pedir cita ahora →’</a>
+                <a href="citas.html" class="hero-btn-primary">Pedir cita ahora →</a>
                 <a href="servicios.html" class="hero-btn-secondary">Ver servicios</a>
             </div>
             <div class="hero-proof">
@@ -201,8 +199,8 @@
                 <div class="hero-float hero-float--hours">
                     <div class="hero-float-icon" style="background:#FFF3E0">📅</div>
                     <div class="hero-float-info">
-                        <strong>Hoy: 10:00 - 21:00</strong>
-                        <span>Abierto ahora</span>
+                        <strong>Horario de hoy</strong>
+                        <span>&nbsp;</span>
                     </div>
                 </div>
             </div>
@@ -258,7 +256,7 @@
             <a href="servicios.html" class="svc reveal tilt" style="text-decoration:none"><div class="svc-icon">✨</div><h3>Terapias Alternativas</h3><p>Ozonoterapia, acupuntura y más.</p></a>
         </div>
         <div style="text-align:center;margin-top:40px">
-            <a href="servicios.html" class="btn btn-forest">Ver todos los servicios →’</a>
+            <a href="servicios.html" class="btn btn-forest">Ver todos los servicios →</a>
         </div>
     </div>
 </section>
@@ -270,7 +268,7 @@
                 <div class="section-label">Sobre Nosotros</div>
                 <h2 class="section-title">Un equipo que de verdad ama lo que hace</h2>
                 <p class="about-text">La Dra. Paula Canalias, directora y especialista en pequeños animales con más de 18 años de experiencia, lidera un equipo con una obsesión: que tu mascota reciba exactamente lo que necesita.</p>
-                <a href="nosotros.html" class="btn btn-forest">Conoce al equipo →’</a>
+                <a href="nosotros.html" class="btn btn-forest">Conoce al equipo →</a>
             </div>
             <div class="about-img" style="box-shadow:var(--sh-lg);border-radius:var(--r-xl);overflow:hidden">
                 <img src="img/clinica-01.jpeg" alt="Clínica Veterinaria San José" width="500" height="625" loading="lazy">
@@ -296,7 +294,7 @@
                     <li>Desparasitación trimestral</li>
                     <li>10% dto. en productos</li>
                 </ul>
-                <a href="planes.html" class="plan-home-btn">Ver detalles →’</a>
+                <a href="planes.html" class="plan-home-btn">Ver detalles →</a>
             </div>
             <div class="plan-home-card plan-home-card--popular reveal" style="transition-delay:.1s">
                 <div class="plan-home-popular">Más Popular</div>
@@ -309,7 +307,7 @@
                     <li>15% dto. en productos</li>
                     <li>Cirugías con 20% dto.</li>
                 </ul>
-                <a href="planes.html" class="plan-home-btn plan-home-btn--primary">Ver detalles →’</a>
+                <a href="planes.html" class="plan-home-btn plan-home-btn--primary">Ver detalles →</a>
             </div>
             <div class="plan-home-card reveal" style="transition-delay:.2s">
                 <div class="plan-home-tag">Familiar</div>
@@ -320,30 +318,18 @@
                     <li>25% dto. en cirugías</li>
                     <li>Análisis incluido</li>
                 </ul>
-                <a href="planes.html" class="plan-home-btn">Ver detalles →’</a>
+                <a href="planes.html" class="plan-home-btn">Ver detalles →</a>
             </div>
         </div>
     </div>
 </section>
 
-<div class="cart-overlay" id="cartOverlay"></div>
-<div class="cart-sidebar" id="cartSidebar">
-    <div class="cart-header"><h3>🛒 Tu Carrito</h3><button class="cart-close" id="cartClose">✕</button></div>
-    <div class="cart-items" id="cartItems"><div class="cart-empty" id="cartEmpty"><div class="cart-empty-icon">🛒</div><p>Tu carrito está vacío</p></div></div>
-    <div class="cart-footer" id="cartFooter" style="display:none">
-        <div class="cart-subtotal"><span>Subtotal</span><strong id="cartTotal">0.00€</strong></div>
-        <div class="cart-shipping">Envío gratuito en pedidos superiores a 40€</div>
-        <button class="cart-checkout" id="checkoutBtn">Reservar por WhatsApp →’</button>
-        <button class="cart-continue" id="continueBtn">→ Seguir comprando</button>
-    </div>
-</div>
-
-<section class="home-section">
+<section class="home-section" data-store-section>
     <div class="container">
         <div class="text-center" style="margin-bottom:48px">
             <div class="section-label">Tienda</div>
             <h2 class="section-title">Productos destacados</h2>
-            <p class="section-desc mx-auto">Alimentación, accesorios y cuidado de las mejores marcas. Envío gratuito desde 40€.</p>
+            <p class="section-desc mx-auto">Alimentación, accesorios y cuidado de las marcas que recomendamos. Disponibles en la clínica.</p>
         </div>
         <div class="products-home">
             <a href="tienda.html" class="product-home reveal" style="text-decoration:none">
@@ -364,7 +350,7 @@
             </a>
         </div>
         <div class="text-center" style="margin-top:36px">
-            <a href="tienda.html" class="btn btn-forest">Ver tienda →’</a>
+            <a href="tienda.html" class="btn btn-forest">Ver tienda →</a>
         </div>
     </div>
 </section>
@@ -394,7 +380,7 @@
             </div>
         </div>
         <div class="text-center" style="margin-top:36px">
-            <a href="resenas.html" class="btn btn-ghost">Ver todas las reseñas →’</a>
+            <a href="resenas.html" class="btn btn-ghost">Ver todas las reseñas →</a>
         </div>
     </div>
 </section>
@@ -410,7 +396,7 @@
             </div>
             <div class="vetbot-input-group">
                 <input type="text" class="vetbot-input" id="vetbotInput" placeholder="Escribe tu mensaje...">
-                <button class="vetbot-send" id="vetbotSend">→’</button>
+                <button class="vetbot-send" id="vetbotSend">→</button>
             </div>
         </div>
     </div>
@@ -438,6 +424,7 @@
     </div>
 </footer>
 
+<script src="js/schedule.js"></script>
 <script src="js/cms.js"></script>
 <script>CMS.applyColors(); CMS.loadSettings(); CMS.loadPhotos();</script>
 <script src="js/main.js"></script>

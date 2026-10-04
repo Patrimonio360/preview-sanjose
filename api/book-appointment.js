@@ -6,8 +6,9 @@
 
 const {
   APPOINTMENTS_REPO, APPOINTMENTS_PATH,
-  setCors, isAllowedOrigin, parseBody, readFile, writeFile
+  setCors, isAllowedOrigin, parseBody, writeFile, readSettings, readAppointments, blocksSlot
 } = require('./_lib');
+const ClinicSchedule = require('../site/js/schedule.js');
 
 const MAX_LEN = { service: 100, patientName: 100, patientPhone: 30, patientEmail: 120, message: 1000 };
 
@@ -41,19 +42,6 @@ function validate(body) {
   return { appt };
 }
 
-async function readAppointments() {
-  const file = await readFile(APPOINTMENTS_REPO, APPOINTMENTS_PATH);
-  if (!file) return { data: { appointments: [] }, sha: undefined };
-  let data;
-  try {
-    data = JSON.parse(file.content.toString('utf8'));
-  } catch (e) {
-    data = {};
-  }
-  if (!Array.isArray(data.appointments)) data.appointments = [];
-  return { data, sha: file.sha };
-}
-
 async function saveAppointment(appt) {
   // Si dos personas reservan a la vez, GitHub rechaza la segunda escritura
   // (409/422); en ese caso se vuelve a leer el archivo y se reintenta.
@@ -61,7 +49,7 @@ async function saveAppointment(appt) {
     const { data, sha } = await readAppointments();
 
     const taken = data.appointments.some(function (a) {
-      return a.date === appt.date && a.time === appt.time && a.status !== 'cancelled';
+      return a.date === appt.date && a.time === appt.time && blocksSlot(a);
     });
     if (taken) return { conflict: true };
 
@@ -92,8 +80,24 @@ module.exports = async function handler(req, res) {
   const body = parseBody(req);
   if (!body) return res.status(400).json({ error: 'Datos no válidos' });
 
+  // Campo trampa: las personas no lo ven; si viene relleno es un robot.
+  // Se responde como si todo fuera bien para no darle pistas.
+  if (body.website) return res.status(200).json({ success: true });
+
   const result = validate(body);
   if (result.error) return res.status(400).json({ error: result.error });
+
+  // La hora tiene que estar dentro del horario puesto en el panel, no haber
+  // pasado y no estar demasiado lejos.
+  try {
+    const settings = await readSettings();
+    if (!ClinicSchedule.isValidSlot(result.appt.date, result.appt.time, settings)) {
+      return res.status(400).json({ error: 'Esa fecha u hora no está disponible. Por favor, elige otra en el calendario.' });
+    }
+  } catch (err) {
+    console.error('book-appointment settings:', err.message);
+    return res.status(500).json({ error: 'No se pudo comprobar el horario' });
+  }
 
   // id, estado y fecha de creación los pone el servidor, no el navegador.
   const appt = {

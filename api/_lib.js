@@ -78,7 +78,35 @@ async function writeFile(target, path, buffer, message, sha) {
   return { ok: true, status: res.status, sha: data.content.sha };
 }
 
+// Ajustes públicos de la clínica (horario, email…) tal como están en el repo.
+async function readSettings() {
+  const file = await readFile(SITE_REPO, 'site/_data/settings.json');
+  return file ? JSON.parse(file.content.toString('utf8')) : {};
+}
+
+// Lista de citas del repositorio privado y su sha.
+async function readAppointments() {
+  const file = await readFile(APPOINTMENTS_REPO, APPOINTMENTS_PATH);
+  if (!file) return { data: { appointments: [] }, sha: undefined };
+  let data;
+  try {
+    data = JSON.parse(file.content.toString('utf8'));
+  } catch (e) {
+    data = {};
+  }
+  if (!Array.isArray(data.appointments)) data.appointments = [];
+  return { data, sha: file.sha };
+}
+
+// Una cita ocupa su hora salvo que esté cancelada.
+function blocksSlot(appt) {
+  return appt.status !== 'cancelled';
+}
+
 module.exports = {
+  readSettings,
+  readAppointments,
+  blocksSlot,
   SITE_REPO,
   APPOINTMENTS_REPO,
   APPOINTMENTS_PATH,

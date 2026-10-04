@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light">
     <title>Pedir Cita | Clínica Veterinaria San José</title>
     <meta name="description" content="Reserva tu cita online en la Clínica Veterinaria San José. Selecciona servicio, fecha y hora.">
     <link rel="stylesheet" href="css/fonts.css">
@@ -17,6 +18,13 @@
         .form-group input,.form-group select,.form-group textarea{width:100%;padding:12px 16px;border:2px solid #e5e7eb;border-radius:12px;font-size:15px;font-family:inherit;outline:none;transition:border-color .2s;background:var(--white)}
         .form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--forest)}
         .form-group textarea{resize:vertical;min-height:80px}
+        .calendar-nav-btn:disabled{opacity:.3;cursor:default}
+        .form-hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+        .form-consent{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--gray500);line-height:1.5;margin:4px 0 20px;cursor:pointer}
+        .form-consent input{margin-top:3px;width:16px;height:16px;flex-shrink:0;accent-color:var(--forest)}
+        .form-consent a{color:var(--forest);text-decoration:underline}
+        .timeslot.taken{opacity:.35;text-decoration:line-through;cursor:not-allowed;pointer-events:none}
+        .timeslots-note{grid-column:1/-1;text-align:center;color:var(--gray400);padding:20px;font-size:14px}
         .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
         .btn-book{width:100%;padding:16px;background:var(--forest);color:var(--white);border:none;border-radius:12px;font-size:16px;font-weight:700;font-family:inherit;cursor:pointer;transition:all .2s}
         .btn-book:hover{background:var(--forest-light);transform:translateY(-2px);box-shadow:0 8px 24px rgba(26,60,42,.3)}
@@ -72,13 +80,14 @@
             <li><a href="servicios.html">Servicios</a></li>
             <li><a href="planes.html">Planes</a></li>
             <li><a href="citas.html" class="active">Citas</a></li>
-            <li><a href="tienda.html">Tienda</a></li>`n            <li><a href="galeria.html">Galería</a></li>
+            <li data-store-link><a href="tienda.html">Tienda</a></li>
+            <li><a href="galeria.html">Galería</a></li>
             <li><a href="resenas.html">Reseñas</a></li>
             <li><a href="contacto.html">Contacto</a></li>
             <li><a href="tel:955321470" class="nav-cta">☎ 955 321 470</a></li>
         </ul>
         <div class="nav-right">
-            <button class="nav-toggle" id="navToggle" aria-label="Menú"><span></span><span></span><span></span></button>
+            <button class="nav-toggle" id="navToggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="navLinks"><span></span><span></span><span></span></button>
         </div>
     </div>
 </nav>
@@ -143,15 +152,22 @@
                         <label>Motivo de la consulta</label>
                         <textarea id="bookMessage" placeholder="Cuéntanos brevemente el motivo de tu visita..."></textarea>
                     </div>
-                    <button type="submit" class="btn-book" id="bookSubmit">Reservar cita</button>
+                    <div class="form-hp" aria-hidden="true">
+                        <label>No rellenar este campo <input type="text" id="bookWebsite" tabindex="-1" autocomplete="off"></label>
+                    </div>
+                    <label class="form-consent">
+                        <input type="checkbox" id="bookConsent" required>
+                        <span>He leído y acepto la <a href="politica-privacidad.html" target="_blank">política de privacidad</a>. Usaremos tus datos solo para gestionar tu cita.</span>
+                    </label>
+                    <button type="submit" class="btn-book" id="bookSubmit">Solicitar cita</button>
                 </form>
 
                 <div class="booking-success" id="bookingSuccess">
-                    <div class="booking-success-icon">✅</div>
+                    <div class="booking-success-icon">⏳</div>
                     <div class="booking-success-title">¡Solicitud de cita recibida!</div>
                     <div class="booking-success-text">
-                        Tu cita está <strong>pendiente de confirmación</strong>.<br>
-                        La clínica revisará tu solicitud y te confirmará la cita por WhatsApp o por teléfono lo antes posible.
+                        Tu cita está <strong>pendiente de revisión</strong>.<br>
+                        La clínica revisará tu solicitud y te escribirá por email o WhatsApp para confirmarla o, si esa hora no fuera posible, proponerte otra.
                     </div>
                     <div id="bookingSummary" style="background:var(--cream);border-radius:12px;padding:20px;margin:16px 0;text-align:left;font-size:14px"></div>
                     <div class="booking-success-text">
@@ -188,6 +204,7 @@
 </footer>
 
 <script src="js/main.js"></script>
+<script src="js/schedule.js"></script>
 <script src="js/cms.js"></script>
 <script>CMS.applyColors(); CMS.loadSettings();</script>
 <script src="js/citas.js"></script>
