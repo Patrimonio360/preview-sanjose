@@ -5,7 +5,7 @@
   "email": "sanjose.clinicaveterinaria@gmail.com",
   "hours": "L-V 10:00 - 21:00",
   "cif": "B-91234567",
-  "whatsapp": "34955321470",
+  "whatsapp": "34694422484",
   "facebook": "https://www.facebook.com/CVetSanJose",
   "instagram": "https://www.instagram.com/explore/locations/1748035125485259/clinica-san-jose-pagina-oficial/",
   "footerDesc": "Más de 15 años cuidando las mascotas de San José de La Rinconada y alrededores.",
@@ -15,13 +15,13 @@
   "trustAccessible": "100%",
   "storeEnabled": "true",
   "schedule": {
+    "dom": "",
     "lun": "10:00-21:00",
     "mar": "10:00-21:00",
     "mie": "10:00-21:00",
     "jue": "10:00-21:00",
     "vie": "10:00-21:00",
-    "sab": "",
-    "dom": ""
+    "sab": ""
   },
   "shortName": "San José",
   "logo": "img/clinica-02.jpeg",
