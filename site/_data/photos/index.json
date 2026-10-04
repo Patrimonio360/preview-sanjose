@@ -110,5 +110,12 @@
     "image": "https://raw.githubusercontent.com/Patrimonio360/preview-sanjose/master/site/img/uploads/20261004_55695.png",
     "usage": "hero",
     "description": "Vista panorámica del exterior."
+  },
+  {
+    "id": 17,
+    "title": "",
+    "image": "https://raw.githubusercontent.com/Patrimonio360/preview-sanjose/master/site/img/uploads/20261004_103589.jpg",
+    "usage": "nosotros",
+    "description": ""
   }
 ]
