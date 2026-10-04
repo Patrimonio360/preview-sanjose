@@ -603,6 +603,8 @@
     .theme-preview { position: sticky; top: 0; border-radius: 12px; overflow: hidden; box-shadow: var(--shadow-md); }
     @media (max-width: 760px) { .theme-editor { grid-template-columns: 1fr; } .theme-preview { position: static; order: -1; } }
 
+    .password-box { margin-top: 24px; max-width: 800px; background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); padding: 28px 32px; }
+
     /* ===== SOPORTE PATRIMONIO360 ===== */
     .support-box { margin-top: 24px; max-width: 800px; background: var(--cream); border: 2px solid var(--forest); border-radius: var(--radius); padding: 24px 28px; }
     .support-head { display: flex; gap: 14px; align-items: center; }
@@ -981,6 +983,8 @@
       if (res.ok && out.token) {
         SESSION_TOKEN = out.token;
         sessionStorage.setItem('admin_session', out.token);
+        // 'agency' = se ha entrado con la clave maestra de Patrimonio360
+        sessionStorage.setItem('admin_role', out.role || 'clinic');
         $('#login-error').style.display = 'none';
         $('#login-screen').style.display = 'none';
         $('#dashboard-screen').style.display = 'block';
@@ -1003,6 +1007,7 @@
 
   function logout() {
     sessionStorage.removeItem('admin_session');
+    sessionStorage.removeItem('admin_role');
     location.reload();
   }
 
@@ -1449,8 +1454,10 @@
     html += '<div style="margin-top:24px;display:flex;gap:12px">';
     html += '<button class="btn btn-primary" id="save-settings-btn">Guardar cambios</button>';
     html += '</div></div>';
+    html += passwordBoxHtml();
     html += supportBoxHtml();
     main.innerHTML = html;
+    bindPasswordBox();
     bindSupportBox();
 
     $$('.schedule-day input').forEach(function(cb) {
@@ -1464,6 +1471,47 @@
     createUploadField('logo-upload', data.logo || '', 'site/img/uploads');
     $('#logo-upload-url').dataset.setting = 'logo';
     $('#save-settings-btn').addEventListener('click', saveSettings);
+  }
+
+  // ===== CONTRASEÑA DEL PANEL =====
+  // La clínica cambia su contraseña aquí. Con la clave maestra de
+  // Patrimonio360 (recuperación) no se pide la actual.
+  function isAgencySession() { return sessionStorage.getItem('admin_role') === 'agency'; }
+
+  function passwordBoxHtml() {
+    var agency = isAgencySession();
+    return '<div class="password-box">'
+      + '<h3 style="font-size:16px;margin-bottom:6px">&#x1F512; Contraseña del panel</h3>'
+      + '<p style="font-size:13px;color:var(--gray-500);margin-bottom:16px">'
+      + (agency
+        ? 'Has entrado con la <strong>clave maestra de Patrimonio360</strong>: puedes poner una contraseña nueva para la clínica sin conocer la anterior.'
+        : 'Cámbiala cuando quieras. Usa al menos 8 caracteres y no la compartas. Si la olvidas, Patrimonio360 puede ponerte una nueva.')
+      + '</p><div class="settings-grid">'
+      + (agency ? '' : '<div class="field field-full"><label>Contraseña actual</label><input type="password" id="pw-current" autocomplete="current-password"></div>')
+      + '<div class="field"><label>Contraseña nueva</label><input type="password" id="pw-new" autocomplete="new-password"></div>'
+      + '<div class="field"><label>Repite la contraseña nueva</label><input type="password" id="pw-repeat" autocomplete="new-password"></div>'
+      + '</div><div style="margin-top:16px"><button class="btn btn-primary" id="pw-save">Cambiar contraseña</button></div></div>';
+  }
+
+  function bindPasswordBox() {
+    var btn = $('#pw-save');
+    if (!btn) return;
+    btn.addEventListener('click', async function() {
+      var current = $('#pw-current') ? $('#pw-current').value : '';
+      var pw = $('#pw-new').value, again = $('#pw-repeat').value;
+      if (!isAgencySession() && !current) { showToast('Escribe tu contraseña actual', true); return; }
+      if (pw.length < 8) { showToast('La contraseña nueva debe tener al menos 8 caracteres', true); return; }
+      if (pw !== again) { showToast('Las dos contraseñas nuevas no coinciden', true); return; }
+      btn.disabled = true;
+      try {
+        await adminApi({ action: 'changePassword', current: current, password: pw });
+        ['#pw-current', '#pw-new', '#pw-repeat'].forEach(function(sel) { if ($(sel)) $(sel).value = ''; });
+        showToast('Contraseña cambiada. La próxima vez entra con la nueva.');
+      } catch (e) {
+        showToast(e.message, true);
+      }
+      btn.disabled = false;
+    });
   }
 
   // ===== SOPORTE PATRIMONIO360 =====

@@ -5,14 +5,21 @@
 // Variables de entorno necesarias:
 //   GITHUB_TOKEN          token fine-grained con "Contents: Read and write"
 //                         sobre preview-sanjose y sanjose-citas
-//   ADMIN_PASSWORD_HASH   SHA-256 (hex) de la contraseña del panel
+//   ADMIN_PASSWORD_HASH   SHA-256 (hex) de la contraseña inicial del panel
 //   ADMIN_SESSION_SECRET  texto aleatorio largo para firmar las sesiones
+//   AGENCY_MASTER_PASSWORD (opcional) clave maestra de Patrimonio360: entra
+//                         siempre y permite poner contraseña nueva sin la actual
+//
+// Cuando la clínica cambia su contraseña desde el panel, la nueva se guarda
+// cifrada (scrypt + sal) en admin-auth.json del repositorio PRIVADO de citas
+// y sustituye a ADMIN_PASSWORD_HASH.
 //
 // Peticiones (POST, JSON):
 //   { action: 'login',  password }                      -> { token }
 //   { action: 'read',   path }                          -> { data, sha }
 //   { action: 'write',  path, data, sha, message }      -> { sha }
 //   { action: 'upload', path, base64, message }         -> { url }
+//   { action: 'changePassword', current, password }     -> { ok }
 // Todas salvo 'login' necesitan la cabecera "Authorization: Bearer <token>".
 
 const crypto = require('crypto');
@@ -32,30 +39,79 @@ function sign(payload) {
   return crypto.createHmac('sha256', process.env.ADMIN_SESSION_SECRET).update(payload).digest('base64url');
 }
 
-function createSession() {
-  const payload = Buffer.from(JSON.stringify({ exp: Date.now() + SESSION_HOURS * 3600 * 1000 })).toString('base64url');
+// role: 'clinic' (contraseña de la clínica) o 'agency' (clave maestra).
+function createSession(role) {
+  const payload = Buffer.from(JSON.stringify({ exp: Date.now() + SESSION_HOURS * 3600 * 1000, role: role })).toString('base64url');
   return payload + '.' + sign(payload);
 }
 
+// Devuelve los datos de la sesión ({ exp, role }) o null si no es válida.
 function validSession(req) {
   const header = req.headers.authorization || '';
   const token = header.startsWith('Bearer ') ? header.slice(7) : '';
   const [payload, signature] = token.split('.');
-  if (!payload || !signature) return false;
+  if (!payload || !signature) return null;
   const expected = Buffer.from(sign(payload));
   const given = Buffer.from(signature);
-  if (expected.length !== given.length || !crypto.timingSafeEqual(expected, given)) return false;
+  if (expected.length !== given.length || !crypto.timingSafeEqual(expected, given)) return null;
   try {
-    return JSON.parse(Buffer.from(payload, 'base64url').toString('utf8')).exp > Date.now();
+    const data = JSON.parse(Buffer.from(payload, 'base64url').toString('utf8'));
+    return data.exp > Date.now() ? data : null;
   } catch (e) {
-    return false;
+    return null;
   }
 }
 
-function checkPassword(password) {
-  const expected = Buffer.from(process.env.ADMIN_PASSWORD_HASH || '', 'hex');
-  const given = sha256(String(password || ''));
-  return expected.length === given.length && crypto.timingSafeEqual(expected, given);
+function sameBytes(a, b) {
+  return a.length === b.length && crypto.timingSafeEqual(a, b);
+}
+
+// Contraseña guardada desde el panel (si la clínica ya la cambió alguna vez).
+const AUTH_PATH = 'admin-auth.json';
+async function readStoredAuth() {
+  const file = await readFile(APPOINTMENTS_REPO, AUTH_PATH);
+  return file ? { data: JSON.parse(file.content.toString('utf8')), sha: file.sha } : null;
+}
+
+async function checkClinicPassword(password) {
+  const text = String(password || '');
+  const stored = await readStoredAuth();
+  if (stored && stored.data.hash && stored.data.salt) {
+    const hash = crypto.scryptSync(text, Buffer.from(stored.data.salt, 'hex'), 32);
+    return sameBytes(hash, Buffer.from(stored.data.hash, 'hex'));
+  }
+  return sameBytes(sha256(text), Buffer.from(process.env.ADMIN_PASSWORD_HASH || '', 'hex'));
+}
+
+function checkMasterPassword(password) {
+  const master = process.env.AGENCY_MASTER_PASSWORD || '';
+  if (master.length < 8) return false;
+  return sameBytes(sha256(String(password || '')), sha256(master));
+}
+
+async function handleChangePassword(body, session, res) {
+  const password = String(body.password || '');
+  if (password.length < 8) return res.status(400).json({ error: 'La contraseña nueva debe tener al menos 8 caracteres' });
+  if (checkMasterPassword(password)) return res.status(400).json({ error: 'Elige otra contraseña' });
+  // Con la clave maestra no hace falta la actual (sirve para recuperar el acceso).
+  if (session.role !== 'agency' && !(await checkClinicPassword(body.current))) {
+    await new Promise(function (r) { setTimeout(r, 1000); });
+    // 400 y no 401: el panel cierra la sesión ante un 401.
+    return res.status(400).json({ error: 'La contraseña actual no es correcta' });
+  }
+  const salt = crypto.randomBytes(16);
+  const record = {
+    algo: 'scrypt',
+    salt: salt.toString('hex'),
+    hash: crypto.scryptSync(password, salt, 32).toString('hex'),
+    updatedAt: new Date().toISOString(),
+    updatedBy: session.role === 'agency' ? 'Patrimonio360' : 'clínica'
+  };
+  const stored = await readStoredAuth();
+  const result = await writeFile(APPOINTMENTS_REPO, AUTH_PATH, Buffer.from(JSON.stringify(record, null, 2) + '\n', 'utf8'),
+    'Cambio de contraseña del panel', stored && stored.sha);
+  if (!result.ok) throw new Error('GitHub write ' + result.status);
+  return res.status(200).json({ ok: true });
 }
 
 // Qué archivos puede tocar el panel y en qué repositorio están.
@@ -121,15 +177,19 @@ module.exports = async function handler(req, res) {
 
   try {
     if (body.action === 'login') {
-      if (!checkPassword(body.password)) {
+      const role = checkMasterPassword(body.password) ? 'agency' : (await checkClinicPassword(body.password)) ? 'clinic' : null;
+      if (!role) {
         // Pequeña espera para frenar a quien pruebe contraseñas a lo loco.
         await new Promise(function (r) { setTimeout(r, 1000); });
         return res.status(401).json({ error: 'Contraseña incorrecta' });
       }
-      return res.status(200).json({ token: createSession() });
+      return res.status(200).json({ token: createSession(role), role: role });
     }
 
-    if (!validSession(req)) return res.status(401).json({ error: 'Sesión caducada' });
+    const session = validSession(req);
+    if (!session) return res.status(401).json({ error: 'Sesión caducada' });
+
+    if (body.action === 'changePassword') return await handleChangePassword(body, session, res);
 
     if (body.action === 'read') return await handleRead(body, res);
     if (body.action === 'write') return await handleWrite(body, res);
