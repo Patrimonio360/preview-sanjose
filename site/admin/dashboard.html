@@ -1681,7 +1681,9 @@
           + '<span style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:50px;background:' + statusColor + '20;color:' + statusColor + '">' + statusLabel + '</span>'
           + '</div>'
           + '<div class="card-name">' + esc(a.patientName || '') + '</div>'
-          + '<div class="card-brand">' + esc(a.patientPhone || '') + ' · ' + esc(a.patientEmail || '') + '</div>'
+          + '<div class="card-brand">' + esc(a.patientPhone || '') + (a.patientEmail ? ' · ' + esc(a.patientEmail) : '') + '</div>'
+          + (a.petName ? '<div style="font-size:13px;color:var(--gray-600);margin-top:4px">&#x1F43E; ' + esc(a.petName) + (a.petType ? ' (' + esc(a.petType) + ')' : '') + '</div>' : '')
+          + '<div style="font-size:11px;color:var(--gray-400);margin-top:4px">' + ({ chat: '&#x1F4AC; Pedida por el chat de la web', whatsapp: '&#x1F4F1; Pedida por WhatsApp (VetBot)' }[a.source] || '&#x1F310; Pedida por el formulario de la web') + '</div>'
           + '<div style="font-size:13px;color:var(--gray-500);margin-top:8px">&#x1F4C5; ' + dateDisplay + ' · ' + esc(a.time || '') + '</div>'
           + (a.status === 'proposed' && a.originalDate ? '<div style="font-size:12px;color:var(--gray-400);margin-top:4px">Pedía: ' + esc(a.originalDate) + ' ' + esc(a.originalTime) + '</div>' : '')
           + (a.message ? '<div style="font-size:12px;color:var(--gray-400);margin-top:6px;font-style:italic">"' + esc(a.message) + '"</div>' : '')

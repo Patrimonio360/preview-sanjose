@@ -162,14 +162,14 @@
     WEEK_ORDER.forEach(function (d) {
       var hours = formatRanges(week[d]);
       var last = out[out.length - 1];
-      if (last && last.hours === hours) last.to = d;
-      else out.push({ from: d, to: d, hours: hours });
+      if (last && last.hours === hours) { last.to = d; last.count++; }
+      else out.push({ from: d, to: d, hours: hours, count: 1 });
     });
     return out.map(function (g) {
       var same = g.from === g.to;
       var name = DAY_NAMES[g.from].charAt(0).toUpperCase() + DAY_NAMES[g.from].slice(1);
       return {
-        days: same ? name : name + ' a ' + DAY_NAMES[g.to],
+        days: same ? name : name + (g.count === 2 ? ' y ' : ' a ') + DAY_NAMES[g.to],
         short: same ? DAY_INITIALS[g.from] : DAY_INITIALS[g.from] + '-' + DAY_INITIALS[g.to],
         hours: g.hours,
         closed: g.hours === 'Cerrado'
