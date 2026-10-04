@@ -165,14 +165,20 @@
   }
 
   fab.addEventListener('click', function () { setOpen(true); });
-  panel.querySelector('.vb-close').addEventListener('click', function () { setOpen(false); });
+  // Cerrar con la ✕ termina la conversación: al volver a abrir empieza de cero.
+  function endChat() {
+    chat.messages = [];
+    chat.state = null;
+    setOpen(false);
+  }
+  panel.querySelector('.vb-close').addEventListener('click', endChat);
   panel.querySelector('.vb-form').addEventListener('submit', function (e) {
     e.preventDefault();
     var t = input.value;
     input.value = '';
     send(t);
   });
-  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && chat.open) setOpen(false); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && chat.open) endChat(); });
   // Enlaces o botones de la web que abren el chat
   document.querySelectorAll('.vetbot-trigger, [data-open-vetbot]').forEach(function (el) {
     el.addEventListener('click', function (e) { e.preventDefault(); setOpen(true); });
