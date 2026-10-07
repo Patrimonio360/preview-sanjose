@@ -46,12 +46,12 @@
       "name": "Odontología",
       "icon": "🦷",
       "shortDesc": "Limpieza dental, extracciones y tratamiento periodontal.",
-      "description": "Servicio completo de odontología veterinaria con ultrasonido y radiografía dental.",
+      "description": "Programas de higiene bucal, orientados a la limpieza y prevención de la placa dental en perros y gatos. ",
+      "image": "",
       "features": [
         "Limpieza dental con ultrasonido",
-        "Radiografía dental",
-        "Extracciones",
-        "Tratamiento periodontal"
+        "Extracciones simples",
+        "Tratamiento periodontal."
       ]
     },
     {
