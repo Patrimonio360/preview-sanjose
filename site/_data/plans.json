@@ -46,19 +46,23 @@
       "id": 3,
       "name": "Plan Familiar",
       "icon": "💎",
-      "description": "Ideal si tienes varias mascotas. Todo lo que necesitan a un precio imbatible.",
-      "price": 29.9,
-      "period": "/mes (2 mascotas)",
-      "savings": "Ahorra 200€/año",
+      "description": "Cobertura total: prevención, diagnóstico y cuidados.",
+      "price": 37.5,
+      "period": "/mes ",
+      "savings": "Ahorra 145.50€/año",
       "badge": "",
-      "image": "https://galachoveterinarios.com/wp-content/uploads/2025/03/planes-salud-mascotas-slide-portrait.jpg",
+      "image": "https://raw.githubusercontent.com/Patrimonio360/preview-sanjose/master/site/img/uploads/20261007_WhatsApp_Image_2026-10-01_at_22.55.31.jpeg",
       "features": [
-        "Todo lo del Plan Premium",
-        "Cobertura para 2 mascotas",
-        "Terapias alternativas ilimitadas",
-        "25% dto. en cirugías",
-        "Análisis de sangre incluido",
-        "Hotel con 30% dto."
+        "• Vacunación: Vacunación anual canina / Vacunación anual felina",
+        "• Control parasitario: Desparasitación trimestral",
+        "• Identificación: Microchip + Pasaporte",
+        "• Asistencia clínica: Consultas Cita Previa ilimitadas",
+        "• Nutrición: Consultas Nutrición ilimitadas",
+        "• Pruebas de imagen: Radiografías ilimitadas / Ecografías ilimitadas",
+        "• Diagnóstico avanzado: Hemograma + Bioquímica (25 parámetros) / Análisis de orina ilimitados / Análisis de heces ilimitados / Citologías ilimitadas",
+        "• Higiene y estética: Corte de uñas y vaciado de glándulas / Servicio de peluquería / Limpieza bucal (0-20kg)",
+        "• Cirugía: 25% de Descuento en Cirugía de esterilización",
+        "• Soporte: Curas menores"
       ]
     }
   ]
