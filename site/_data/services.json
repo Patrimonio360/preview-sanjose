@@ -5,13 +5,14 @@
       "name": "Medicina General",
       "icon": "🩺",
       "shortDesc": "Consultas, revisiones completas y diagnóstico precoz.",
-      "description": "Consultas generales con exploración completa, diagnóstico por imagen y análisis clínicos.",
+      "description": "En la Medicina General Veterinaria, desempeñamos un papel fundamental como la primera línea de consulta ante cualquier problema de salud de tu mascota. Al igual que el médico de cabecera en la medicina humana, somos el punto de partida esencial para el cuidado integral de su bienestar, ofreciendo un diagnóstico preventivo, tratamiento temprano y el acompañamiento constante que necesitan en cada etapa de su vida.",
       "image": "https://raw.githubusercontent.com/Patrimonio360/preview-sanjose/master/site/img/uploads/20260905_clinica-12.jpeg",
       "features": [
         "Consulta general completa",
         "Exploración física detallada",
-        "Análisis clínicos in situ",
-        "Diagnóstico por imagen"
+        "Análisis clínicos ",
+        "Diagnóstico por imagen",
+        "Cirugia"
       ]
     },
     {
