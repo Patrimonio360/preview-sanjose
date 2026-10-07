@@ -5,18 +5,19 @@
       "name": "Plan Básico",
       "icon": "🐾",
       "description": "Lo esencial para mantener a tu mascota sana y protegida todo el año.",
-      "price": 9.9,
+      "price": 18.5,
       "period": "/mes",
-      "savings": "Ahorra 40€/año",
+      "savings": "Ahorra 90€/año",
       "badge": "",
-      "image": "https://galachoveterinarios.com/wp-content/uploads/2025/03/planes-salud-mascotas-slide-portrait.jpg",
+      "image": "https://raw.githubusercontent.com/Patrimonio360/preview-sanjose/master/site/img/uploads/20261007_WhatsApp_Image_2026-10-01_at_22.55.31.jpeg",
       "features": [
-        "2 revisiones generales al año",
-        "Vacunas obligatorias incluidas",
-        "Desparasitación trimestral",
-        "10% descuento en productos",
-        "Cirugías con 20% dto.",
-        "Terapias alternativas gratis"
+        "• Vacunación: Vacunación anual canina / Vacunación anual felina",
+        "• Control parasitario: Desparasitación trimestral",
+        "• Asistencia clínica: Consultas con Cita Previa ilimitadas",
+        "• Diagnóstico: Hemograma + Bioquímica (9 parámetros)",
+        "• Higiene y mantenimiento: Corte de uñas y vaciado de glándulas",
+        "• Salud dental: Limpieza bucal (rango de peso de 0 a 20kg)",
+        "• Soporte: Curas menores"
       ]
     },
     {
