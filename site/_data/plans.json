@@ -24,19 +24,22 @@
       "id": 2,
       "name": "Plan Premium",
       "icon": "⭐",
-      "description": "La protección completa para mascotas que necesitan un cuidado integral.",
-      "price": 19.9,
+      "description": "Prevención y diagnóstico al día. Nuestro plan más popular.",
+      "price": 25,
       "period": "/mes",
-      "savings": "Ahorra 120€/año",
+      "savings": "Ahorra 248.50€/año",
       "badge": "Más Popular",
-      "image": "https://galachoveterinarios.com/wp-content/uploads/2025/03/planes-salud-mascotas-slide-portrait.jpg",
+      "image": "https://raw.githubusercontent.com/Patrimonio360/preview-sanjose/master/site/img/uploads/20261007_WhatsApp_Image_2026-10-01_at_22.55.31.jpeg",
       "features": [
-        "4 revisiones generales al año",
-        "Todas las vacunas incluidas",
-        "Desparasitación mensual",
-        "15% descuento en productos",
-        "Cirugías con 20% dto.",
-        "1 terapia alternativa gratuita al mes"
+        "• Vacunación: Plan vacunal canino / Plan vacunal felino",
+        "• Control parasitario: Desparasitación trimestral",
+        "• Identificación: Microchip + Pasaporte",
+        "• Asistencia clínica: Consultas con Cita Previa ilimitadas",
+        "• Pruebas de imagen: Radiografías ilimitadas / Ecografías ilimitadas",
+        "• Diagnóstico: Hemograma anual",
+        "• Higiene y estética: Corte de uñas y vaciado de glándulas / Servicio de peluquería / Limpieza bucal (0-20kg)",
+        "• Cirugía: 20% de Descuento en Cirugía de esterilización",
+        "• Soporte: Curas menores"
       ]
     },
     {
