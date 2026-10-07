@@ -84,6 +84,21 @@
         "Anatomía patológica, biopsias, citología",
         "Cultivo y Antibiograma."
       ]
+    },
+    {
+      "id": 7,
+      "name": "Campañas",
+      "icon": "🩺",
+      "shortDesc": "Campañas para cuidar a tu peludito como se merece",
+      "description": "Un beso empieza por una BOCA SANA. Cuida su salud bucodental, cuida sus momentos juntos.",
+      "image": "https://raw.githubusercontent.com/Patrimonio360/preview-sanjose/master/site/img/uploads/20261007_campa_a_limpieza_dental.jpg",
+      "features": [
+        "• Exclusivo para perros de menos de 10 kg.",
+        "• Servicios incluidos en el pack:",
+        "\t• Limpieza dental (extracciones no incluidas).",
+        "\t• Preanestésico con radiografía de tórax.",
+        "\t• Producto a elegir para la prevención de la formación de sarro."
+      ]
     }
   ]
 }
