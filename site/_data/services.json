@@ -67,6 +67,22 @@
         "Medicina holística",
         "Rehabilitación física"
       ]
+    },
+    {
+      "id": 6,
+      "name": "",
+      "icon": "",
+      "shortDesc": "",
+      "description": "Laboratorio",
+      "image": "https://raw.githubusercontent.com/Patrimonio360/preview-sanjose/master/site/img/uploads/20261007_103081.jpg",
+      "features": [
+        "Contamos con laboratorio propio IDEXX y también con laboratorio externo URANO lab.",
+        "Hemograma",
+        "Bioquímica sanguínea",
+        "Electrolitos",
+        "Anatomía patológica, biopsias, citología",
+        "Cultivo y Antibiograma."
+      ]
     }
   ]
 }
