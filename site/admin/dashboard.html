@@ -912,7 +912,10 @@
         <span class="icon">&#x2B50;</span> Testimonios
       </div>
       <div class="sidebar-item" data-section="photos">
-        <span class="icon">&#x1F4F7;</span> Fotos
+        <span class="icon">&#x1F3E5;</span> Fotos de la clínica
+      </div>
+      <div class="sidebar-item" data-section="patients">
+        <span class="icon">&#x1F436;</span> Galería de pacientes
       </div>
     </div>
 
@@ -1030,7 +1033,7 @@
   $('#export-btn').addEventListener('click', async function() {
     try {
       showToast('Preparando exportación...');
-      var files = ['products', 'services', 'plans', 'team', 'settings', 'chatbot', 'reviews', 'photos', 'appointments'];
+      var files = ['products', 'services', 'plans', 'team', 'patients', 'settings', 'chatbot', 'reviews', 'photos', 'appointments'];
       var allData = {};
       for (var i = 0; i < files.length; i++) {
         var f = files[i];
@@ -1099,6 +1102,7 @@
       services: 'site/_data/services.json',
       plans: 'site/_data/plans.json',
       team: 'site/_data/team.json',
+      patients: 'site/_data/patients.json',
       settings: 'site/_data/settings.json',
       chatbot: 'site/_data/chatbot/index.json',
       reviews: 'site/_data/reviews/index.json',
@@ -1207,11 +1211,16 @@
   // ===== RENDER GRID =====
   function renderGrid(section, items) {
     var main = $('#main-content');
-    var titles = { team: 'Equipo', products: 'Productos', services: 'Servicios', plans: 'Planes', chatbot: 'VetBot', reviews: 'Testimonios', photos: 'Fotos' };
-    var labels = { team: 'trabajador', products: 'producto', services: 'servicio', plans: 'plan', chatbot: 'respuesta', reviews: 'testimonio', photos: 'foto' };
+    var titles = { patients: 'Galería de pacientes', team: 'Equipo', products: 'Productos', services: 'Servicios', plans: 'Planes', chatbot: 'VetBot', reviews: 'Testimonios', photos: 'Fotos de la clínica' };
+    var labels = { patients: 'foto', team: 'trabajador', products: 'producto', services: 'servicio', plans: 'plan', chatbot: 'respuesta', reviews: 'testimonio', photos: 'foto' };
 
     var html = '<div class="main-header"><div><span class="main-title">' + titles[section] + '</span><span class="main-count">' + items.length + ' ' + labels[section] + (items.length !== 1 ? 's' : '') + '</span></div>';
     html += '<button class="btn btn-primary" onclick="window._add()">+ Anadir</button></div>';
+    var helps = {
+      photos: '<strong>Fotos de la clínica:</strong> instalaciones, fachada, equipo… Son las que decoran la web (portada, carrusel de inicio, Nosotros). <em>No salen en la Galería.</em> Las fotos de mascotas van en «Galería de pacientes».',
+      patients: '<strong>Galería de pacientes:</strong> fotos de las mascotas que atendéis. Salen en la página <em>Galería</em> de la web, en carrusel con miniaturas. Usa las flechas para elegir el orden. Pide permiso a los dueños antes de publicar sus fotos.'
+    };
+    if (helps[section]) html += '<div style="background:var(--sage-pale,#D4E8DA);border-radius:12px;padding:12px 16px;margin:-8px 0 20px;font-size:14px;line-height:1.5;color:var(--forest,#1A3C2A)">' + helps[section] + '</div>';
 
     if (items.length === 0) {
       html += '<div class="empty-state"><div class="empty-state-icon">&#x1F4CB;</div><div class="empty-state-text">No hay ' + labels[section] + 's ainda</div>';
@@ -1230,16 +1239,16 @@
     main.querySelectorAll('.card').forEach(function(card) {
       var idx = parseInt(card.dataset.index);
       card.addEventListener('click', function(e) {
-        if (e.target.closest('.btn-danger') || e.target.closest('.team-move')) return;
+        if (e.target.closest('.btn-danger') || e.target.closest('.item-move')) return;
         window._edit(idx);
       });
     });
 
     // Equipo: subir / bajar de posición (el orden es el de la web)
-    main.querySelectorAll('.team-move').forEach(function(btn) {
+    main.querySelectorAll('.item-move').forEach(function(btn) {
       btn.addEventListener('click', function(e) {
         e.stopPropagation();
-        moveTeamMember(parseInt(btn.dataset.index), parseInt(btn.dataset.dir));
+        moveItem(currentSection, parseInt(btn.dataset.index), parseInt(btn.dataset.dir));
       });
     });
 
@@ -1254,6 +1263,7 @@
   function renderCard(section, item, idx) {
     if (section === 'products') return renderProductCard(item, idx);
     if (section === 'team') return renderTeamCard(item, idx, getDataItems('team').length);
+    if (section === 'patients') return renderPatientCard(item, idx, getDataItems('patients').length);
     if (section === 'services') return renderServiceCard(item, idx);
     if (section === 'plans') return renderPlanCard(item, idx);
     if (section === 'chatbot') return renderChatbotCard(item, idx);
@@ -1296,21 +1306,37 @@
       + (m.visible === false ? '<div style="font-size:12px;color:var(--gray-400);margin-top:6px">Oculto en la web</div>' : '')
       + '</div>'
       + '<div class="card-actions">'
-      + '<button class="btn btn-ghost btn-sm team-move" data-index="' + idx + '" data-dir="-1" title="Subir"' + (idx === 0 ? ' disabled' : '') + '>&#x2191;</button>'
-      + '<button class="btn btn-ghost btn-sm team-move" data-index="' + idx + '" data-dir="1" title="Bajar"' + (idx === total - 1 ? ' disabled' : '') + '>&#x2193;</button>'
+      + '<button class="btn btn-ghost btn-sm item-move" data-index="' + idx + '" data-dir="-1" title="Subir"' + (idx === 0 ? ' disabled' : '') + '>&#x2191;</button>'
+      + '<button class="btn btn-ghost btn-sm item-move" data-index="' + idx + '" data-dir="1" title="Bajar"' + (idx === total - 1 ? ' disabled' : '') + '>&#x2193;</button>'
       + '<button class="btn btn-danger btn-sm" data-index="' + idx + '">&#x1F5D1; Eliminar</button>'
       + '</div></div>';
   }
 
-  async function moveTeamMember(idx, dir) {
-    var items = getDataItems('team');
+  function renderPatientCard(p, idx, total) {
+    var src = p.image ? (/^(https?:|data:|\/)/.test(p.image) ? p.image : '../' + p.image) : '';
+    return '<div class="card" data-index="' + idx + '"' + (p.visible === false ? ' style="opacity:.55"' : '') + '>'
+      + (src ? '<img class="card-img" src="' + esc(src) + '" alt="" loading="lazy">' : '<div class="card-img-placeholder">&#x1F436;</div>')
+      + '<div class="card-body">'
+      + '<div class="card-name">' + esc(p.name || 'Sin nombre') + '</div>'
+      + (p.caption ? '<div class="card-desc">' + esc(p.caption) + '</div>' : '')
+      + (p.visible === false ? '<div style="font-size:12px;color:var(--gray-400);margin-top:6px">Oculta en la web</div>' : '')
+      + '</div>'
+      + '<div class="card-actions">'
+      + '<button class="btn btn-ghost btn-sm item-move" data-index="' + idx + '" data-dir="-1" title="Antes"' + (idx === 0 ? ' disabled' : '') + '>&#x2190;</button>'
+      + '<button class="btn btn-ghost btn-sm item-move" data-index="' + idx + '" data-dir="1" title="Después"' + (idx === total - 1 ? ' disabled' : '') + '>&#x2192;</button>'
+      + '<button class="btn btn-danger btn-sm" data-index="' + idx + '">&#x1F5D1; Eliminar</button>'
+      + '</div></div>';
+  }
+
+  async function moveItem(section, idx, dir) {
+    var items = getDataItems(section);
     var to = idx + dir;
     if (to < 0 || to >= items.length) return;
     var tmp = items[idx]; items[idx] = items[to]; items[to] = tmp;
     try {
-      await githubWrite(getFilePath('team'), currentData.team, 'admin: ordenar equipo - ' + new Date().toISOString());
+      await githubWrite(getFilePath(section), currentData[section], 'admin: ordenar ' + section + ' - ' + new Date().toISOString());
       showToast('Orden guardado');
-      loadSection('team');
+      loadSection(section);
     } catch (e) {
       items[to] = items[idx]; items[idx] = tmp;
       showToast('Error al guardar: ' + e.message, true);
@@ -2266,6 +2292,7 @@
     var section = currentSection;
     if (section === 'products') openProductModal(null, -1);
     else if (section === 'team') openTeamModal(null, -1);
+    else if (section === 'patients') openPatientModal(null, -1);
     else if (section === 'services') openServiceModal(null, -1);
     else if (section === 'plans') openPlanModal(null, -1);
     else if (section === 'chatbot') openChatbotModal(null, -1);
@@ -2286,6 +2313,7 @@
     var item = items[idx];
     if (currentSection === 'products') openProductModal(item, idx);
     else if (currentSection === 'team') openTeamModal(item, idx);
+    else if (currentSection === 'patients') openPatientModal(item, idx);
     else if (currentSection === 'services') openServiceModal(item, idx);
     else if (currentSection === 'plans') openPlanModal(item, idx);
     else if (currentSection === 'chatbot') openChatbotModal(item, idx);
@@ -2383,6 +2411,62 @@
         loadSection('products');
       } catch (e) {
         if (isNew) items.pop(); else items[idx] = item;
+        showToast('Error al guardar: ' + e.message, true);
+      }
+    });
+  }
+
+  // ===== GALERÍA DE PACIENTES =====
+  // Añadir: varias fotos de una vez (con nombre y texto opcionales, comunes a todas).
+  // Editar: una foto con su nombre, texto y si se muestra.
+  function openPatientModal(item, idx) {
+    var isNew = idx === -1;
+    var p = item || { name: '', caption: '', image: '', visible: true };
+    var title = isNew ? 'Añadir fotos de pacientes' : 'Editar foto' + (p.name ? ': ' + p.name : '');
+
+    var html = '<div style="background:var(--sage-pale,#D4E8DA);border-radius:10px;padding:10px 14px;margin-bottom:16px;font-size:13px;color:var(--forest,#1A3C2A)">&#x1F436; Estas fotos salen en la página <strong>Galería</strong>. Para fotos de las instalaciones usa «Fotos de la clínica».</div>'
+      + '<div class="field"><label>' + (isNew ? 'Fotos (puedes elegir varias a la vez)' : 'Foto') + '</label></div>'
+      + '<div id="mpt-upload-container"></div>'
+      + '<div class="field-row" style="margin-top:14px">'
+      + '<div class="field"><label>Nombre de la mascota (opcional)</label><input type="text" id="mpt-name" maxlength="60" value="' + esc(p.name || '') + '" placeholder="ej: Toby"></div>'
+      + '<div class="field"><label>Texto (opcional)</label><input type="text" id="mpt-caption" maxlength="120" value="' + esc(p.caption || '') + '" placeholder="ej: Revisión de los 6 meses"></div>'
+      + '</div>'
+      + (isNew ? '<div style="font-size:12px;color:var(--gray-400);margin-top:-6px">Si subes varias fotos, el nombre y el texto se ponen en todas. Luego puedes editar cada una.</div>' : '')
+      + '<label class="species-option" style="margin-top:14px"><input type="checkbox" id="mpt-visible"' + (p.visible === false ? '' : ' checked') + '> Mostrar en la web</label>';
+
+    var footer = '<button class="btn btn-ghost" onclick="window._closeModal()">Cancelar</button>'
+      + '<button class="btn btn-primary" id="mpt-save">Guardar</button>';
+
+    openModal(title, html, footer);
+    var gallery = isNew ? createGalleryField('mpt-upload-container', [], 'site/img/uploads') : null;
+    var single = isNew ? null : createUploadField('mpt-upload-container', p.image, 'site/img/uploads');
+
+    $('#mpt-save').addEventListener('click', async function() {
+      var name = $('#mpt-name').value.trim();
+      var caption = $('#mpt-caption').value.trim();
+      var visible = $('#mpt-visible').checked;
+      var items = getDataItems('patients');
+      var backup = items.slice();
+      if (isNew) {
+        var urls = gallery.getUrls();
+        if (!urls.length) { showToast('Sube al menos una foto', true); return; }
+        var id = nextId('patients');
+        // Las nuevas van al principio: la galería empieza por lo más reciente
+        var added = urls.map(function(u, k) { return { id: id + k, image: u, name: name, caption: caption, visible: visible }; });
+        Array.prototype.unshift.apply(items, added);
+      } else {
+        var url = single.getUrl();
+        if (!url) { showToast('Falta la foto', true); return; }
+        items[idx] = { id: p.id, image: url, name: name, caption: caption, visible: visible };
+      }
+      try {
+        await githubWrite(getFilePath('patients'), currentData.patients, 'admin: ' + (isNew ? 'añadir fotos' : 'editar foto') + ' de pacientes - ' + new Date().toISOString());
+        closeModal();
+        showToast(isNew ? 'Fotos añadidas a la galería' : 'Foto actualizada');
+        loadSection('patients');
+      } catch (e) {
+        items.length = 0;
+        Array.prototype.push.apply(items, backup);
         showToast('Error al guardar: ' + e.message, true);
       }
     });
@@ -2618,9 +2702,10 @@
   function openPhotoModal(item, idx) {
     var isNew = idx === -1;
     var p = item || { id: nextId('photos'), title: '', image: '', usage: 'general', description: '' };
+    var clinicNote = '<div style="background:var(--sage-pale,#D4E8DA);border-radius:10px;padding:10px 14px;margin-bottom:16px;font-size:13px;color:var(--forest,#1A3C2A)">&#x1F3E5; Foto de la clínica (instalaciones, fachada, equipo). Decora la web; <strong>no sale en la Galería</strong>. Las fotos de mascotas van en «Galería de pacientes».</div>';
     var title = isNew ? 'Anadir foto' : 'Editar foto';
 
-    var html = '<div class="field"><label>Titulo</label><input type="text" id="mph-title" value="' + esc(p.title || '') + '"></div>'
+    var html = clinicNote + '<div class="field"><label>Titulo</label><input type="text" id="mph-title" value="' + esc(p.title || '') + '"></div>'
       + '<div class="field"><label>Imagen</label></div>'
       + '<div id="mph-upload-container"></div>'
       + '<div class="field"><label>Donde se usa</label><select id="mph-usage">'

@@ -65,8 +65,8 @@ const PAGES = {
     priority: '0.6'
   },
   'galeria.html': {
-    title: 'Galería de fotos | {name}',
-    description: 'Fotos de las instalaciones y del equipo de {name} en {city}.',
+    title: 'Galería de pacientes | {name}',
+    description: 'Fotos de los pacientes de {name} en {city}: los peludos que cuidamos cada día.',
     priority: '0.5'
   },
   'tienda.html': {
