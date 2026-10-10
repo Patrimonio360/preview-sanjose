@@ -8,7 +8,9 @@
       "category": "alimento",
       "image": "https://raw.githubusercontent.com/Patrimonio360/preview-sanjose/master/site/img/uploads/20261010_WhatsApp_Image_2026-10-07_at_18.27.42.jpeg",
       "tag": "",
-      "description": "Alimento completo para perros de tamaño medio de 12 a 24 meses."
+      "description": "Alimento completo para perros de tamaño medio de 12 a 24 meses.",
+      "star": true,
+      "starReason": "mas valorado"
     },
     {
       "id": 2,
