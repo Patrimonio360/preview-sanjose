@@ -20,7 +20,9 @@
       "category": "alimento",
       "image": "https://raw.githubusercontent.com/Patrimonio360/preview-sanjose/master/site/img/uploads/20261010_WhatsApp_Image_2026-10-07_at_18.27.42__1_.jpeg",
       "tag": "Alimento mantenimiento en gatos sanos",
-      "description": "Juguete interactivo resistente para perros medianos."
+      "description": "Juguete interactivo resistente para perros medianos.",
+      "star": true,
+      "starReason": "-50% fin existencias"
     },
     {
       "id": 3,
