@@ -1141,20 +1141,33 @@
   }
 
   // ===== MODAL =====
+  // modalDirty: hay cambios sin guardar en la ventana abierta (se escribió algo
+  // o se subieron/movieron fotos). Cerrar con X, Cancelar o clic fuera pregunta antes.
+  var modalDirty = false;
+
   function openModal(title, bodyHtml, footerHtml) {
     $('#modal-title').textContent = title;
     $('#modal-body').innerHTML = bodyHtml;
     $('#modal-footer').innerHTML = footerHtml;
     $('#modal-overlay').classList.add('open');
+    modalDirty = false;
   }
 
   function closeModal() {
     $('#modal-overlay').classList.remove('open');
+    modalDirty = false;
   }
 
-  $('#modal-close').addEventListener('click', closeModal);
+  function askCloseModal() {
+    if (modalDirty && !confirm('Tienes cambios sin guardar (por ejemplo, fotos subidas).\n\n¿Cerrar sin guardar? Para guardarlos, pulsa Cancelar y después el botón Guardar.')) return;
+    closeModal();
+  }
+
+  $('#modal-body').addEventListener('input', function() { modalDirty = true; });
+  $('#modal-body').addEventListener('change', function() { modalDirty = true; });
+  $('#modal-close').addEventListener('click', askCloseModal);
   $('#modal-overlay').addEventListener('click', function(e) {
-    if (e.target === $('#modal-overlay')) closeModal();
+    if (e.target === $('#modal-overlay')) askCloseModal();
   });
 
   // ===== LOAD SECTION =====
@@ -1825,7 +1838,7 @@
       '<div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end">' + notifyButtons(a, '')
       + '<button class="btn btn-ghost" onclick="window._closeModal()">Ahora no</button></div>');
   }
-  window._closeModal = closeModal;
+  window._closeModal = askCloseModal;
 
   // Número de citas pendientes junto a "Citas" en el menú.
   function updatePendingBadge(data) {
@@ -2944,6 +2957,7 @@
       if (b.dataset.act === 'del') urls.splice(i, 1);
       if (b.dataset.act === 'left') { t = urls[i - 1]; urls[i - 1] = urls[i]; urls[i] = t; }
       if (b.dataset.act === 'right') { t = urls[i + 1]; urls[i + 1] = urls[i]; urls[i] = t; }
+      modalDirty = true;
       render();
     });
 
@@ -2957,6 +2971,7 @@
         if (files[i].size > 25 * 1024 * 1024) { showToast('"' + files[i].name + '" es demasiado grande (máximo 25 MB)', true); continue; }
         try {
           urls.push(await uploadImage(files[i], folder));
+          modalDirty = true;
           render();
         } catch (e) {
           showToast('Error al subir: ' + e.message, true);
@@ -2965,7 +2980,7 @@
       progress.classList.remove('active');
       zone.style.display = '';
       fileInput.value = '';
-      showToast('Fotos añadidas. Pulsa Guardar para publicarlas');
+      showToast('Fotos subidas. Pulsa Guardar para que salgan en la web');
     }
 
     zone.addEventListener('click', function() { fileInput.click(); });
@@ -2990,7 +3005,7 @@
   }
 
   // ===== HELPERS =====
-  window._closeModal = closeModal;
+  window._closeModal = askCloseModal;
 
   function esc(str) {
     if (!str) return '';
