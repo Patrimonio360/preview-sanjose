@@ -63,7 +63,7 @@
         .hero-slide{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;transition:opacity 1.4s ease}
         .hero-slide.active{opacity:.45;animation:hero-zoom 7s ease-out forwards}
         @keyframes hero-zoom{from{transform:scale(1)}to{transform:scale(1.08)}}
-        @media(prefers-reduced-motion:reduce){.hero-slide{transition:none}.hero-slide.active{animation:none}}
+        @media(prefers-reduced-motion:reduce){.hero-slide.active{animation:none}}
         .hero-dots{position:absolute;left:32px;bottom:32px;z-index:4;display:flex;gap:8px}
         @media(max-width:768px){.hero-dots{left:0;right:0;bottom:18px;justify-content:center}}
         .hero-dot{width:9px;height:9px;padding:0;border-radius:50%;border:none;background:color-mix(in srgb,var(--forest) 30%,transparent);cursor:pointer;transition:all .3s}
@@ -484,7 +484,7 @@
 </footer>
 
 <script src="js/schedule.js?v=20261004e"></script>
-<script src="js/cms.js?v=20261010b"></script>
+<script src="js/cms.js?v=20261010c"></script>
 <script>CMS.applyColors(); CMS.loadSettings(); CMS.loadPhotos();</script>
 <script src="js/main.js?v=20261004e"></script>
 <script src="js/vetbot.js?v=20261004c"></script>

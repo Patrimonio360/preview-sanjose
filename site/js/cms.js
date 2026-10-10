@@ -258,7 +258,6 @@ var CMS = (function() {
     var box = document.getElementById('heroSlides');
     var dots = document.getElementById('heroDots');
     if (!box || !photos.length) return;
-    var reduceMotion = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
     box.innerHTML = '';
     if (dots) dots.innerHTML = '';
     var slides = photos.map(function(p, i) {
@@ -296,7 +295,9 @@ var CMS = (function() {
     }
     function restart() {
       clearInterval(timer);
-      if (slides.length > 1 && !reduceMotion) timer = setInterval(function() { show((current + 1) % slides.length); }, HERO_INTERVAL);
+      // Pasa siempre solo. Con "reducir animaciones" el CSS quita el zoom y
+      // queda solo el fundido (muchos Windows lo tienen activado sin saberlo).
+      if (slides.length > 1) timer = setInterval(function() { show((current + 1) % slides.length); }, HERO_INTERVAL);
     }
     show(0);
     restart();
