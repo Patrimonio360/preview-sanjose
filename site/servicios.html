@@ -18,7 +18,7 @@
     <meta name="twitter:card" content="summary">
     <!-- seo:end -->
     <link rel="stylesheet" href="css/fonts.css?v=20261004e">
-    <link rel="stylesheet" href="css/style.css?v=20261010h">
+    <link rel="stylesheet" href="css/style.css?v=20261010i">
     <style>
         .svc-detail{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;padding:48px 0;border-bottom:1px solid var(--gray200)}
         .svc-detail:last-child{border:none}
@@ -71,7 +71,7 @@
 </section>
 
 <script src="js/schedule.js?v=20261004e"></script>
-<script src="js/cms.js?v=20261010h"></script>
+<script src="js/cms.js?v=20261010i"></script>
 <script>CMS.applyColors(); CMS.loadSettings(); CMS.loadPhotos();</script>
 <script>
 fetch('_data/services.json?t='+Date.now())
@@ -80,18 +80,21 @@ fetch('_data/services.json?t='+Date.now())
         const services = data.services;
         const container = document.getElementById('svcDetailContainer');
         container.innerHTML = services.map((s, i) => `
-            <div class="svc-detail${i % 2 === 1 ? ' reverse' : ''}">
-                <div class="svc-detail-img"><img src="${s.image}" alt="${s.name}" loading="lazy"></div>
+            <div class="svc-detail${i % 2 === 1 ? ' reverse' : ''}" id="svc-${s.id}" style="scroll-margin-top:100px">
+                ${s.image ? `<div class="svc-detail-img"><img src="${s.image}" alt="${s.name}" loading="lazy"></div>` : ''}
                 <div>
-                    <h3>${s.icon} ${s.name}</h3>
-                    <p>${s.description}</p>
+                    <h3>${s.icon || ''} ${s.name}</h3>
+                    <p>${s.description || s.shortDesc || ''}</p>
                     <ul class="svc-detail-list">
-                        ${s.features.map(f => `<li>${f}</li>`).join('')}
+                        ${(s.features || []).map(f => `<li>${typeof f === 'string' ? f : (f.feature || '')}</li>`).join('')}
                     </ul>
                     <a href="citas.html" class="btn btn-forest">Solicitar cita →</a>
                 </div>
             </div>
         `).join('');
+        // Desde la portada se llega con #svc-ID: bajar hasta ese servicio
+        const target = location.hash && document.querySelector(location.hash);
+        if (target) target.scrollIntoView();
     });
 </script>
 

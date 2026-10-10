@@ -288,6 +288,32 @@ var CMS = (function() {
       .catch(function() {});
   }
 
+  // Servicios de la portada: tarjetas con la foto de cada servicio del panel.
+  // Sin foto, se muestra el icono del servicio sobre el color del tema.
+  function loadHomeServices() {
+    var grid = document.getElementById('homeServices');
+    if (!grid) return;
+    function esc(t) { var d = document.createElement('div'); d.textContent = t == null ? '' : t; return d.innerHTML; }
+    return fetch('_data/services.json?t=' + Date.now())
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        var list = (Array.isArray(data) ? data : (data.services || [])).filter(function(s) { return s.name; });
+        if (!list.length) return;
+        grid.innerHTML = list.map(function(s) {
+          var name = String(s.name).replace(/\.\s*$/, '');
+          var media = s.image
+            ? '<img src="' + esc(s.image) + '" alt="' + esc(name) + '" loading="lazy">'
+            : '<span class="svc-photo-icon" aria-hidden="true">' + esc(s.icon || '🐾') + '</span>';
+          return '<a href="servicios.html#svc-' + esc(s.id) + '" class="svc-photo">'
+            + '<div class="svc-photo-img">' + media + '</div>'
+            + '<div class="svc-photo-body"><h3>' + esc(name) + '</h3>'
+            + (s.shortDesc ? '<p>' + esc(s.shortDesc) + '</p>' : '')
+            + '<span class="svc-photo-more">Ver más →</span></div></a>';
+        }).join('');
+      })
+      .catch(function() {});
+  }
+
   // "Productos destacados" de la portada: 4 productos del panel, primero los
   // marcados como producto estrella (con su motivo encima de la foto).
   function loadHomeProducts() {
@@ -491,6 +517,7 @@ var CMS = (function() {
     loadTestimonials: loadTestimonials,
     loadHomePlans: loadHomePlans,
     loadHomeProducts: loadHomeProducts,
+    loadHomeServices: loadHomeServices,
     loadTeam: loadTeam,
     loadPhotos: loadPhotos,
     resetColors: resetColors,
