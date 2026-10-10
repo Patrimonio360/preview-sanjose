@@ -20,31 +20,83 @@
     <link rel="stylesheet" href="css/fonts.css?v=20261004e">
     <link rel="stylesheet" href="css/style.css?v=20261010j">
     <style>
-        .gallery-hero{background:var(--forest);padding:140px 0 80px;text-align:center;color:var(--white)}
-        .gallery-hero h1{font-size:clamp(2rem,4vw,3rem);margin-bottom:12px}
-        .gallery-hero p{font-size:1.05rem;color:rgba(255,255,255,.7);max-width:560px;margin:0 auto;line-height:1.7}
-        .pg-section{padding:56px 0 80px}
+        /* Portada de la galería: texto + collage de polaroids */
+        .pg-hero{position:relative;overflow:hidden;padding:130px 0 70px;background:radial-gradient(circle at 85% 20%,var(--sage-pale) 0,transparent 45%),radial-gradient(circle at 10% 90%,color-mix(in srgb,var(--coral) 18%,transparent) 0,transparent 40%),var(--cream)}
+        .pg-hero::before,.pg-hero::after{content:'';position:absolute;width:90px;height:90px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cg fill='%231A3C2A'%3E%3Cellipse cx='32' cy='42' rx='13' ry='11'/%3E%3Cellipse cx='16' cy='26' rx='6' ry='8'/%3E%3Cellipse cx='48' cy='26' rx='6' ry='8'/%3E%3Cellipse cx='25' cy='14' rx='5.5' ry='7.5'/%3E%3Cellipse cx='39' cy='14' rx='5.5' ry='7.5'/%3E%3C/g%3E%3C/svg%3E") center/contain no-repeat;opacity:.06;pointer-events:none}
+        .pg-hero::before{top:120px;left:4%;transform:rotate(-20deg)}
+        .pg-hero::after{bottom:30px;right:46%;width:60px;height:60px;transform:rotate(25deg)}
+        .pg-hero-grid{display:grid;grid-template-columns:1.05fr 1fr;gap:48px;align-items:center}
+        .pg-hero .section-label{color:var(--coral)}
+        .pg-hero .section-label::before{background:var(--coral)}
+        .pg-hero h1{font-size:clamp(2.3rem,5vw,3.6rem);color:var(--forest);margin:6px 0 16px;line-height:1.05}
+        .pg-hero h1 em{font-style:italic;color:var(--coral)}
+        .pg-hero-text p{font-size:1.08rem;color:var(--gray500);line-height:1.7;max-width:480px;margin-bottom:24px}
+        .pg-stat{display:inline-flex;align-items:center;gap:10px;background:var(--white);border-radius:50px;padding:8px 18px 8px 8px;box-shadow:0 6px 24px rgba(0,0,0,.07);margin-bottom:28px;font-size:.92rem;color:var(--charcoal)}
+        .pg-stat b{display:inline-flex;align-items:center;justify-content:center;min-width:38px;height:38px;padding:0 8px;border-radius:50px;background:var(--forest);color:var(--white);font-family:'Fraunces',serif;font-size:1.05rem}
+        .pg-hero-btns{display:flex;gap:12px;flex-wrap:wrap}
+        .pg-collage{position:relative;height:440px}
+        .pg-polaroid{position:absolute;background:var(--white);padding:10px 10px 38px;border-radius:6px;box-shadow:0 14px 40px rgba(0,0,0,.16);transition:transform .5s var(--transition-smooth);cursor:pointer;border:none;font:inherit}
+        .pg-polaroid img{display:block;width:100%;height:100%;object-fit:cover;border-radius:3px;background:var(--sage-pale)}
+        .pg-polaroid span{position:absolute;left:0;right:0;bottom:9px;text-align:center;font-family:'Fraunces',Georgia,serif;font-size:1rem;color:var(--charcoal);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 10px}
+        .pg-polaroid:hover{transform:rotate(0) scale(1.04)!important;z-index:5}
+        .pg-collage .p1{width:250px;height:300px;left:4%;top:50px;transform:rotate(-7deg);z-index:2}
+        .pg-collage .p2{width:230px;height:270px;right:4%;top:0;transform:rotate(6deg);z-index:1}
+        .pg-collage .p3{width:210px;height:240px;right:20%;bottom:0;transform:rotate(-2deg);z-index:3}
+        .pg-collage .p1:only-child{left:50%;top:40px;margin-left:-125px}
+        .pg-tape{position:absolute;top:-12px;left:50%;width:80px;height:24px;margin-left:-40px;background:color-mix(in srgb,var(--coral) 35%,transparent);transform:rotate(-4deg);border-radius:2px}
+
+        /* Carrusel destacado */
+        .pg-section{padding:72px 0 40px}
+        .pg-head{text-align:center;margin-bottom:28px}
+        .pg-head h2{font-size:clamp(1.6rem,3vw,2.2rem);color:var(--charcoal)}
+        .pg-head p{color:var(--gray500);margin-top:6px}
         .pg-stage{position:relative;max-width:960px;margin:0 auto;aspect-ratio:16/10;container-type:size;touch-action:pan-y}
         .pg-slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .8s ease}
         .pg-slide.active{opacity:1;z-index:1}
         .pg-frame{position:relative;border-radius:22px;overflow:hidden;box-shadow:0 14px 40px rgba(0,0,0,.14);line-height:0}
         .pg-frame img{display:block;max-width:100cqw;max-height:100cqh;width:auto;height:auto}
-        .pg-caption{position:absolute;left:0;right:0;bottom:0;z-index:2;line-height:1.4;padding:40px 24px 18px;background:linear-gradient(transparent,rgba(0,0,0,.65));color:#fff}
-        .pg-caption strong{display:block;font-family:'Fraunces',Georgia,serif;font-size:1.3rem;font-weight:600}
-        .pg-caption span{font-size:.92rem;opacity:.9}
-        .pg-nav{position:absolute;top:50%;transform:translateY(-50%);z-index:3;width:46px;height:46px;border-radius:50%;border:none;background:rgba(255,255,255,.88);color:var(--forest);font-size:1.6rem;line-height:1;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.2);transition:transform .2s}
-        .pg-nav:hover{transform:translateY(-50%) scale(1.08)}
-        .pg-prev{left:14px}.pg-next{right:14px}
+        .pg-caption{position:absolute;left:0;right:0;bottom:0;z-index:2;line-height:1.4;padding:48px 24px 18px;background:linear-gradient(transparent,rgba(0,0,0,.65));color:#fff}
+        .pg-caption strong{display:block;font-family:'Fraunces',Georgia,serif;font-size:1.4rem;font-weight:600}
+        .pg-caption span{display:inline-block;margin-top:4px;font-size:.85rem;background:rgba(255,255,255,.2);backdrop-filter:blur(6px);padding:3px 10px;border-radius:20px}
+        .pg-nav{position:absolute;top:50%;transform:translateY(-50%);z-index:3;width:48px;height:48px;border-radius:50%;border:none;background:var(--white);color:var(--forest);font-size:1.6rem;line-height:1;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.15);transition:transform .2s,background .2s}
+        .pg-nav:hover{transform:translateY(-50%) scale(1.08);background:var(--forest);color:var(--white)}
+        .pg-prev{left:6px}.pg-next{right:6px}
         .pg-counter{position:absolute;top:14px;right:14px;z-index:3;background:rgba(0,0,0,.5);color:#fff;font-size:.8rem;font-weight:600;padding:4px 10px;border-radius:20px}
-        .pg-thumbs{display:flex;gap:10px;overflow-x:auto;max-width:960px;margin:16px auto 0;padding:4px 2px 10px;scroll-behavior:smooth;scrollbar-width:thin}
-        .pg-thumb{flex:0 0 96px;height:72px;border-radius:12px;overflow:hidden;border:3px solid transparent;padding:0;cursor:pointer;background:var(--gray200);opacity:.6;transition:all .25s}
+        .pg-progress{max-width:960px;margin:14px auto 0;height:3px;background:var(--gray200);border-radius:3px;overflow:hidden}
+        .pg-progress i{display:block;height:100%;width:0;background:var(--coral)}
+        .pg-progress i.run{width:100%;transition:width 5s linear}
+        .pg-thumbs{display:flex;gap:10px;overflow-x:auto;max-width:960px;margin:14px auto 0;padding:4px 2px 10px;scroll-behavior:smooth;scrollbar-width:thin}
+        .pg-thumb{flex:0 0 84px;height:84px;border-radius:50%;overflow:hidden;border:3px solid transparent;padding:0;cursor:pointer;background:var(--gray200);opacity:.6;transition:all .25s}
         .pg-thumb img{width:100%;height:100%;object-fit:cover;display:block}
-        .pg-thumb:hover{opacity:.9}
+        .pg-thumb:hover{opacity:.9;transform:translateY(-2px)}
         .pg-thumb:first-child{margin-left:auto}.pg-thumb:last-child{margin-right:auto}
-        .pg-thumb.active{border-color:var(--coral);opacity:1}
-        .pg-empty{text-align:center;padding:60px 20px;color:var(--gray500)}
+        .pg-thumb.active{border-color:var(--coral);opacity:1;box-shadow:0 4px 14px rgba(0,0,0,.15)}
+
+        /* Muro de los peludos */
+        .pg-wall-section{padding:56px 0 40px}
+        .pg-wall{columns:4 220px;column-gap:22px}
+        .pg-wall .pg-polaroid{position:relative;display:block;width:100%;margin:0 0 22px;break-inside:avoid;padding:10px 10px 40px;text-align:left}
+        .pg-wall .pg-polaroid img{height:auto}
+        .pg-wall .pg-polaroid:nth-child(4n+1){transform:rotate(-1.5deg)}
+        .pg-wall .pg-polaroid:nth-child(4n+2){transform:rotate(1.2deg)}
+        .pg-wall .pg-polaroid:nth-child(4n+3){transform:rotate(-.6deg)}
+        .pg-wall .pg-polaroid:nth-child(4n){transform:rotate(1.8deg)}
+
+        /* Llamada final */
+        .pg-cta-section{padding:40px 0 90px}
+        .pg-cta{position:relative;overflow:hidden;background:var(--forest);color:var(--white);border-radius:28px;padding:48px;display:grid;grid-template-columns:1fr auto;gap:32px;align-items:center}
+        .pg-cta::after{content:'';position:absolute;right:-30px;bottom:-40px;width:200px;height:200px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cg fill='%231A3C2A'%3E%3Cellipse cx='32' cy='42' rx='13' ry='11'/%3E%3Cellipse cx='16' cy='26' rx='6' ry='8'/%3E%3Cellipse cx='48' cy='26' rx='6' ry='8'/%3E%3Cellipse cx='25' cy='14' rx='5.5' ry='7.5'/%3E%3Cellipse cx='39' cy='14' rx='5.5' ry='7.5'/%3E%3C/g%3E%3C/svg%3E") center/contain no-repeat;opacity:.08;filter:invert(1);transform:rotate(-15deg)}
+        .pg-cta h2{font-size:clamp(1.5rem,3vw,2.1rem);color:var(--white);margin-bottom:8px}
+        .pg-cta p{color:var(--sage-pale);max-width:520px;line-height:1.6}
+        .pg-cta-btns{display:flex;gap:12px;flex-wrap:wrap;position:relative;z-index:1}
+        .pg-cta .btn-wa{background:#25D366;color:#fff;box-shadow:0 6px 18px rgba(0,0,0,.2)}
+        .pg-cta .btn-light{background:var(--white);color:var(--forest)}
+
+        .pg-empty{text-align:center;padding:40px 20px;color:var(--gray500)}
         .pg-empty div{font-size:3rem;margin-bottom:10px}
-        @media(max-width:768px){.pg-section{padding:32px 0 56px}.pg-stage{aspect-ratio:4/5}.pg-frame{border-radius:16px}.pg-nav{width:38px;height:38px;font-size:1.3rem}.pg-thumb{flex-basis:72px;height:56px}.pg-caption{padding:32px 16px 14px}.pg-caption strong{font-size:1.1rem}}
+
+        @media(max-width:900px){.pg-hero-grid{grid-template-columns:1fr;gap:20px}.pg-hero{padding:110px 0 40px;text-align:center}.pg-hero-text p{margin-left:auto;margin-right:auto}.pg-hero-btns{justify-content:center}.pg-collage{height:300px;max-width:420px;margin:0 auto;width:100%}.pg-collage .p1{width:170px;height:205px;left:0;top:40px}.pg-collage .p2{width:160px;height:190px;right:0}.pg-collage .p3{width:150px;height:175px;right:28%}.pg-collage .p1:only-child{margin-left:-85px}.pg-cta{grid-template-columns:1fr;padding:32px 24px;text-align:center}.pg-cta p{margin:0 auto}.pg-cta-btns{justify-content:center}}
+        @media(max-width:768px){.pg-section{padding:48px 0 24px}.pg-stage{aspect-ratio:4/5}.pg-frame{border-radius:16px}.pg-nav{width:38px;height:38px;font-size:1.3rem}.pg-thumb{flex-basis:62px;height:62px}.pg-caption{padding:36px 16px 14px}.pg-caption strong{font-size:1.15rem}.pg-wall{columns:2 140px;column-gap:14px}.pg-wall .pg-polaroid{margin-bottom:14px;padding:7px 7px 32px}.pg-polaroid span{font-size:.85rem}}
     </style>
 </head>
 <body>
@@ -72,17 +124,55 @@
     </div>
 </nav>
 
-<div class="gallery-hero">
-    <div class="container">
-        <div class="section-label" style="color:var(--coral)">Galería</div>
-        <h1>Nuestros pacientes</h1>
-        <p>Los peludos que nos visitan y que cuidamos cada día. ¡Gracias por confiar en nosotros!</p>
+<header class="pg-hero">
+    <div class="container pg-hero-grid">
+        <div class="pg-hero-text">
+            <div class="section-label">Galería</div>
+            <h1>Nuestros <em>pacientes</em></h1>
+            <p>Cada uno con su nombre, su historia y su forma de movernos la cola. Estos son los peludos que cuidamos cada día. ¡Gracias por confiar en nosotros!</p>
+            <div class="pg-stat" id="pgStat" hidden><b id="pgCount">0</b> peludos felices en nuestro muro</div>
+            <div class="pg-hero-btns">
+                <a href="#pgWallSection" class="btn btn-forest">Ver el muro 🐾</a>
+                <a href="https://wa.me/?text=Hola%2C%20os%20env%C3%ADo%20una%20foto%20de%20mi%20mascota%20para%20la%20galer%C3%ADa%20de%20la%20web" class="btn btn-ghost" target="_blank" rel="noopener">Envíanos su foto</a>
+            </div>
+        </div>
+        <div class="pg-collage" id="pgCollage" aria-hidden="true"></div>
     </div>
-</div>
+</header>
 
 <section class="pg-section">
     <div class="container">
+        <div class="pg-head">
+            <div class="section-label">Momentos</div>
+            <h2>Instantes en la clínica</h2>
+        </div>
         <div id="pgGallery" aria-roledescription="carrusel" aria-label="Fotos de nuestros pacientes"></div>
+    </div>
+</section>
+
+<section class="pg-wall-section" id="pgWallSection" hidden>
+    <div class="container">
+        <div class="pg-head">
+            <div class="section-label">Todos juntos</div>
+            <h2>El muro de los peludos</h2>
+            <p>Pulsa una foto para verla en grande.</p>
+        </div>
+        <div class="pg-wall" id="pgWall"></div>
+    </div>
+</section>
+
+<section class="pg-cta-section">
+    <div class="container">
+        <div class="pg-cta">
+            <div>
+                <h2>¿Tu mascota también es paciente nuestra?</h2>
+                <p>Mándanos su mejor foto por WhatsApp y la subimos al muro. Y si toca revisión, te esperamos en la clínica.</p>
+            </div>
+            <div class="pg-cta-btns">
+                <a href="https://wa.me/?text=Hola%2C%20os%20env%C3%ADo%20una%20foto%20de%20mi%20mascota%20para%20la%20galer%C3%ADa%20de%20la%20web" class="btn btn-wa" target="_blank" rel="noopener">Enviar foto por WhatsApp</a>
+                <a href="citas.html" class="btn btn-light">Pedir cita →</a>
+            </div>
+        </div>
     </div>
 </section>
 
@@ -113,10 +203,11 @@
 <script>CMS.applyColors(); CMS.loadSettings(); CMS.loadPhotos();</script>
 <script>
 // Galería de pacientes: fotos de Panel › "Galería de pacientes" (_data/patients.json).
-// Carrusel que pasa solo, flechas, deslizar con el dedo y miniaturas debajo.
+// Portada con collage, carrusel destacado con miniaturas y muro con todas las fotos.
 (function() {
     var box = document.getElementById('pgGallery');
     function esc(t) { var d = document.createElement('div'); d.textContent = t == null ? '' : t; return d.innerHTML; }
+    var go = function() {};
 
     fetch('_data/patients.json?t=' + Date.now())
         .then(function(r) { return r.json(); })
@@ -126,13 +217,45 @@
                 box.innerHTML = '<div class="pg-empty"><div>🐾</div><p>Muy pronto verás aquí a nuestros pacientes.</p></div>';
                 return;
             }
-            build(list);
+            hero(list);
+            carousel(list);
+            wall(list);
         })
         .catch(function() {
             box.innerHTML = '<div class="pg-empty"><div>🐾</div><p>No se han podido cargar las fotos. Prueba a recargar la página.</p></div>';
         });
 
-    function build(list) {
+    function polaroid(p, i, cls) {
+        return '<button type="button" class="pg-polaroid' + (cls ? ' ' + cls : '') + '" data-i="' + i + '" aria-label="Ver foto' + (p.name ? ' de ' + esc(p.name) : '') + '">'
+            + (cls ? '<i class="pg-tape"></i>' : '')
+            + '<img src="' + esc(p.image) + '" alt="' + esc(p.name || 'Paciente de la clínica') + '" loading="lazy">'
+            + '<span>' + esc(p.name || '🐾') + '</span></button>';
+    }
+    function bindOpen(root) {
+        root.querySelectorAll('.pg-polaroid').forEach(function(el) {
+            el.addEventListener('click', function() {
+                go(parseInt(el.dataset.i));
+                box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            });
+        });
+    }
+
+    function hero(list) {
+        var collage = document.getElementById('pgCollage');
+        collage.innerHTML = list.slice(0, 3).map(function(p, i) { return polaroid(p, i, 'p' + (i + 1)); }).join('');
+        bindOpen(collage);
+        document.getElementById('pgCount').textContent = list.length;
+        document.getElementById('pgStat').hidden = false;
+    }
+
+    function wall(list) {
+        var w = document.getElementById('pgWall');
+        w.innerHTML = list.map(function(p, i) { return polaroid(p, i, ''); }).join('');
+        bindOpen(w);
+        document.getElementById('pgWallSection').hidden = list.length < 2;
+    }
+
+    function carousel(list) {
         var many = list.length > 1;
         box.innerHTML = '<div class="pg-stage">'
             + list.map(function(p, i) {
@@ -143,7 +266,7 @@
             }).join('')
             + (many ? '<button class="pg-nav pg-prev" type="button" aria-label="Foto anterior">‹</button><button class="pg-nav pg-next" type="button" aria-label="Foto siguiente">›</button><div class="pg-counter"></div>' : '')
             + '</div>'
-            + (many ? '<div class="pg-thumbs">' + list.map(function(p, i) {
+            + (many ? '<div class="pg-progress"><i></i></div><div class="pg-thumbs">' + list.map(function(p, i) {
                 return '<button class="pg-thumb" type="button" aria-label="Ver foto ' + (i + 1) + '"><img src="' + esc(p.image) + '" alt="" loading="lazy"></button>';
             }).join('') + '</div>' : '');
 
@@ -151,13 +274,12 @@
         var thumbs = box.querySelectorAll('.pg-thumb');
         var thumbsBar = box.querySelector('.pg-thumbs');
         var counter = box.querySelector('.pg-counter');
+        var bar = box.querySelector('.pg-progress i');
         var current = -1, timer = null;
 
         function load(i) {
-            var s = slides[i], img = s.querySelector('img');
-            if (!img.getAttribute('src')) {
-                img.src = list[i].image;
-            }
+            var img = slides[i].querySelector('img');
+            if (!img.getAttribute('src')) img.src = list[i].image;
         }
         function show(i) {
             i = (i + list.length) % list.length;
@@ -172,17 +294,25 @@
             if (counter) counter.textContent = (i + 1) + ' / ' + list.length;
             current = i;
         }
+        // Barra de progreso: se llena mientras se ve cada foto
+        function runBar() {
+            if (!bar) return;
+            bar.classList.remove('run'); void bar.offsetWidth; bar.classList.add('run');
+        }
         function restart() {
             clearInterval(timer);
-            if (many) timer = setInterval(function() { if (!document.hidden) show(current + 1); }, 5000);
+            if (!many) return;
+            runBar();
+            timer = setInterval(function() { if (!document.hidden) { show(current + 1); runBar(); } }, 5000);
         }
+        go = function(i) { show(i); restart(); };
         show(0);
         restart();
         if (!many) return;
 
-        box.querySelector('.pg-prev').addEventListener('click', function() { show(current - 1); restart(); });
-        box.querySelector('.pg-next').addEventListener('click', function() { show(current + 1); restart(); });
-        thumbs.forEach(function(t, j) { t.addEventListener('click', function() { show(j); restart(); }); });
+        box.querySelector('.pg-prev').addEventListener('click', function() { go(current - 1); });
+        box.querySelector('.pg-next').addEventListener('click', function() { go(current + 1); });
+        thumbs.forEach(function(t, j) { t.addEventListener('click', function() { go(j); }); });
 
         // Deslizar con el dedo
         var stage = box.querySelector('.pg-stage'), x0 = null;
@@ -190,13 +320,13 @@
         stage.addEventListener('touchend', function(e) {
             if (x0 === null) return;
             var dx = e.changedTouches[0].clientX - x0;
-            if (Math.abs(dx) > 40) { show(current + (dx < 0 ? 1 : -1)); restart(); }
+            if (Math.abs(dx) > 40) go(current + (dx < 0 ? 1 : -1));
             x0 = null;
         });
         // Teclado: flechas izquierda / derecha
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'ArrowLeft') { show(current - 1); restart(); }
-            if (e.key === 'ArrowRight') { show(current + 1); restart(); }
+            if (e.key === 'ArrowLeft') go(current - 1);
+            if (e.key === 'ArrowRight') go(current + 1);
         });
     }
 })();
