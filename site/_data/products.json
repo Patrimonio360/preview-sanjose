@@ -12,12 +12,12 @@
     },
     {
       "id": 2,
-      "brand": "KONG",
-      "name": "Classic Toy Medium",
-      "price": 12.5,
-      "category": "juguetes",
-      "image": "https://m.media-amazon.com/images/I/71zsjhV2Y+L._AC_UF1000,1000_QL80_.jpg",
-      "tag": "",
+      "brand": "OWNAT",
+      "name": "DAILY CARE",
+      "price": 0,
+      "category": "alimento",
+      "image": "https://raw.githubusercontent.com/Patrimonio360/preview-sanjose/master/site/img/uploads/20261010_WhatsApp_Image_2026-10-07_at_18.27.42__1_.jpeg",
+      "tag": "Alimento mantenimiento en gatos sanos",
       "description": "Juguete interactivo resistente para perros medianos."
     },
     {
