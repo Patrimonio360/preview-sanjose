@@ -62,12 +62,12 @@
     },
     {
       "id": 7,
-      "brand": "Applaws",
-      "name": "Paté Pollo & Atún 6x70g",
-      "price": 8.9,
+      "brand": "OWNAT",
+      "name": "STERILIZED (GATOS CASTRADOS)",
+      "price": 0,
       "category": "alimento",
-      "image": "https://images.unsplash.com/photo-1596854407944-bf87f6fdd49e?w=400&h=400&fit=crop",
-      "tag": "-20%",
+      "image": "https://raw.githubusercontent.com/Patrimonio360/preview-sanjose/master/site/img/uploads/20261010_WhatsApp_Image_2026-10-07_at_18.27.42__6_.jpeg",
+      "tag": "",
       "description": "Paté natural para gatos con pollo y atún."
     },
     {
