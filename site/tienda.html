@@ -30,6 +30,14 @@
         .store-img{width:100%;aspect-ratio:1;overflow:hidden;position:relative}
         .store-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
         .store-item:hover .store-img img{transform:scale(1.08)}
+        /* Producto estrella: la estrella muestra el motivo al tocarla */
+        .store-star{position:absolute;top:10px;right:10px;z-index:2;width:38px;height:38px;border-radius:50%;border:none;background:#FFC83D;color:#fff;font-size:1.25rem;line-height:1;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.18);transition:transform .2s}
+        .store-star:hover,.store-star[aria-expanded="true"]{transform:scale(1.1)}
+        .store-star:focus-visible{outline:3px solid var(--forest);outline-offset:2px}
+        .store-star-reason{position:absolute;top:54px;right:10px;z-index:3;max-width:calc(100% - 20px);background:var(--charcoal);color:#fff;font-size:.78rem;font-weight:600;padding:8px 12px;border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,.2);opacity:0;transform:translateY(-4px);pointer-events:none;transition:all .2s}
+        .store-star-reason::before{content:'';position:absolute;top:-6px;right:14px;border:6px solid transparent;border-top:0;border-bottom-color:var(--charcoal)}
+        .store-star[aria-expanded="true"]+.store-star-reason{opacity:1;transform:none}
+        @media(hover:hover){.store-star:hover+.store-star-reason{opacity:1;transform:none}}
         .store-tag{position:absolute;top:12px;left:12px;background:var(--coral);color:var(--white);font-size:.65rem;font-weight:700;padding:4px 10px;border-radius:50px}
         .store-info{padding:18px}
         .store-brand{font-size:.72rem;color:var(--gray500);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
@@ -104,7 +112,7 @@
 </section>
 
 <script src="js/schedule.js?v=20261004e"></script>
-<script src="js/cms.js?v=20261010f"></script>
+<script src="js/cms.js?v=20261010g"></script>
 <script>CMS.applyColors(); CMS.loadSettings(); CMS.loadPhotos();</script>
 <script>
 (function() {
@@ -123,18 +131,39 @@
             empty.style.display = 'block';
             return;
         }
-        var phone = settings.whatsapp || '';
+        var phone = String(settings.whatsapp || '').replace(/\D/g, '');
+        // Productos estrella primero (marcados en el panel), el resto en su orden
+        products = products.filter(function(p) { return p.star; }).concat(products.filter(function(p) { return !p.star; }));
         grid.innerHTML = products.map(function(p) {
-            var price = Number(p.price).toFixed(2).replace('.', ',') + ' €';
-            var text = 'Hola, me interesa este producto que he visto en vuestra web: ' + p.brand + ' ' + p.name + ' (' + price + '). ¿Lo tenéis disponible?';
+            var reason = p.starReason || 'Producto destacado';
+            var star = p.star
+                ? '<button type="button" class="store-star" aria-expanded="false" aria-label="Producto estrella: ' + esc(reason) + '">★</button>'
+                  + '<div class="store-star-reason" role="tooltip">' + esc(reason) + '</div>'
+                : '';
+            // Precio 0 en el panel = sin precio publicado
+            var hasPrice = Number(p.price) > 0;
+            var price = hasPrice ? Number(p.price).toFixed(2).replace('.', ',') + ' €' : 'Consultar precio';
+            var text = 'Hola, me interesa este producto que he visto en vuestra web: ' + p.brand + ' ' + p.name + (hasPrice ? ' (' + price + ')' : '') + '. ¿Lo tenéis disponible?';
             return '<article class="store-item reveal" data-cat="' + esc(p.category) + '">'
-                + '<div class="store-img"><img src="' + esc(p.image) + '" alt="' + esc(p.brand + ' ' + p.name) + '" loading="lazy">' + (p.tag ? '<div class="store-tag">' + esc(p.tag) + '</div>' : '') + '</div>'
+                + '<div class="store-img"><img src="' + esc(p.image) + '" alt="' + esc(p.brand + ' ' + p.name) + '" loading="lazy">' + (p.tag ? '<div class="store-tag">' + esc(p.tag) + '</div>' : '') + star + '</div>'
                 + '<div class="store-info"><div class="store-brand">' + esc(p.brand) + '</div><div class="store-name">' + esc(p.name) + '</div>'
                 + '<div class="store-price"><span class="current">' + price + '</span></div>'
-                + '<a class="store-btn store-btn--wa" target="_blank" rel="noopener" href="https://wa.me/34694422484' + phone + '?text=' + encodeURIComponent(text) + '">💬 Consultar por WhatsApp</a></div>'
+                + '<a class="store-btn store-btn--wa" target="_blank" rel="noopener" href="https://wa.me/' + phone + '?text=' + encodeURIComponent(text) + '">💬 Consultar por WhatsApp</a></div>'
                 + '</article>';
         }).join('');
         document.querySelectorAll('.store-item.reveal').forEach(function(el) { ro.observe(el); });
+        // Tocar la estrella muestra u oculta el motivo (en ordenador también al pasar el ratón)
+        grid.querySelectorAll('.store-star').forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                var open = btn.getAttribute('aria-expanded') !== 'true';
+                grid.querySelectorAll('.store-star[aria-expanded="true"]').forEach(function(b) { b.setAttribute('aria-expanded', 'false'); });
+                btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+            });
+        });
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.store-star')) grid.querySelectorAll('.store-star[aria-expanded="true"]').forEach(function(b) { b.setAttribute('aria-expanded', 'false'); });
+        });
     }).catch(function() {
         grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--gray500)">No se han podido cargar los productos. Inténtalo de nuevo más tarde.</p>';
     });

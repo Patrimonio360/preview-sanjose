@@ -288,6 +288,30 @@ var CMS = (function() {
       .catch(function() {});
   }
 
+  // "Productos destacados" de la portada: 4 productos del panel, primero los
+  // marcados como producto estrella (con su motivo encima de la foto).
+  function loadHomeProducts() {
+    var grid = document.getElementById('homeProducts');
+    if (!grid) return;
+    function esc(t) { var d = document.createElement('div'); d.textContent = t == null ? '' : t; return d.innerHTML; }
+    return fetch('_data/products.json?t=' + Date.now())
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        var all = Array.isArray(data) ? data : (data.products || []);
+        var list = all.filter(function(p) { return p.star; }).concat(all.filter(function(p) { return !p.star; })).slice(0, 4);
+        grid.innerHTML = list.map(function(p, i) {
+          var price = Number(p.price) > 0 ? Number(p.price).toFixed(2).replace('.', ',') + '€' : 'Consultar precio';
+          return '<a href="tienda.html" class="product-home reveal visible" style="text-decoration:none;transition-delay:' + (i * 0.1) + 's">'
+            + '<div class="product-home-img"><img src="' + esc(p.image) + '" alt="' + esc((p.brand || '') + ' ' + (p.name || '')) + '" loading="lazy">'
+            + (p.star ? '<span class="product-home-star">★ ' + esc(p.starReason || 'Producto destacado') + '</span>' : '') + '</div>'
+            + '<div class="product-home-info"><div class="product-home-brand">' + esc(p.brand) + '</div>'
+            + '<div class="product-home-name">' + esc(p.name) + '</div>'
+            + '<div class="product-home-price">' + price + '</div></div></a>';
+        }).join('');
+      })
+      .catch(function() {});
+  }
+
   function loadTestimonials() {
     var container = document.getElementById('testimonialsList');
     if (!container) return;
@@ -423,6 +447,7 @@ var CMS = (function() {
     loadSettings: loadSettings,
     loadTestimonials: loadTestimonials,
     loadHomePlans: loadHomePlans,
+    loadHomeProducts: loadHomeProducts,
     loadPhotos: loadPhotos,
     resetColors: resetColors,
     shortName: shortName,

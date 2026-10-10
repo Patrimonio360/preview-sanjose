@@ -158,7 +158,8 @@
         .products-home{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:40px}
         .product-home{background:var(--white);border-radius:16px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,.06);transition:all .3s var(--transition-smooth)}
         .product-home:hover{transform:translateY(-4px);box-shadow:0 8px 30px rgba(0,0,0,.1)}
-        .product-home-img{width:100%;aspect-ratio:1;overflow:hidden}
+        .product-home-img{width:100%;aspect-ratio:1;overflow:hidden;position:relative}
+        .product-home-star{position:absolute;top:10px;left:10px;right:10px;width:max-content;max-width:calc(100% - 20px);background:#FFC83D;color:#3A2A00;font-size:.68rem;font-weight:700;padding:4px 10px;border-radius:50px;box-shadow:0 3px 10px rgba(0,0,0,.15);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
         .product-home-img img{width:100%;height:100%;object-fit:cover;transition:transform .4s}
         .product-home:hover .product-home-img img{transform:scale(1.06)}
         .product-home-info{padding:16px}
@@ -346,24 +347,8 @@
             <h2 class="section-title">Productos destacados</h2>
             <p class="section-desc mx-auto">Alimentación, accesorios y cuidado de las marcas que recomendamos. Disponibles en la clínica.</p>
         </div>
-        <div class="products-home">
-            <a href="tienda.html" class="product-home reveal" style="text-decoration:none">
-                <div class="product-home-img"><img src="https://images.unsplash.com/photo-1589924691995-400dc9ecc119?w=400&h=400&fit=crop" alt="Royal Canin" loading="lazy"></div>
-                <div class="product-home-info"><div class="product-home-brand">Royal Canin</div><div class="product-home-name">Medium Adult 15kg</div><div class="product-home-price">52,90€</div></div>
-            </a>
-            <a href="tienda.html" class="product-home reveal" style="text-decoration:none;transition-delay:.1s">
-                <div class="product-home-img"><img src="https://images.unsplash.com/photo-1576201836106-db1758fd1c97?w=400&h=400&fit=crop" alt="KONG" loading="lazy"></div>
-                <div class="product-home-info"><div class="product-home-brand">KONG</div><div class="product-home-name">Classic Toy Medium</div><div class="product-home-price">12,50€</div></div>
-            </a>
-            <a href="tienda.html" class="product-home reveal" style="text-decoration:none;transition-delay:.2s">
-                <div class="product-home-img"><img src="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=400&h=400&fit=crop" alt="Hill's" loading="lazy"></div>
-                <div class="product-home-info"><div class="product-home-brand">Hill's</div><div class="product-home-name">Science Plan Sensitive 12kg</div><div class="product-home-price">58,90€</div></div>
-            </a>
-            <a href="tienda.html" class="product-home reveal" style="text-decoration:none;transition-delay:.3s">
-                <div class="product-home-img"><img src="https://images.unsplash.com/photo-1596854407944-bf87f6fdd49e?w=400&h=400&fit=crop" alt="Applaws" loading="lazy"></div>
-                <div class="product-home-info"><div class="product-home-brand">Applaws</div><div class="product-home-name">Paté Pollo & Atún 6x70g</div><div class="product-home-price">8,90€</div></div>
-            </a>
-        </div>
+        <!-- Se rellena con los productos del panel, primero los productos estrella (CMS.loadHomeProducts) -->
+        <div class="products-home" id="homeProducts"></div>
         <div class="text-center" style="margin-top:36px">
             <a href="tienda.html" class="btn btn-forest">Ver tienda →</a>
         </div>
@@ -424,8 +409,8 @@
 </footer>
 
 <script src="js/schedule.js?v=20261004e"></script>
-<script src="js/cms.js?v=20261010f"></script>
-<script>CMS.applyColors(); CMS.loadSettings(); CMS.loadPhotos(); CMS.loadHomePlans();</script>
+<script src="js/cms.js?v=20261010g"></script>
+<script>CMS.applyColors(); CMS.loadSettings(); CMS.loadPhotos(); CMS.loadHomePlans(); CMS.loadHomeProducts();</script>
 <script src="js/main.js?v=20261004e"></script>
 <script src="js/vetbot.js?v=20261004c"></script>
 </body>
