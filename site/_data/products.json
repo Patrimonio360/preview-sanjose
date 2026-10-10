@@ -2,12 +2,12 @@
   "products": [
     {
       "id": 1,
-      "brand": "Royal Canin",
-      "name": "Medium Adult 15kg",
-      "price": 52.9,
+      "brand": "URINARY CAT",
+      "name": "OWNAT",
+      "price": 0,
       "category": "alimento",
-      "image": "https://images.unsplash.com/photo-1589924691995-400dc9ecc119?w=400&h=400&fit=crop",
-      "tag": "-15%",
+      "image": "https://raw.githubusercontent.com/Patrimonio360/preview-sanjose/master/site/img/uploads/20261010_WhatsApp_Image_2026-10-07_at_18.27.42.jpeg",
+      "tag": "",
       "description": "Alimento completo para perros de tamaño medio de 12 a 24 meses."
     },
     {
