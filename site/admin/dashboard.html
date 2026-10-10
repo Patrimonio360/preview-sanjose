@@ -2264,6 +2264,13 @@
       + '</select></div></div>'
       + '<div class="field"><label>Etiqueta (opcional)</label><input type="text" id="mp-tag" value="' + esc(p.tag || '') + '" placeholder="ej: -15%, Novedad"></div>'
       + '</div>'
+      // Producto estrella: sale primero en la tienda y en "Productos destacados" de la portada
+      + '<div class="star-box">'
+      + '<label class="species-option"><input type="checkbox" id="mp-star"' + (p.star ? ' checked' : '') + '> &#x2B50; <strong>Producto estrella</strong> (sale el primero en la tienda y en la portada)</label>'
+      + '<div class="field" style="margin:10px 0 0"><label>Motivo de la estrella (se lee al tocarla)</label>'
+      + '<input type="text" id="mp-star-reason" list="star-reasons" maxlength="80" value="' + esc(p.starReason || '') + '" placeholder="ej: Bajada de precio, Más vendido…"' + (p.star ? '' : ' disabled') + '>'
+      + '<datalist id="star-reasons"><option value="Bajada de precio"><option value="Más vendido"><option value="Recomendado por el veterinario"><option value="Novedad"><option value="Oferta de temporada"><option value="Ideal para cachorros"><option value="Ideal para pieles sensibles"></datalist></div>'
+      + '</div>'
       + '<div class="field"><label>Imagen del producto</label></div>'
       + '<div id="mp-upload-container"></div>'
       + '<div class="field"><label>Descripcion</label><textarea id="mp-desc" rows="3">' + esc(p.description || '') + '</textarea></div>';
@@ -2274,8 +2281,13 @@
     openModal(title, html, footer);
 
     var mpUpload = createUploadField('mp-upload-container', p.image, 'site/img/uploads');
+    $('#mp-star').addEventListener('change', function() {
+      $('#mp-star-reason').disabled = !this.checked;
+      if (this.checked) $('#mp-star-reason').focus();
+    });
 
     $('#mp-save').addEventListener('click', async function() {
+      var star = $('#mp-star').checked;
       var updated = {
         id: p.id,
         brand: $('#mp-brand').value,
@@ -2284,7 +2296,9 @@
         category: $('#mp-category').value,
         image: mpUpload.getUrl(),
         tag: $('#mp-tag').value,
-        description: $('#mp-desc').value
+        description: $('#mp-desc').value,
+        star: star,
+        starReason: star ? $('#mp-star-reason').value.trim() : ''
       };
       var items = currentData.products.products;
       if (isNew) {
