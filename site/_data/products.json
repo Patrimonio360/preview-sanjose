@@ -22,11 +22,11 @@
     },
     {
       "id": 3,
-      "brand": "Hill's",
-      "name": "Science Plan Sensitive 12kg",
-      "price": 58.9,
+      "brand": "OWNAT",
+      "name": "SABOR PESCADO PARA GATO",
+      "price": 0,
       "category": "alimento",
-      "image": "https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=400&h=400&fit=crop",
+      "image": "https://raw.githubusercontent.com/Patrimonio360/preview-sanjose/master/site/img/uploads/20261010_WhatsApp_Image_2026-10-07_at_18.27.42__2_.jpeg",
       "tag": "Novedad",
       "description": "Alimento para perros con estómago sensible."
     },
