@@ -312,6 +312,49 @@ var CMS = (function() {
       .catch(function() {});
   }
 
+  // Equipo (página Nosotros): una tarjeta por trabajador con su biografía.
+  // Si no hay nadie visible, la sección se queda oculta.
+  function loadTeam() {
+    var section = document.getElementById('teamSection');
+    var grid = document.getElementById('teamGrid');
+    if (!section || !grid) return;
+    function esc(t) { var d = document.createElement('div'); d.textContent = t == null ? '' : t; return d.innerHTML; }
+    return fetch('_data/team.json?t=' + Date.now())
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        var list = (Array.isArray(data) ? data : (data.team || [])).filter(function(m) { return m.visible !== false && m.name; });
+        if (!list.length) { section.hidden = true; return; }
+        grid.innerHTML = list.map(function(m) {
+          var initials = String(m.name).replace(/^(dra?|sr|sra)\.?\s+/i, '').split(/\s+/).slice(0, 2).map(function(w) { return w.charAt(0); }).join('').toUpperCase();
+          var photo = m.photo
+            ? '<img src="' + esc(m.photo) + '" alt="' + esc(m.name) + '" loading="lazy">'
+            : '<span>' + esc(initials) + '</span>';
+          var bio = String(m.bio || '').trim();
+          var paras = bio ? bio.split(/\n+/).map(function(p) { return '<p>' + esc(p) + '</p>'; }).join('') : '';
+          return '<article class="team-card">'
+            + '<div class="team-photo">' + photo + '</div>'
+            + '<h3 class="team-name">' + esc(m.name) + '</h3>'
+            + (m.role ? '<div class="team-role">' + esc(m.role) + '</div>' : '')
+            + (paras ? '<div class="team-bio">' + paras + '</div><button type="button" class="team-more" aria-expanded="false" hidden>Leer más</button>' : '')
+            + '</article>';
+        }).join('');
+        section.hidden = false;
+        // "Leer más" solo si el texto no cabe en las líneas visibles.
+        grid.querySelectorAll('.team-card').forEach(function(card) {
+          var bioEl = card.querySelector('.team-bio');
+          var btn = card.querySelector('.team-more');
+          if (!bioEl || !btn) return;
+          if (bioEl.scrollHeight > bioEl.clientHeight + 2) btn.hidden = false;
+          btn.addEventListener('click', function() {
+            var open = card.classList.toggle('open');
+            btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+            btn.textContent = open ? 'Leer menos' : 'Leer más';
+          });
+        });
+      })
+      .catch(function() { section.hidden = true; });
+  }
+
   function loadTestimonials() {
     var container = document.getElementById('testimonialsList');
     if (!container) return;
@@ -448,6 +491,7 @@ var CMS = (function() {
     loadTestimonials: loadTestimonials,
     loadHomePlans: loadHomePlans,
     loadHomeProducts: loadHomeProducts,
+    loadTeam: loadTeam,
     loadPhotos: loadPhotos,
     resetColors: resetColors,
     shortName: shortName,

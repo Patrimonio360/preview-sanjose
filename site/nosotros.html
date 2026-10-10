@@ -18,7 +18,7 @@
     <meta name="twitter:card" content="summary">
     <!-- seo:end -->
     <link rel="stylesheet" href="css/fonts.css?v=20261004e">
-    <link rel="stylesheet" href="css/style.css?v=20261010f">
+    <link rel="stylesheet" href="css/style.css?v=20261010h">
 </head>
 <body>
 <div class="cursor-ring"></div>
@@ -75,7 +75,15 @@
     </div>
 </section>
 
-<section class="section" style="background:var(--cream)">
+<section class="section" id="teamSection" style="background:var(--cream)" hidden>
+    <div class="container text-center">
+        <div class="section-label">Nuestro equipo</div>
+        <h2 class="section-title" style="margin-bottom:40px">Las personas que cuidan de tu mascota</h2>
+        <div class="team-grid" id="teamGrid"></div>
+    </div>
+</section>
+
+<section class="section" style="background:var(--white)">
     <div class="container">
         <div class="section-label">Nuestras instalaciones</div>
         <h2 class="section-title" style="margin-bottom:32px">Así es por dentro</h2>
@@ -109,8 +117,8 @@
 </footer>
 
 <script src="js/schedule.js?v=20261004e"></script>
-<script src="js/cms.js?v=20261010g"></script>
-<script>CMS.applyColors(); CMS.loadSettings(); CMS.loadPhotos();</script>
+<script src="js/cms.js?v=20261010h"></script>
+<script>CMS.applyColors(); CMS.loadSettings(); CMS.loadPhotos(); CMS.loadTeam();</script>
 <script src="js/main.js?v=20261004e"></script>
 <script src="js/vetbot.js?v=20261004c"></script>
 </body>

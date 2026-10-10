@@ -393,3 +393,18 @@ body.menu-open{overflow:hidden}
 
 /* Lo que se oculta desde Ajustes (atributo hidden) no debe volver a verse por otras reglas */
 [hidden]{display:none!important}
+
+/* Equipo (Nosotros): tarjetas con biografía desplegable */
+.team-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,320px));justify-content:center;gap:24px;text-align:left}
+.team-card{background:var(--white);border-radius:20px;padding:28px 24px;box-shadow:0 4px 20px rgba(0,0,0,.05);display:flex;flex-direction:column;align-items:center;text-align:center}
+.team-photo{width:120px;height:120px;border-radius:50%;overflow:hidden;margin-bottom:16px;background:linear-gradient(135deg,var(--forest) 0%,var(--forest-light) 100%);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.team-photo img{width:100%;height:100%;object-fit:cover}
+.team-photo span{color:var(--white);font-family:'Fraunces',Georgia,serif;font-size:2.4rem;font-weight:600}
+.team-name{font-size:1.25rem;color:var(--forest);margin-bottom:4px}
+.team-role{font-size:.85rem;font-weight:600;color:var(--coral);margin-bottom:14px}
+.team-bio{font-size:.92rem;color:var(--gray500,#6b7280);line-height:1.65;max-height:7.5em;overflow:hidden;position:relative;text-align:left;width:100%}
+.team-bio p+p{margin-top:8px}
+.team-card.open .team-bio{max-height:none}
+.team-more{margin-top:10px;background:none;border:none;color:var(--forest-light);font-weight:600;font-size:.88rem;cursor:pointer;font-family:'Inter',sans-serif;padding:4px 8px;border-radius:8px}
+.team-more:hover,.team-more:focus-visible{text-decoration:underline}
+@media(max-width:768px){.team-grid{grid-template-columns:1fr}}
