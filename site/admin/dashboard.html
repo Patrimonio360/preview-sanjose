@@ -951,7 +951,7 @@
 
 <script src="../js/schedule.js?v=20261004e"></script>
 <script src="../js/clinic-options.js?v=20261004e"></script>
-<script src="../js/cms.js?v=20261010i"></script>
+<script src="../js/cms.js?v=20261010j"></script>
 <script src="legal-docs.js?v=20261004e"></script>
 <script>
 (function() {
@@ -1305,7 +1305,10 @@
   }
 
   function renderServiceCard(s, idx) {
-    var img = s.image ? '<img class="card-img" src="' + esc(s.image) + '" alt="" loading="lazy">' : '';
+    var nImgs = (s.images && s.images.length) || (s.image ? 1 : 0);
+    var img = s.image ? '<div style="position:relative"><img class="card-img" src="' + esc(s.image) + '" alt="" loading="lazy">'
+      + (nImgs > 1 ? '<span style="position:absolute;right:8px;bottom:8px;background:rgba(0,0,0,.65);color:#fff;font-size:12px;font-weight:600;padding:3px 8px;border-radius:20px">&#x1F4F7; ' + nImgs + ' fotos</span>' : '')
+      + '</div>' : '';
     var feats = '';
     if (s.features && s.features.length) {
       feats = '<div class="card-features">';
@@ -2428,7 +2431,7 @@
     var html = '<div class="field"><label>Nombre</label><input type="text" id="ms-name" value="' + esc(s.name) + '"></div>'
       + '<div id="ms-emoji-container"></div>'
       + '<div class="field"><label>Descripcion corta</label><input type="text" id="ms-short" value="' + esc(s.shortDesc || '') + '"></div>'
-      + '<div class="field"><label>Imagen del servicio</label></div>'
+      + '<div class="field"><label>Fotos del servicio</label><div style="font-size:12px;color:var(--gray-400);margin-top:-2px">Con una foto se ve fija. Con varias, pasan solas en carrusel (la primera es la principal).</div></div>'
       + '<div id="ms-upload-container"></div>'
       + '<div class="field"><label>Descripcion completa</label><textarea id="ms-desc" rows="4">' + esc(s.description || '') + '</textarea></div>'
       + '<div class="field"><label>Caracteristicas (una por linea)</label><textarea id="ms-features" rows="4">' + esc(feats) + '</textarea></div>';
@@ -2439,7 +2442,7 @@
     openModal(title, html, footer);
 
     var msEmoji = createEmojiPicker('ms-emoji-container', s.icon);
-    var msUpload = createUploadField('ms-upload-container', s.image, 'site/img/uploads');
+    var msGallery = createGalleryField('ms-upload-container', (s.images && s.images.length) ? s.images : (s.image ? [s.image] : []), 'site/img/uploads');
 
     $('#ms-save').addEventListener('click', async function() {
       var featuresText = $('#ms-features').value.trim();
@@ -2450,7 +2453,8 @@
         icon: msEmoji.getValue(),
         shortDesc: $('#ms-short').value,
         description: $('#ms-desc').value,
-        image: msUpload.getUrl(),
+        images: msGallery.getUrls(),
+        image: msGallery.getUrls()[0] || '',
         features: features
       };
       var items = currentData.services.services;
@@ -2892,6 +2896,97 @@
     return {
       getUrl: function() { return urlInput.value; }
     };
+  }
+
+  // Varias fotos: miniaturas con flechas para ordenar y X para quitar,
+  // zona para subir una o varias a la vez y opción de pegar una URL.
+  function createGalleryField(containerId, currentUrls, folder) {
+    var container = document.getElementById(containerId);
+    var urls = (currentUrls || []).filter(Boolean).slice();
+    if (!container) return { getUrls: function() { return urls; } };
+
+    container.innerHTML = ''
+      + '<div class="gallery-list" id="' + containerId + '-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;margin-bottom:10px"></div>'
+      + '<div class="upload-zone" id="' + containerId + '-zone">'
+      + '<div class="upload-zone-icon">&#x1F4E4;</div>'
+      + '<div class="upload-zone-text"><strong>Clic para añadir fotos</strong> o arrástralas aquí (puedes elegir varias)</div>'
+      + '<input type="file" id="' + containerId + '-file" accept="image/*" multiple>'
+      + '</div>'
+      + '<div class="upload-progress" id="' + containerId + '-progress"><div class="spinner"></div> <span>Subiendo...</span></div>'
+      + '<div class="upload-or">o añade una foto por URL:</div>'
+      + '<div style="display:flex;gap:8px"><input type="url" id="' + containerId + '-url" placeholder="https://..." style="flex:1;padding:10px 14px;border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);font-size:14px;font-family:inherit;outline:none">'
+      + '<button type="button" class="btn btn-ghost btn-sm" id="' + containerId + '-add">Añadir</button></div>';
+
+    var list = document.getElementById(containerId + '-list');
+    var zone = document.getElementById(containerId + '-zone');
+    var fileInput = document.getElementById(containerId + '-file');
+    var progress = document.getElementById(containerId + '-progress');
+    var urlInput = document.getElementById(containerId + '-url');
+
+    function render() {
+      list.innerHTML = urls.map(function(u, i) {
+        var src = /^(https?:|data:|\/)/.test(u) ? u : '../' + u;
+        var btn = 'style="border:none;background:rgba(0,0,0,.6);color:#fff;width:26px;height:26px;border-radius:50%;cursor:pointer;font-size:13px;line-height:1"';
+        return '<div style="position:relative;border-radius:10px;overflow:hidden;aspect-ratio:4/3;background:var(--gray-100)">'
+          + '<img src="' + esc(src) + '" alt="" style="width:100%;height:100%;object-fit:cover">'
+          + (i === 0 ? '<span style="position:absolute;left:6px;top:6px;background:var(--forest);color:#fff;font-size:11px;font-weight:600;padding:2px 7px;border-radius:10px">Principal</span>' : '')
+          + '<div style="position:absolute;right:6px;bottom:6px;display:flex;gap:4px">'
+          + (i > 0 ? '<button type="button" data-act="left" data-i="' + i + '" title="Mover antes" ' + btn + '>&#x2190;</button>' : '')
+          + (i < urls.length - 1 ? '<button type="button" data-act="right" data-i="' + i + '" title="Mover después" ' + btn + '>&#x2192;</button>' : '')
+          + '<button type="button" data-act="del" data-i="' + i + '" title="Quitar foto" ' + btn + '>&#x2715;</button>'
+          + '</div></div>';
+      }).join('');
+    }
+    list.addEventListener('click', function(e) {
+      var b = e.target.closest('button[data-act]');
+      if (!b) return;
+      var i = parseInt(b.dataset.i), t;
+      if (b.dataset.act === 'del') urls.splice(i, 1);
+      if (b.dataset.act === 'left') { t = urls[i - 1]; urls[i - 1] = urls[i]; urls[i] = t; }
+      if (b.dataset.act === 'right') { t = urls[i + 1]; urls[i + 1] = urls[i]; urls[i] = t; }
+      render();
+    });
+
+    async function handleFiles(files) {
+      files = Array.prototype.filter.call(files, function(f) { return f.type.startsWith('image/'); });
+      if (!files.length) { showToast('Solo se permiten imagenes', true); return; }
+      progress.classList.add('active');
+      zone.style.display = 'none';
+      for (var i = 0; i < files.length; i++) {
+        progress.querySelector('span').textContent = 'Subiendo ' + (i + 1) + ' de ' + files.length + '...';
+        if (files[i].size > 25 * 1024 * 1024) { showToast('"' + files[i].name + '" es demasiado grande (máximo 25 MB)', true); continue; }
+        try {
+          urls.push(await uploadImage(files[i], folder));
+          render();
+        } catch (e) {
+          showToast('Error al subir: ' + e.message, true);
+        }
+      }
+      progress.classList.remove('active');
+      zone.style.display = '';
+      fileInput.value = '';
+      showToast('Fotos añadidas. Pulsa Guardar para publicarlas');
+    }
+
+    zone.addEventListener('click', function() { fileInput.click(); });
+    zone.addEventListener('dragover', function(e) { e.preventDefault(); zone.classList.add('dragover'); });
+    zone.addEventListener('dragleave', function() { zone.classList.remove('dragover'); });
+    zone.addEventListener('drop', function(e) {
+      e.preventDefault();
+      zone.classList.remove('dragover');
+      if (e.dataTransfer.files.length) handleFiles(e.dataTransfer.files);
+    });
+    fileInput.addEventListener('change', function() { if (fileInput.files.length) handleFiles(fileInput.files); });
+    document.getElementById(containerId + '-add').addEventListener('click', function() {
+      var u = urlInput.value.trim();
+      if (!u) return;
+      urls.push(u);
+      urlInput.value = '';
+      render();
+    });
+
+    render();
+    return { getUrls: function() { return urls.slice(); } };
   }
 
   // ===== HELPERS =====

@@ -18,13 +18,14 @@
     <meta name="twitter:card" content="summary">
     <!-- seo:end -->
     <link rel="stylesheet" href="css/fonts.css?v=20261004e">
-    <link rel="stylesheet" href="css/style.css?v=20261010i">
+    <link rel="stylesheet" href="css/style.css?v=20261010j">
     <style>
         .svc-detail{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;padding:48px 0;border-bottom:1px solid var(--gray200)}
         .svc-detail:last-child{border:none}
         .svc-detail.reverse{direction:rtl}.svc-detail.reverse>*{direction:ltr}
         .svc-detail-img{border-radius:var(--r-xl);overflow:hidden;box-shadow:var(--sh-md)}
-        .svc-detail-img img{width:100%;aspect-ratio:16/10;object-fit:cover;display:block}
+        .svc-detail-img{aspect-ratio:16/10}
+        .svc-detail-img img{width:100%;height:100%;object-fit:cover;display:block}
         .svc-detail h3{font-size:1.5rem;margin-bottom:12px;color:var(--charcoal)}
         .svc-detail p{color:var(--gray700);line-height:1.8;margin-bottom:20px}
         .svc-detail-list{list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:24px}
@@ -71,7 +72,7 @@
 </section>
 
 <script src="js/schedule.js?v=20261004e"></script>
-<script src="js/cms.js?v=20261010i"></script>
+<script src="js/cms.js?v=20261010j"></script>
 <script>CMS.applyColors(); CMS.loadSettings(); CMS.loadPhotos();</script>
 <script>
 fetch('_data/services.json?t='+Date.now())
@@ -81,7 +82,7 @@ fetch('_data/services.json?t='+Date.now())
         const container = document.getElementById('svcDetailContainer');
         container.innerHTML = services.map((s, i) => `
             <div class="svc-detail${i % 2 === 1 ? ' reverse' : ''}" id="svc-${s.id}" style="scroll-margin-top:100px">
-                ${s.image ? `<div class="svc-detail-img"><img src="${s.image}" alt="${s.name}" loading="lazy"></div>` : ''}
+                ${CMS.serviceImages(s).length ? `<div class="svc-detail-img" data-svc="${i}"></div>` : ''}
                 <div>
                     <h3>${s.icon || ''} ${s.name}</h3>
                     <p>${s.description || s.shortDesc || ''}</p>
@@ -92,6 +93,11 @@ fetch('_data/services.json?t='+Date.now())
                 </div>
             </div>
         `).join('');
+        // Una foto fija o, si hay varias, carrusel con puntos pulsables
+        container.querySelectorAll('.svc-detail-img').forEach(box => {
+            const s = services[box.dataset.svc];
+            CMS.mountCarousel(box, CMS.serviceImages(s), s.name, { controls: true });
+        });
         // Desde la portada se llega con #svc-ID: bajar hasta ese servicio
         const target = location.hash && document.querySelector(location.hash);
         if (target) target.scrollIntoView();

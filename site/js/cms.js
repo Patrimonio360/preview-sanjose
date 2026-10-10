@@ -288,8 +288,61 @@ var CMS = (function() {
       .catch(function() {});
   }
 
-  // Servicios de la portada: tarjetas con la foto de cada servicio del panel.
-  // Sin foto, se muestra el icono del servicio sobre el color del tema.
+  // Fotos de un servicio: lista "images" del panel (o la antigua "image" suelta).
+  function serviceImages(s) {
+    var list = Array.isArray(s.images) ? s.images.filter(Boolean) : [];
+    if (!list.length && s.image) list = [s.image];
+    return list;
+  }
+
+  // Carrusel sencillo para cualquier caja: con 1 foto la deja fija; con varias
+  // pasa solo con fundido y pone puntitos. options.controls = puntos pulsables
+  // (no se usan dentro de enlaces); options.delay = retraso del primer cambio.
+  function mountCarousel(box, urls, alt, options) {
+    options = options || {};
+    if (!box || !urls.length) return;
+    box.classList.add('mini-carousel');
+    box.innerHTML = '';
+    var slides = urls.map(function(url, i) {
+      var img = document.createElement('img');
+      img.alt = alt || '';
+      img.loading = 'lazy';
+      if (i === 0) img.src = url; else img.dataset.src = url;
+      if (i === 0) img.className = 'active';
+      box.appendChild(img);
+      return img;
+    });
+    if (slides.length < 2) return;
+    var dots = document.createElement('div');
+    dots.className = 'mini-carousel-dots';
+    var dotEls = slides.map(function(_, i) {
+      var d = document.createElement(options.controls ? 'button' : 'span');
+      if (options.controls) {
+        d.type = 'button';
+        d.setAttribute('aria-label', 'Ver foto ' + (i + 1));
+        d.addEventListener('click', function() { show(i); restart(); });
+      }
+      if (i === 0) d.className = 'active';
+      dots.appendChild(d);
+      return d;
+    });
+    box.appendChild(dots);
+    var current = 0, timer = null;
+    function load(i) { var el = slides[i]; if (el.dataset.src) { el.src = el.dataset.src; delete el.dataset.src; } }
+    function show(i) {
+      load(i); load((i + 1) % slides.length);
+      slides.forEach(function(el, j) { el.classList.toggle('active', j === i); });
+      dotEls.forEach(function(el, j) { el.classList.toggle('active', j === i); });
+      current = i;
+    }
+    function next() { if (!document.hidden) show((current + 1) % slides.length); }
+    function restart() { clearInterval(timer); timer = setInterval(next, 4500); }
+    load(1);
+    setTimeout(function() { next(); restart(); }, 4500 + (options.delay || 0));
+  }
+
+  // Servicios de la portada: tarjetas con la foto (o carrusel) de cada servicio
+  // del panel. Sin foto, se muestra el icono del servicio sobre el color del tema.
   function loadHomeServices() {
     var grid = document.getElementById('homeServices');
     if (!grid) return;
@@ -301,15 +354,18 @@ var CMS = (function() {
         if (!list.length) return;
         grid.innerHTML = list.map(function(s) {
           var name = String(s.name).replace(/\.\s*$/, '');
-          var media = s.image
-            ? '<img src="' + esc(s.image) + '" alt="' + esc(name) + '" loading="lazy">'
-            : '<span class="svc-photo-icon" aria-hidden="true">' + esc(s.icon || '🐾') + '</span>';
+          var media = serviceImages(s).length ? '' : '<span class="svc-photo-icon" aria-hidden="true">' + esc(s.icon || '🐾') + '</span>';
           return '<a href="servicios.html#svc-' + esc(s.id) + '" class="svc-photo">'
             + '<div class="svc-photo-img">' + media + '</div>'
             + '<div class="svc-photo-body"><h3>' + esc(name) + '</h3>'
             + (s.shortDesc ? '<p>' + esc(s.shortDesc) + '</p>' : '')
             + '<span class="svc-photo-more">Ver más →</span></div></a>';
         }).join('');
+        // Cada tarjeta cambia de foto en un momento distinto
+        grid.querySelectorAll('.svc-photo-img').forEach(function(box, i) {
+          var s = list[i];
+          mountCarousel(box, serviceImages(s), String(s.name).replace(/\.\s*$/, ''), { delay: i * 900 });
+        });
       })
       .catch(function() {});
   }
@@ -518,6 +574,8 @@ var CMS = (function() {
     loadHomePlans: loadHomePlans,
     loadHomeProducts: loadHomeProducts,
     loadHomeServices: loadHomeServices,
+    serviceImages: serviceImages,
+    mountCarousel: mountCarousel,
     loadTeam: loadTeam,
     loadPhotos: loadPhotos,
     resetColors: resetColors,
