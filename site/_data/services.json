@@ -102,6 +102,18 @@
         "\t• Preanestésico con radiografía de tórax.",
         "\t• Producto a elegir para la prevención de la formación de sarro."
       ]
+    },
+    {
+      "id": 8,
+      "name": "Diagnostico por imagen",
+      "icon": "⚕️",
+      "shortDesc": "RX y ecografia",
+      "description": "",
+      "images": [
+        "https://raw.githubusercontent.com/Patrimonio360/preview-sanjose/master/site/img/uploads/20261010_103083.jpg"
+      ],
+      "image": "https://raw.githubusercontent.com/Patrimonio360/preview-sanjose/master/site/img/uploads/20261010_103083.jpg",
+      "features": []
     }
   ]
 }
