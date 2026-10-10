@@ -7,6 +7,14 @@
       "photo": "https://raw.githubusercontent.com/Patrimonio360/preview-sanjose/master/site/img/uploads/20261010_Dise_o_sin_t_tulo.jpg",
       "bio": "",
       "visible": true
+    },
+    {
+      "id": 2,
+      "name": "Maria Luque",
+      "role": "Auxiliar veterinaria",
+      "photo": "https://raw.githubusercontent.com/Patrimonio360/preview-sanjose/master/site/img/uploads/20261010_WhatsApp_Image_2026-01-08_at_09.42.38.jpg",
+      "bio": "",
+      "visible": true
     }
   ]
 }
