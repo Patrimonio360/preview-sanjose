@@ -1620,7 +1620,7 @@
       currentData.settings = data;
       clinicInfo = data;
       showClinicName();
-      showToast('Ajustes guardados. La web se actualiza en 1-2 minutos.');
+      showToast('Ajustes guardados. La web se actualiza en unos segundos.');
     } catch (e) {
       showToast('Error al guardar: ' + e.message, true);
     }
@@ -2065,7 +2065,7 @@
 
   async function applyPalette(palette, name) {
     await githubWrite(getFilePath('themes'), palette, 'admin: aplicar tema "' + name + '" - ' + new Date().toISOString());
-    showToast('Tema "' + name + '" aplicado. La web se actualiza en 1-2 minutos.');
+    showToast('Tema "' + name + '" aplicado. La web se actualiza en unos segundos.');
     loadSection('themes');
   }
 
