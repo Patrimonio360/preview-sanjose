@@ -39,6 +39,9 @@ var CMS = (function() {
       .then(function(c) {
         var root = document.documentElement;
         COLOR_ROLES.forEach(function(role) { if (c[role.key]) root.style.setProperty(role.css, c[role.key]); });
+        // El acento claro (palabra destacada del título, brillo de la foto) sale
+        // del color de los botones destacados del tema, para que no quede naranja.
+        if (c.coral) root.style.setProperty('--coral-light', 'color-mix(in srgb, ' + c.coral + ' 70%, #fff)');
         document.body.classList.add('colors-loaded');
       })
       .catch(function() {});
