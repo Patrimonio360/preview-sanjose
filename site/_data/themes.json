@@ -1,6 +1,26 @@
 {
   "themes": [
     {
+      "id": "propio-logo-sanjose",
+      "name": "Colores principales",
+      "colors": {
+        "navBg": "#FFFFFF",
+        "navTitle": "#2F7A2A",
+        "navText": "#33413A",
+        "heading": "#1C2B22",
+        "charcoal": "#26332C",
+        "primary": "#2F7A2A",
+        "primaryLight": "#388A30",
+        "coral": "#0B7F99",
+        "coralDark": "#08657A",
+        "sage": "#8BC74C",
+        "cream": "#F4FAF5",
+        "white": "#FFFFFF",
+        "footerBg": "#173A2C",
+        "footerText": "#FFFFFF"
+      }
+    },
+    {
       "id": "propio-1791369149065",
       "name": "Mi tema",
       "colors": {
