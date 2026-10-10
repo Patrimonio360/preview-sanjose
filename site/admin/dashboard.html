@@ -948,7 +948,7 @@
 
 <script src="../js/schedule.js?v=20261004e"></script>
 <script src="../js/clinic-options.js?v=20261004e"></script>
-<script src="../js/cms.js?v=20261010e"></script>
+<script src="../js/cms.js?v=20261010f"></script>
 <script src="legal-docs.js?v=20261004e"></script>
 <script>
 (function() {
@@ -1369,6 +1369,7 @@
     { key: 'trustLab', label: 'Laboratorio', icon: '&#x1F52C;' },
     { key: 'trustAccessible', label: 'Accesible', icon: '&#x267F;' },
     { key: 'googleRating', label: 'Nota media en Google (p. ej. 4.7)', icon: '&#x2B50;' },
+    { key: 'googleReviewCount', label: 'Número de reseñas en Google', icon: '&#x1F4AC;' },
     { key: 'googleMapsUrl', label: 'Enlace a la ficha de Google Maps de la clínica', icon: '&#x1F5FA;&#xFE0F;' },
     { key: 'siteUrl', label: 'Dominio de la web (p. ej. https://www.clinicasanjose.es). Mientras esté vacío, Google no la indexa', icon: '&#x1F310;' },
   ];
@@ -2492,7 +2493,7 @@
       + '<div class="field"><label>Imagen</label></div>'
       + '<div id="mph-upload-container"></div>'
       + '<div class="field"><label>Donde se usa</label><select id="mph-usage">'
-      + '<option value="hero"' + (p.usage === 'hero' ? ' selected' : '') + '>Portada (circulitos junto a la valoración de Google)</option>'
+      + '<option value="hero"' + (p.usage === 'hero' ? ' selected' : '') + '>Portada</option>'
       + '<option value="fondo"' + (p.usage === 'fondo' ? ' selected' : '') + '>Fondo de la portada (foto fija detrás del título)</option>'
       + '<option value="home"' + (p.usage === 'home' ? ' selected' : '') + '>Inicio</option>'
       + '<option value="nosotros"' + (p.usage === 'nosotros' ? ' selected' : '') + '>Nosotros</option>'

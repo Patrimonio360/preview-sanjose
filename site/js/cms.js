@@ -120,6 +120,8 @@ var CMS = (function() {
         }
         // Nombre, logo, textos y datos de contacto: <span data-clinic="name">
         fillClinicData(s);
+        // Reseñas de Google: enlaces a la ficha y círculos con iniciales
+        showGoogleReviews(s);
         // Trust stats
         var trust = { years: s.trustYears, families: s.trustFamilies, lab: s.trustLab, accessible: s.trustAccessible };
         document.querySelectorAll('[data-trust]').forEach(function(el) {
@@ -144,6 +146,32 @@ var CMS = (function() {
   // Si una clave no existe en Ajustes se deja el texto de ejemplo del HTML.
   // tools/bake.js hace lo mismo al publicar, para que los buscadores lo vean
   // sin JavaScript; esto aplica al momento los cambios recién guardados.
+  // "4.7 en Google · N opiniones": enlace a la ficha de Google Maps de Ajustes
+  // (si no hay, a una búsqueda de la clínica en Google Maps) y, en vez de
+  // fotos, las iniciales de los clientes de las reseñas del panel.
+  function showGoogleReviews(s) {
+    var url = String(s.googleMapsUrl || '').trim();
+    if (!/^https:\/\//.test(url)) {
+      url = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent([s.name, s.address].filter(Boolean).join(' '));
+    }
+    document.querySelectorAll('[data-google-reviews]').forEach(function(a) { a.href = url; });
+
+    var box = document.getElementById('reviewAvatars');
+    if (!box) return;
+    fetch('_data/reviews/index.json?t=' + Date.now())
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        var reviews = (Array.isArray(data) ? data : (data.reviews || [])).filter(function(r) { return r.author; });
+        if (!reviews.length) return;
+        var spans = box.querySelectorAll('.hero-proof-avatar');
+        spans.forEach(function(span, i) {
+          var author = reviews[i % reviews.length].author;
+          span.textContent = author.split(/\s+/).map(function(w) { return w.charAt(0); }).join('').slice(0, 2).toUpperCase();
+        });
+      })
+      .catch(function() {});
+  }
+
   function fillClinicData(s) {
     var values = Object.assign({}, s, {
       legalName: s.legalName || s.name,
@@ -230,6 +258,36 @@ var CMS = (function() {
     document.documentElement.classList.toggle('store-off', !on);
   }
 
+  // Planes de salud en la portada: los mismos del panel (los de la página
+  // Planes), en tarjetas resumidas.
+  function loadHomePlans() {
+    var grid = document.getElementById('homePlans');
+    if (!grid) return;
+    function esc(t) { var d = document.createElement('div'); d.textContent = t == null ? '' : t; return d.innerHTML; }
+    return fetch('_data/plans.json?t=' + Date.now())
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        var plans = Array.isArray(data) ? data : (data.plans || []);
+        grid.innerHTML = plans.map(function(p, i) {
+          var features = (p.features || []).map(function(f) {
+            return String(typeof f === 'object' ? f.feature : f).replace(/^\s*[•·\-–]\s*/, '').trim();
+          }).filter(Boolean);
+          var shown = features.slice(0, 5);
+          var price = typeof p.price === 'number' ? p.price.toFixed(2).replace('.', ',') : esc(p.price);
+          var popular = !!p.badge;
+          return '<div class="plan-home-card' + (popular ? ' plan-home-card--popular' : '') + ' reveal visible" style="transition-delay:' + (i * 0.1) + 's">'
+            + (popular ? '<div class="plan-home-popular">' + esc(p.badge) + '</div>' : '')
+            + '<div class="plan-home-tag">' + esc(String(p.name || '').replace(/^Plan\s+/i, '')) + '</div>'
+            + '<div class="plan-home-price"><span>' + price + '</span>€' + esc(String(p.period || '').trim()) + '</div>'
+            + '<ul class="plan-home-list">' + shown.map(function(f) { return '<li>' + esc(f) + '</li>'; }).join('')
+            + (features.length > shown.length ? '<li>y ' + (features.length - shown.length) + ' ventajas más</li>' : '') + '</ul>'
+            + '<a href="planes.html" class="plan-home-btn' + (popular ? ' plan-home-btn--primary' : '') + '">Ver detalles →</a>'
+            + '</div>';
+        }).join('');
+      })
+      .catch(function() {});
+  }
+
   function loadTestimonials() {
     var container = document.getElementById('testimonialsList');
     if (!container) return;
@@ -314,13 +372,6 @@ var CMS = (function() {
     return fetch('_data/photos/index.json?t=' + Date.now())
       .then(function(r) { return r.json(); })
       .then(function(photos) {
-        // Fotos "Portada": los circulitos junto a la valoración de Google
-        var heroPhotos = photos.filter(function(p){return p.usage==='hero'});
-        document.querySelectorAll('.hero-proof-avatar img').forEach(function(img, i) {
-          if (heroPhotos[i % heroPhotos.length]) {
-            img.src = heroPhotos[i % heroPhotos.length].image;
-          }
-        });
         // Fondo fijo de la portada (usage=fondo)
         var bgPhoto = photos.filter(function(p){ return p.usage === 'fondo' && p.image; })[0];
         var heroBg = document.getElementById('heroBg');
@@ -371,6 +422,7 @@ var CMS = (function() {
     applyColors: applyColors,
     loadSettings: loadSettings,
     loadTestimonials: loadTestimonials,
+    loadHomePlans: loadHomePlans,
     loadPhotos: loadPhotos,
     resetColors: resetColors,
     shortName: shortName,

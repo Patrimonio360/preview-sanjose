@@ -323,7 +323,12 @@ body.menu-open{overflow:hidden}
 .footer-brand{font-family:'Fraunces',serif;font-size:1.3rem;color:var(--footer-text);margin-bottom:14px}
 .footer-desc{font-size:.85rem;line-height:1.7;max-width:280px;margin-bottom:18px}
 .footer-social{display:flex;gap:8px}
-.footer-social a{width:36px;height:36px;background:rgba(255,255,255,.06);border-radius:8px;display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:14px;transition:all .3s}
+.footer-social a{width:36px;height:36px;background:rgba(255,255,255,.06);border-radius:8px;display:flex;align-items:center;justify-content:center;text-decoration:none;color:var(--footer-text);transition:all .3s}
+/* Redes sociales en Contacto */
+.contact-social{display:flex;gap:10px}
+.contact-social a{width:40px;height:40px;background:var(--cream);color:var(--forest);border-radius:10px;display:flex;align-items:center;justify-content:center;text-decoration:none;transition:all .3s}
+.contact-social a:hover{background:var(--forest);color:var(--white);transform:translateY(-2px)}
+.footer-social a[hidden],.contact-social a[hidden]{display:none}
 .footer-social a:hover{background:var(--coral);transform:translateY(-2px)}
 .footer-col h4{font-family:'Inter',sans-serif;font-size:.75rem;font-weight:700;color:var(--footer-text);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:18px}
 .footer-col ul{list-style:none;display:flex;flex-direction:column;gap:10px}

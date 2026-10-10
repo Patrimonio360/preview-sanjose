@@ -55,7 +55,7 @@
     </script>
     <!-- seo:end -->
     <link rel="stylesheet" href="css/fonts.css?v=20261004e">
-    <link rel="stylesheet" href="css/style.css?v=20261004f">
+    <link rel="stylesheet" href="css/style.css?v=20261010f">
     <style>
         .hero{min-height:100vh;display:flex;align-items:center;position:relative;overflow:hidden;background:#0a120d}
         /* Fondo de la portada: una foto fija (la marcada "Solo fondo de la portada" en el panel) */
@@ -97,8 +97,13 @@
         .hero-proof-avatars{display:flex}
         .hero-proof-avatar{width:40px;height:40px;border-radius:50%;border:2px solid rgba(255,255,255,.2);overflow:hidden;margin-left:-10px;flex-shrink:0}
         .hero-proof-avatar:first-child{margin-left:0}
-        .hero-proof-avatar img{width:100%;height:100%;object-fit:cover}
-        .hero-proof-text{font-size:.85rem;color:rgba(255,255,255,.6);line-height:1.4}
+        /* Iniciales de los clientes de las reseñas del panel (como hace Google sin foto) */
+        span.hero-proof-avatar{display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;color:#fff;background:var(--forest-light);letter-spacing:.3px}
+        span.hero-proof-avatar:nth-child(2){background:var(--coral)}
+        span.hero-proof-avatar:nth-child(3){background:var(--sage)}
+        .hero-proof-text{font-size:.85rem;color:rgba(255,255,255,.6);line-height:1.4;text-decoration:none}
+        a.hero-proof-text:hover{color:#fff}
+        .hero-proof-text u{text-underline-offset:3px}
         .hero-proof-text strong{color:var(--white);font-weight:600}
         .hero-visual{position:relative;display:flex;justify-content:center}
         .hero-img-wrapper{position:relative;width:100%;max-width:440px}
@@ -219,12 +224,12 @@
                 <a href="servicios.html" class="hero-btn-secondary">Ver servicios</a>
             </div>
             <div class="hero-proof">
-                <div class="hero-proof-avatars">
-                    <div class="hero-proof-avatar"><img src="img/clinica-04.jpeg" alt="Cliente"></div>
-                    <div class="hero-proof-avatar"><img src="img/clinica-03.jpeg" alt="Cliente"></div>
-                    <div class="hero-proof-avatar"><img src="img/clinica-10.jpeg" alt="Cliente"></div>
+                <div class="hero-proof-avatars" id="reviewAvatars" aria-hidden="true">
+                    <span class="hero-proof-avatar">MG</span>
+                    <span class="hero-proof-avatar">JR</span>
+                    <span class="hero-proof-avatar">AL</span>
                 </div>
-                <div class="hero-proof-text"><strong><span data-clinic="googleRating">4.7</span> en Google</strong> - <span data-trust="families">186</span> opiniones verificadas</div>
+                <a class="hero-proof-text" data-google-reviews href="https://www.google.com/maps/search/?api=1&amp;query=Cl%C3%ADnica%20Veterinaria%20San%20Jos%C3%A9%20San%20Jos%C3%A9%20de%20La%20Rinconada" target="_blank" rel="noopener"><strong><span data-clinic="googleRating">4.7</span> en Google</strong> - <span data-clinic="googleReviewCount">186</span> opiniones · <u>verlas en Google</u></a>
             </div>
         </div>
         <div class="hero-visual">
@@ -238,7 +243,7 @@
                     <div class="hero-float-icon" style="background:#E8F5E9">⭐</div>
                     <div class="hero-float-info">
                         <strong><span data-clinic="googleRating">4.7</span> / 5</strong>
-                        <span><span data-trust="families">186</span> reseñas Google</span>
+                        <span><span data-clinic="googleReviewCount">186</span> reseñas Google</span>
                     </div>
                 </div>
                 <div class="hero-float hero-float--hours">
@@ -329,43 +334,8 @@
             <h2 class="section-title">Cuidado preventivo a tu medida</h2>
             <p class="section-desc mx-auto">Elige el plan que mejor se adapte a tu mascota. Ahorra hasta un 30% respecto a pagar por separado.</p>
         </div>
-        <div class="plans-home-grid">
-            <div class="plan-home-card reveal">
-                <div class="plan-home-tag">Básico</div>
-                <div class="plan-home-price"><span>9,90</span>€/mes</div>
-                <ul class="plan-home-list">
-                    <li>2 revisiones al año</li>
-                    <li>Vacunas obligatorias</li>
-                    <li>Desparasitación trimestral</li>
-                    <li>10% dto. en productos</li>
-                </ul>
-                <a href="planes.html" class="plan-home-btn">Ver detalles →</a>
-            </div>
-            <div class="plan-home-card plan-home-card--popular reveal" style="transition-delay:.1s">
-                <div class="plan-home-popular">Más Popular</div>
-                <div class="plan-home-tag">Premium</div>
-                <div class="plan-home-price"><span>19,90</span>€/mes</div>
-                <ul class="plan-home-list">
-                    <li>4 revisiones al año</li>
-                    <li>Todas las vacunas</li>
-                    <li>Desparasitación mensual</li>
-                    <li>15% dto. en productos</li>
-                    <li>Cirugías con 20% dto.</li>
-                </ul>
-                <a href="planes.html" class="plan-home-btn plan-home-btn--primary">Ver detalles →</a>
-            </div>
-            <div class="plan-home-card reveal" style="transition-delay:.2s">
-                <div class="plan-home-tag">Familiar</div>
-                <div class="plan-home-price"><span>29,90</span>€/mes <small>(2 mascotas)</small></div>
-                <ul class="plan-home-list">
-                    <li>Todo lo del Premium</li>
-                    <li>Cobertura 2 mascotas</li>
-                    <li>25% dto. en cirugías</li>
-                    <li>Análisis incluido</li>
-                </ul>
-                <a href="planes.html" class="plan-home-btn">Ver detalles →</a>
-            </div>
-        </div>
+        <!-- Se rellena con los planes del panel (CMS.loadHomePlans en js/cms.js) -->
+        <div class="plans-home-grid" id="homePlans"></div>
     </div>
 </section>
 
@@ -437,8 +407,9 @@
                 <div class="footer-brand">Clínica Veterinaria San José</div>
                 <p class="footer-desc">Más de 15 años cuidando las mascotas de San José de La Rinconada y alrededores.</p>
                 <div class="footer-social">
-                    <a href="https://www.facebook.com/CVetSanJose" target="_blank" rel="noopener">📘</a>
-                    <a href="https://www.instagram.com/explore/locations/1748035125485259/clinica-san-jose-pagina-oficial/" target="_blank" rel="noopener">📷</a>
+                    <a href="https://www.facebook.com/CVetSanJose" target="_blank" rel="noopener" aria-label="Facebook de la clínica" title="Facebook"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M13.5 22v-8h2.7l.4-3.2h-3.1V8.8c0-.9.3-1.6 1.6-1.6h1.7V4.3c-.3 0-1.3-.1-2.4-.1-2.4 0-4 1.5-4 4.1v2.5H7.7V14h2.7v8h3.1z"/></svg></a>
+                    <a href="https://www.instagram.com/explore/locations/1748035125485259/clinica-san-jose-pagina-oficial/" target="_blank" rel="noopener" aria-label="Instagram de la clínica" title="Instagram"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.1" fill="currentColor" stroke="none"/></svg></a>
+                    <a href="https://wa.me/34694422484" target="_blank" rel="noopener" aria-label="WhatsApp de la clínica" title="WhatsApp"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.6.3-.2.2-.8.8-.8 2s.8 2.3.9 2.5c.1.2 1.6 2.5 4 3.5 1.5.6 2.1.7 2.8.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.2-.3-.2-.5-.3z"/></svg></a>
                 </div>
             </div>
             <div class="footer-col"><h4>Servicios</h4><ul><li><a href="servicios.html">Consulta General</a></li><li><a href="servicios.html">Vacunación</a></li><li><a href="servicios.html">Cirugía</a></li><li><a href="servicios.html">Terapias Alternativas</a></li></ul></div>
@@ -453,8 +424,8 @@
 </footer>
 
 <script src="js/schedule.js?v=20261004e"></script>
-<script src="js/cms.js?v=20261010e"></script>
-<script>CMS.applyColors(); CMS.loadSettings(); CMS.loadPhotos();</script>
+<script src="js/cms.js?v=20261010f"></script>
+<script>CMS.applyColors(); CMS.loadSettings(); CMS.loadPhotos(); CMS.loadHomePlans();</script>
 <script src="js/main.js?v=20261004e"></script>
 <script src="js/vetbot.js?v=20261004c"></script>
 </body>
