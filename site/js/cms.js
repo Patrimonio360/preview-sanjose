@@ -251,20 +251,22 @@ var CMS = (function() {
       .catch(function() {});
   }
 
-  // Fondo de la portada: las fotos pasan solas cada 6 s con un fundido; los
-  // puntos permiten elegir una. Cada foto se descarga justo antes de mostrarla.
+  // Carrusel de la foto enmarcada de la portada: las fotos pasan solas cada
+  // 6 s con un fundido; los puntos permiten elegir una. Cada foto se descarga
+  // justo antes de mostrarla.
   var HERO_INTERVAL = 6000;
   function heroCarousel(photos) {
-    var box = document.getElementById('heroSlides');
+    var box = document.getElementById('heroCarousel');
     var dots = document.getElementById('heroDots');
     if (!box || !photos.length) return;
-    box.innerHTML = '';
+    box.querySelectorAll('.hero-slide').forEach(function(el) { el.remove(); });
     if (dots) dots.innerHTML = '';
     var slides = photos.map(function(p, i) {
-      var el = document.createElement('div');
+      var el = document.createElement('img');
       el.className = 'hero-slide';
+      el.alt = p.title || 'Instalaciones de la clínica';
       el.dataset.src = p.image;
-      box.appendChild(el);
+      box.insertBefore(el, dots);
       if (dots && photos.length > 1) {
         var b = document.createElement('button');
         b.className = 'hero-dot';
@@ -279,7 +281,7 @@ var CMS = (function() {
 
     function load(i) {
       var el = slides[i];
-      if (el.dataset.src) { el.style.backgroundImage = 'url("' + el.dataset.src.replace(/"/g, '%22') + '")'; delete el.dataset.src; }
+      if (el.dataset.src) { el.src = el.dataset.src; delete el.dataset.src; }
     }
     function show(i) {
       if (i === current) return;
@@ -309,21 +311,19 @@ var CMS = (function() {
     return fetch('_data/photos/index.json?t=' + Date.now())
       .then(function(r) { return r.json(); })
       .then(function(photos) {
-        // Hero photos (usage=hero)
+        // Fotos "Portada": los circulitos junto a la valoración de Google
         var heroPhotos = photos.filter(function(p){return p.usage==='hero'});
-        var heroImg = document.querySelector('.hero-img img');
-        if (heroImg && heroPhotos.length > 0) {
-          heroImg.src = heroPhotos[0].image;
-        }
-        // Hero avatars
-        var heroAvatars = document.querySelectorAll('.hero-proof-avatar img, .hero-img-label-avatar img');
-        heroAvatars.forEach(function(img, i) {
+        document.querySelectorAll('.hero-proof-avatar img').forEach(function(img, i) {
           if (heroPhotos[i % heroPhotos.length]) {
             img.src = heroPhotos[i % heroPhotos.length].image;
           }
         });
-        // Carrusel del fondo de la portada: fotos marcadas en el panel
-        heroCarousel(photos.filter(function(p){ return p.image && (p.carousel || p.usage === 'fondo'); }));
+        // Fondo fijo de la portada (usage=fondo)
+        var bgPhoto = photos.filter(function(p){ return p.usage === 'fondo' && p.image; })[0];
+        var heroBg = document.getElementById('heroBg');
+        if (heroBg && bgPhoto) heroBg.style.backgroundImage = 'url("' + bgPhoto.image.replace(/"/g, '%22') + '")';
+        // Carrusel de la foto enmarcada: fotos con la casilla marcada en el panel
+        heroCarousel(photos.filter(function(p){ return p.image && p.carousel; }));
         // About page photos (usage=nosotros)
         var nosotrosPhotos = photos.filter(function(p){return p.usage==='nosotros'});
         var aboutImg = document.querySelector('.about-img img');
