@@ -122,16 +122,20 @@
         .hero-float-info strong{font-size:.85rem;color:var(--charcoal);font-weight:700}
         .hero-float-info span{font-size:.72rem;color:var(--gray500)}
         .trust-modern{padding:0;margin-top:-40px;position:relative;z-index:4}
-        .trust-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
-        .trust-card{background:var(--white);border-radius:20px;padding:28px 20px;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,.08);transition:all .4s var(--transition-smooth);border:1px solid rgba(0,0,0,.04)}
-        .trust-card:hover{transform:translateY(-6px);box-shadow:0 16px 50px rgba(0,0,0,.12)}
-        .trust-card-icon{width:48px;height:48px;background:var(--cream);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;margin:0 auto 14px;transition:all .3s var(--transition-smooth)}
-        .trust-card:hover .trust-card-icon{background:var(--forest);transform:scale(1.1) rotate(-5deg)}
-        .trust-card-num{font-family:'Fraunces',serif;font-size:1.8rem;font-weight:700;color:var(--forest);margin-bottom:2px}
-        .trust-card-name{font-size:.88rem;font-weight:600;color:var(--charcoal);margin-bottom:2px}
-        .trust-card-label{font-size:.75rem;color:var(--gray500);text-transform:uppercase;letter-spacing:.5px}
-        @media(max-width:1024px){.trust-grid{grid-template-columns:repeat(2,1fr)}}
-        @media(max-width:768px){.trust-grid{grid-template-columns:1fr}.trust-card{padding:20px 16px}}
+        .trust-grid{display:grid;grid-template-columns:repeat(4,1fr)}
+        .trust-card-icon svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+        .trust-card-num{font-family:'Fraunces',serif;font-weight:700;line-height:1.1}
+        .trust-card-name{font-weight:600;line-height:1.25}
+        /* Datos de confianza: tarjetas con el color del tema */
+        .trust-b{gap:16px}
+        .trust-b .trust-card{background:var(--forest);border-radius:20px;padding:24px 22px;box-shadow:0 10px 36px rgba(0,0,0,.14);transition:transform .4s var(--transition-smooth)}
+        .trust-b .trust-card:hover{transform:translateY(-6px)}
+        .trust-b .trust-card-icon{color:var(--sage-pale);margin-bottom:12px}
+        .trust-b .trust-card-num{font-size:2.2rem;color:var(--white)}
+        .trust-b .trust-card-name{font-size:1.05rem;color:var(--white);margin:6px 0 2px}
+        .trust-b .trust-card-label{font-size:.85rem;color:var(--sage-pale)}
+        @media(max-width:1024px){.trust-b{grid-template-columns:repeat(2,1fr)}}
+        @media(max-width:768px){.trust-b{gap:10px}.trust-b .trust-card{padding:16px 14px;border-radius:16px}.trust-b .trust-card-icon{margin-bottom:8px}.trust-b .trust-card-num{font-size:1.6rem}.trust-b .trust-card-name{font-size:.92rem}.trust-b .trust-card-label{font-size:.78rem}}
         .hero-scroll{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);z-index:3;display:flex;flex-direction:column;align-items:center;gap:8px;color:rgba(255,255,255,.4);font-size:.7rem;letter-spacing:1px;text-transform:uppercase;animation:scroll-hint 2s ease-in-out infinite}
         .hero-scroll-line{width:1px;height:30px;background:linear-gradient(to bottom,rgba(255,255,255,.4),transparent)}
         @keyframes scroll-hint{0%,100%{opacity:.4;transform:translateX(-50%) translateY(0)}50%{opacity:.8;transform:translateX(-50%) translateY(5px)}}
@@ -265,26 +269,26 @@
 
 <section class="trust-modern">
     <div class="container">
-        <div class="trust-grid">
+        <div class="trust-grid trust-b">
             <div class="trust-card reveal">
-                <div class="trust-card-icon">⏱</div>
+                <div class="trust-card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div><div>
                 <div class="trust-card-num" data-trust="years">15+</div>
-                <div class="trust-card-label">años de experiencia</div>
+                <div class="trust-card-label">años de experiencia</div></div>
             </div>
             <div class="trust-card reveal" style="transition-delay:.1s" data-clinic-box>
-                <div class="trust-card-icon">👩‍⚕️</div>
+                <div class="trust-card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 2v2"/><path d="M5 2v2"/><path d="M5 3H4a2 2 0 0 0-2 2v4a6 6 0 0 0 12 0V5a2 2 0 0 0-2-2h-1"/><path d="M8 15a6 6 0 0 0 12 0v-3"/><circle cx="20" cy="10" r="2"/></svg></div><div>
                 <div class="trust-card-name" data-clinic="directorName">Dra. Paula Canalias</div>
-                <div class="trust-card-label" data-clinic="directorRole">Directora · MVTC · CCRP</div>
+                <div class="trust-card-label" data-clinic="directorRole">Directora · MVTC · CCRP</div></div>
             </div>
             <div class="trust-card reveal" style="transition-delay:.2s">
-                <div class="trust-card-icon">🔬</div>
+                <div class="trust-card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 18h8"/><path d="M3 22h18"/><path d="M14 22a7 7 0 1 0 0-14h-1"/><path d="M9 14h2"/><path d="M9 12a2 2 0 0 1-2-2V6h6v4a2 2 0 0 1-2 2Z"/><path d="M12 6V3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3"/></svg></div><div>
                 <div class="trust-card-num" data-trust="lab">100%</div>
-                <div class="trust-card-label">laboratorio propio</div>
+                <div class="trust-card-label">laboratorio propio</div></div>
             </div>
             <div class="trust-card reveal" style="transition-delay:.3s">
-                <div class="trust-card-icon">♿</div>
+                <div class="trust-card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="16" cy="4" r="1"/><path d="m18 19 1-7-6 1"/><path d="m5 8 3-3 5.5 3-2.36 3.5"/><path d="M4.24 14.5a5 5 0 0 0 6.88 6"/><path d="M13.76 17.5a5 5 0 0 0-6.88-6"/></svg></div><div>
                 <div class="trust-card-num" data-trust="accessible">100%</div>
-                <div class="trust-card-label">accesible</div>
+                <div class="trust-card-label">accesible</div></div>
             </div>
         </div>
     </div>
