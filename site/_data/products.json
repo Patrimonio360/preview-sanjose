@@ -82,11 +82,11 @@
     },
     {
       "id": 9,
-      "brand": "Advance",
-      "name": "Adult Medium Chicken 15kg",
-      "price": 39.9,
+      "brand": "OWNAT",
+      "name": "RENAL",
+      "price": 0,
       "category": "alimento",
-      "image": "https://images.unsplash.com/photo-1615497001839-b0a0eac3274c?w=400&h=400&fit=crop",
+      "image": "https://raw.githubusercontent.com/Patrimonio360/preview-sanjose/master/site/img/uploads/20261010_WhatsApp_Image_2026-10-07_at_18.27.42__13_.jpeg",
       "tag": "",
       "description": "Alimento completo con pollo para perros adultos."
     },
