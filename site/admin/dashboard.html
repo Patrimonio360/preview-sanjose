@@ -948,7 +948,7 @@
 
 <script src="../js/schedule.js?v=20261004e"></script>
 <script src="../js/clinic-options.js?v=20261004e"></script>
-<script src="../js/cms.js?v=20261004g"></script>
+<script src="../js/cms.js?v=20261010b"></script>
 <script src="legal-docs.js?v=20261004e"></script>
 <script>
 (function() {
@@ -1336,11 +1336,12 @@
   function renderPhotoCard(p, idx) {
     var imgSrc = p.image ? (p.image.startsWith('http') ? p.image : '../' + p.image) : '';
     var img = imgSrc ? '<img class="card-img" src="' + esc(imgSrc) + '" alt="" loading="lazy">' : '<div class="card-img-placeholder">&#x1F4F7;</div>';
-    var usageLabels = { hero:'Portada', fondo:'Fondo de la portada', home:'Inicio', nosotros:'Nosotros', servicios:'Servicios', contacto:'Contacto', general:'General' };
+    var usageLabels = { hero:'Portada', fondo:'Solo carrusel', home:'Inicio', nosotros:'Nosotros', servicios:'Servicios', contacto:'Contacto', general:'General' };
     return '<div class="card" data-index="' + idx + '">' + img
       + '<div class="card-body">'
       + '<div class="card-name">' + esc(p.title || '') + '</div>'
       + '<div class="photo-usage">' + (usageLabels[p.usage] || p.usage || '') + '</div>'
+      + (p.carousel || p.usage === 'fondo' ? '<div class="photo-usage" style="background:var(--forest);color:#fff;margin-top:4px">&#x1F3A0; Carrusel de la portada</div>' : '')
       + (p.description ? '<div class="card-desc">' + esc(p.description) + '</div>' : '')
       + '</div>'
       + '<div class="card-actions">'
@@ -2492,13 +2493,14 @@
       + '<div id="mph-upload-container"></div>'
       + '<div class="field"><label>Donde se usa</label><select id="mph-usage">'
       + '<option value="hero"' + (p.usage === 'hero' ? ' selected' : '') + '>Portada / Hero</option>'
-      + '<option value="fondo"' + (p.usage === 'fondo' ? ' selected' : '') + '>Fondo de la portada</option>'
+      + '<option value="fondo"' + (p.usage === 'fondo' ? ' selected' : '') + '>Solo carrusel de la portada</option>'
       + '<option value="home"' + (p.usage === 'home' ? ' selected' : '') + '>Inicio</option>'
       + '<option value="nosotros"' + (p.usage === 'nosotros' ? ' selected' : '') + '>Nosotros</option>'
       + '<option value="servicios"' + (p.usage === 'servicios' ? ' selected' : '') + '>Servicios</option>'
       + '<option value="contacto"' + (p.usage === 'contacto' ? ' selected' : '') + '>Contacto</option>'
       + '<option value="general"' + (p.usage === 'general' ? ' selected' : '') + '>General</option>'
       + '</select></div>'
+      + '<label class="species-option" style="margin:4px 0 16px"><input type="checkbox" id="mph-carousel"' + (p.carousel || p.usage === 'fondo' ? ' checked' : '') + '> &#x1F3A0; Mostrar en el carrusel de la portada (fotos de las instalaciones)</label>'
       + '<div class="field"><label>Descripcion (opcional)</label><input type="text" id="mph-desc" value="' + esc(p.description || '') + '"></div>';
 
     var footer = '<button class="btn btn-ghost" onclick="window._closeModal()">Cancelar</button>'
@@ -2514,6 +2516,7 @@
         title: $('#mph-title').value,
         image: mphUpload.getUrl(),
         usage: $('#mph-usage').value,
+        carousel: $('#mph-carousel').checked,
         description: $('#mph-desc').value
       };
       var items = currentData.photos;

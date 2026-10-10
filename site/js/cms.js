@@ -251,6 +251,59 @@ var CMS = (function() {
       .catch(function() {});
   }
 
+  // Fondo de la portada: las fotos pasan solas cada 6 s con un fundido; los
+  // puntos permiten elegir una. Cada foto se descarga justo antes de mostrarla.
+  var HERO_INTERVAL = 6000;
+  function heroCarousel(photos) {
+    var box = document.getElementById('heroSlides');
+    var dots = document.getElementById('heroDots');
+    if (!box || !photos.length) return;
+    var reduceMotion = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    box.innerHTML = '';
+    if (dots) dots.innerHTML = '';
+    var slides = photos.map(function(p, i) {
+      var el = document.createElement('div');
+      el.className = 'hero-slide';
+      el.dataset.src = p.image;
+      box.appendChild(el);
+      if (dots && photos.length > 1) {
+        var b = document.createElement('button');
+        b.className = 'hero-dot';
+        b.type = 'button';
+        b.setAttribute('aria-label', 'Ver foto ' + (i + 1) + (p.title ? ': ' + p.title : ''));
+        b.addEventListener('click', function() { show(i); restart(); });
+        dots.appendChild(b);
+      }
+      return el;
+    });
+    var current = -1, timer = null;
+
+    function load(i) {
+      var el = slides[i];
+      if (el.dataset.src) { el.style.backgroundImage = 'url("' + el.dataset.src.replace(/"/g, '%22') + '")'; delete el.dataset.src; }
+    }
+    function show(i) {
+      if (i === current) return;
+      load(i);
+      load((i + 1) % slides.length); // la siguiente ya va descargándose
+      slides.forEach(function(el, j) {
+        el.classList.toggle('active', j === i);
+        // Reinicia el zoom suave de la foto que entra
+        if (j === i) { el.style.animation = 'none'; void el.offsetWidth; el.style.animation = ''; }
+      });
+      if (dots) Array.prototype.forEach.call(dots.children, function(d, j) { d.classList.toggle('active', j === i); });
+      current = i;
+    }
+    function restart() {
+      clearInterval(timer);
+      if (slides.length > 1 && !reduceMotion) timer = setInterval(function() { show((current + 1) % slides.length); }, HERO_INTERVAL);
+    }
+    show(0);
+    restart();
+    // Sin animación mientras la pestaña está oculta
+    document.addEventListener('visibilitychange', function() { if (document.hidden) clearInterval(timer); else restart(); });
+  }
+
   function loadPhotos() {
     return fetch('_data/photos/index.json?t=' + Date.now())
       .then(function(r) { return r.json(); })
@@ -268,10 +321,8 @@ var CMS = (function() {
             img.src = heroPhotos[i % heroPhotos.length].image;
           }
         });
-        // Fondo de la portada (usage=fondo): imagen tras el vídeo de la portada
-        var bgPhoto = photos.filter(function(p){return p.usage==='fondo'})[0];
-        var heroVideo = document.getElementById('heroVideo');
-        if (heroVideo && bgPhoto) heroVideo.poster = bgPhoto.image;
+        // Carrusel del fondo de la portada: fotos marcadas en el panel
+        heroCarousel(photos.filter(function(p){ return p.image && (p.carousel || p.usage === 'fondo'); }));
         // About page photos (usage=nosotros)
         var nosotrosPhotos = photos.filter(function(p){return p.usage==='nosotros'});
         var aboutImg = document.querySelector('.about-img img');

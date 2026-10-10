@@ -7,6 +7,8 @@
 // al momento; si el servidor falla, se usa el archivo de GitHub Pages como
 // siempre. Cada archivo se pide una sola vez por página.
 (function () {
+  // En una copia local (pruebas) se usan los archivos locales.
+  if (/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) return;
   var API = 'https://preview-sanjose.vercel.app/api/site-data?path=';
   var realFetch = window.fetch.bind(window);
   var pending = {};

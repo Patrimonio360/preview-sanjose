@@ -9,19 +9,21 @@
 // La respuesta se guarda 10 s en la CDN de Vercel para no pedir a GitHub en
 // cada visita.
 
-const { SITE_REPO, setCors, isAllowedOrigin, readFile } = require('./_lib');
+const { SITE_REPO, readFile } = require('./_lib');
 
 function isPublicDataFile(path) {
   return /^site\/_data\/[a-z0-9_-]+(\/[a-z0-9_-]+)?\.json$/.test(path) && path !== 'site/_data/admin-config.json';
 }
 
 module.exports = async function handler(req, res) {
-  setCors(req, res);
+  // Datos públicos (los mismos que publica GitHub Pages): cualquier web puede
+  // leerlos. Con "*" la respuesta que guarda la CDN vale para todos; con un
+  // origen concreto, la CDN podía servírsela a otro origen y el navegador la rechazaba.
+  res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
 
   if (req.method === 'OPTIONS') return res.status(204).end();
   if (req.method !== 'GET') return res.status(405).json({ error: 'Método no permitido' });
-  if (req.headers.origin && !isAllowedOrigin(req)) return res.status(403).json({ error: 'Origen no permitido' });
 
   const path = String((req.query && req.query.path) || '');
   if (!isPublicDataFile(path)) return res.status(400).json({ error: 'Ruta no permitida' });

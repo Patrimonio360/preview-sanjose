@@ -4,21 +4,24 @@
     "title": "Fachada de la clínica",
     "image": "https://raw.githubusercontent.com/Patrimonio360/preview-sanjose/master/site/img/uploads/20260905_clinica-08.jpeg",
     "usage": "general",
-    "description": "Vista exterior de la clínica."
+    "description": "Vista exterior de la clínica.",
+    "carousel": true
   },
   {
     "id": 2,
     "title": "Sala de espera",
     "image": "https://raw.githubusercontent.com/Patrimonio360/preview-sanjose/master/site/img/uploads/20261004_103070.jpg",
     "usage": "general",
-    "description": "Interior de la sala de espera."
+    "description": "Interior de la sala de espera.",
+    "carousel": true
   },
   {
     "id": 3,
     "title": "Consultorio principal",
     "image": "https://raw.githubusercontent.com/Patrimonio360/preview-sanjose/master/site/img/uploads/20261004_92343.png",
     "usage": "nosotros",
-    "description": "Nosotras "
+    "description": "Nosotras ",
+    "carousel": true
   },
   {
     "id": 4,
@@ -39,7 +42,8 @@
     "title": "Quirófano",
     "image": "img/clinica-06.jpeg",
     "usage": "servicios",
-    "description": "Quirófano equipado."
+    "description": "Quirófano equipado.",
+    "carousel": true
   },
   {
     "id": 7,
@@ -88,7 +92,8 @@
     "title": "Recepción",
     "image": "img/clinica-13.jpeg",
     "usage": "general",
-    "description": "Zona de recepción."
+    "description": "Zona de recepción.",
+    "carousel": true
   },
   {
     "id": 14,
@@ -109,7 +114,8 @@
     "title": "Exterior clínica",
     "image": "https://raw.githubusercontent.com/Patrimonio360/preview-sanjose/master/site/img/uploads/20261004_55695.png",
     "usage": "hero",
-    "description": "Vista panorámica del exterior."
+    "description": "Vista panorámica del exterior.",
+    "carousel": true
   },
   {
     "id": 17,
