@@ -123,5 +123,13 @@
     "image": "https://raw.githubusercontent.com/Patrimonio360/preview-sanjose/master/site/img/uploads/20261004_103589.jpg",
     "usage": "nosotros",
     "description": ""
+  },
+  {
+    "id": 18,
+    "title": "",
+    "image": "https://raw.githubusercontent.com/Patrimonio360/preview-sanjose/master/site/img/uploads/20261010_DSC_0025.jpg",
+    "usage": "general",
+    "carousel": true,
+    "description": ""
   }
 ]
