@@ -143,6 +143,18 @@
       "image": "https://raw.githubusercontent.com/Patrimonio360/preview-sanjose/master/site/img/uploads/20261010_WhatsApp_Image_2026-10-07_at_18.28.45__4_.jpeg",
       "tag": "",
       "description": ""
+    },
+    {
+      "id": 15,
+      "brand": "OWNAT",
+      "name": "DERMATOLOGIC",
+      "price": 0,
+      "category": "alimento",
+      "image": "https://raw.githubusercontent.com/Patrimonio360/preview-sanjose/master/site/img/uploads/20261016_WhatsApp_Image_2026-10-07_at_18.28.46__2_.jpeg",
+      "tag": "",
+      "description": "",
+      "star": false,
+      "starReason": ""
     }
   ]
 }
