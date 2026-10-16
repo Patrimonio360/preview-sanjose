@@ -275,7 +275,9 @@ function bakePage(file) {
   // Enlaces de llamar, escribir, WhatsApp, redes y mapa
   if (settings.phone) html = html.replace(/href="tel:[^"]*"/g, 'href="tel:' + esc(settings.phone.replace(/\s/g, '')) + '"');
   if (settings.email) html = html.replace(/href="mailto:[^"]*"/g, 'href="mailto:' + esc(settings.email) + '"');
-  if (settings.whatsapp) html = html.replace(/wa\.me\/\d*/g, 'wa.me/' + String(settings.whatsapp).replace(/\D/g, ''));
+  // Solo enlaces escritos tal cual (href="https://wa.me/123?…" o "…wa.me/"): el código JS
+  // que monta su propio enlace ('…wa.me/' + numero) no se toca, o el número saldría repetido.
+  if (settings.whatsapp) html = html.replace(/(href="https?:\/\/(?:api\.)?wa\.me\/)\d*(?=[?"])/g, '$1' + String(settings.whatsapp).replace(/\D/g, ''));
   [['facebook', 'facebook\\.com'], ['instagram', 'instagram\\.com']].forEach(function (net) {
     if (!(net[0] in settings)) return;
     html = html.replace(new RegExp('<a\\b[^>]*href="https?://(?:www\\.)?' + net[1] + '[^"]*"[^>]*>', 'g'), function (tag) {
