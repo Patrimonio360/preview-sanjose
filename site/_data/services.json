@@ -63,7 +63,10 @@
       "icon": "🦷",
       "shortDesc": "Limpieza dental, extracciones y tratamiento periodontal.",
       "description": "Programas de higiene bucal, orientados a la limpieza y prevención de la placa dental en perros y gatos. ",
-      "image": "",
+      "images": [
+        "https://raw.githubusercontent.com/Patrimonio360/preview-sanjose/master/site/img/uploads/20261109_IMG_20260610_133726.jpg"
+      ],
+      "image": "https://raw.githubusercontent.com/Patrimonio360/preview-sanjose/master/site/img/uploads/20261109_IMG_20260610_133726.jpg",
       "features": [
         "Limpieza dental con ultrasonido",
         "Extracciones simples",
