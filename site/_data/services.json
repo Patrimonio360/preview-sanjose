@@ -24,7 +24,10 @@
       "icon": "💉",
       "shortDesc": "Programas de vacunación completos para perros y gatos.",
       "description": "Planes de vacunación adaptados a cada especie y estilo de vida.",
-      "image": "https://hvc.cat/wp-content/uploads/2021/02/cuales-son-las-vacunas-para-perros-obligatorias-y-cuando-ponerlas-1.jpg",
+      "images": [
+        "https://raw.githubusercontent.com/Patrimonio360/preview-sanjose/master/site/img/uploads/20261109_Visita_veterinaria_llena_de_cari_o.png"
+      ],
+      "image": "https://raw.githubusercontent.com/Patrimonio360/preview-sanjose/master/site/img/uploads/20261109_Visita_veterinaria_llena_de_cari_o.png",
       "features": [
         "Vacunas perro y gato",
         "Recordatorios automáticos",
