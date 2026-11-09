@@ -42,12 +42,17 @@
       "icon": "🏥",
       "shortDesc": "Cirugías generales de tejidos blandos, laparoscopia y cirugía de traumatología.",
       "description": "Cirugías con monitorización continua y equipamiento de última generación.",
+      "images": [
+        "https://raw.githubusercontent.com/Patrimonio360/preview-sanjose/master/site/img/uploads/20261007_IMG_20260921_132604.jpg"
+      ],
       "image": "https://raw.githubusercontent.com/Patrimonio360/preview-sanjose/master/site/img/uploads/20261007_IMG_20260921_132604.jpg",
       "features": [
-        "Estérilizaciones",
-        "Cirugía de tejidos blandos",
+        "Esterilizaciones por laparotomía.",
+        "Cirugía por Laparoscopia.",
+        "Cirugía de tejidos blandos ",
         "Ortopedia",
-        "Monitorización continua"
+        "Monitorización continua",
+        "Hospitalización diurna."
       ]
     },
     {
